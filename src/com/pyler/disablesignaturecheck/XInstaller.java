@@ -52,7 +52,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
 
-		// HOOKS
+		// hooks
 
 		compareSignaturesHook = new XC_MethodHook() {
 			@Override
@@ -186,7 +186,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			}
 
 		};
-		
+
 		fDroidInstallHook = new XC_MethodHook() {
 			String mInstalledSigID = null;
 
@@ -194,28 +194,29 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				signaturesCheckFDroid = prefs.getBoolean
-						("disable_signatures_check_fdroid", false);
+				signaturesCheckFDroid = prefs.getBoolean(
+						"disable_signatures_check_fdroid", false);
 				if (signaturesCheckFDroid) {
-					mInstalledSigID = (String) XposedHelpers.getObjectField
-							(param.thisObject, "mInstalledSigID");
-					XposedHelpers.setObjectField(param.thisObject, 
+					mInstalledSigID = (String) XposedHelpers.getObjectField(
+							param.thisObject, "mInstalledSigID");
+					XposedHelpers.setObjectField(param.thisObject,
 							"mInstalledSigID", null);
 				}
 			}
+
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				if (signaturesCheckFDroid) {
-					XposedHelpers.setObjectField(param.thisObject, 
+					XposedHelpers.setObjectField(param.thisObject,
 							"mInstalledSigID", mInstalledSigID);
 				}
 			}
 
 		};
-        
-        // CHECKS
-		
+
+		// checks
+
 		JB_MR1_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
 				: false;
 		JB_MR2_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
@@ -223,8 +224,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 		KITKAT_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) ? true
 				: false;
 
-		// ENABLERS
-		
+		// enablers
+
 		XposedHelpers.findAndHookMethod(packageManagerService, null,
 				"compareSignatures", Signature[].class, Signature[].class,
 				compareSignaturesHook);
@@ -284,7 +285,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			findAndHookMethod(packageInstallerActivity, lpparam.classLoader,
 					"isInstallingUnknownAppsAllowed", unknownAppsHook);
 			if (KITKAT_NEWER) {
-				findAndHookMethod(packageInstallerActivity,
+				XposedHelpers.findAndHookMethod(packageInstallerActivity,
 						lpparam.classLoader, "isVerifyAppsEnabled",
 						verifyAppsHook);
 			}
@@ -296,12 +297,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 							lpparam.classLoader, "isThisASystemPackage",
 							systemAppsHook);
 		}
-		
+
 		if (FDROID_PKG.equals(lpparam.packageName)) {
-			XposedHelpers
-					.findAndHookMethod(fDroidAppDetails,
-							lpparam.classLoader, "install", fDroidApkClass,
-							fDroidInstallHook);
+			XposedHelpers.findAndHookMethod(fDroidAppDetails,
+					lpparam.classLoader, "install", fDroidApkClass,
+					fDroidInstallHook);
 		}
 	}
 
