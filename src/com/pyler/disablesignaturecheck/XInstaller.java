@@ -17,6 +17,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
 	XSharedPreferences prefs;
 	boolean signaturesCheck;
+	boolean signaturesCheckFDroid;
 	boolean keepAppsData;
 	boolean downgradeApps;
 	boolean forwardLock;
@@ -32,6 +33,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	XC_MethodHook unknownAppsHook;
 	XC_MethodHook verifyAppsHook;
 	XC_MethodHook deviceAdminsHook;
+	XC_MethodHook fDroidInstallHook;
 	boolean JB_MR2_NEWER;
 	boolean JB_MR1_NEWER;
 	boolean KITKAT_NEWER;
@@ -184,6 +186,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 			}
 
 		};
+		
+		fDroidInstallHook = new XC_MethodHook() {
+			String mInstalledSigID = null;
+
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				signaturesCheckFDroid = prefs.getBoolean
+						("disable_signatures_check_fdroid", false);
+				if (signaturesCheckFDroid) {
+					mInstalledSigID = (String) XposedHelpers.getObjectField
+							(param.thisObject, "mInstalledSigID");
+					XposedHelpers.setObjectField(param.thisObject, 
+							"mInstalledSigID", null);
+				}
+			}
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				if (signaturesCheckFDroid) {
+					XposedHelpers.setObjectField(param.thisObject, 
+							"mInstalledSigID", mInstalledSigID);
+				}
+			}
+
+		};
         
         // CHECKS
 		
@@ -245,8 +274,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 			throws Throwable {
 		String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 		String SETTINGS_PKG = "com.android.settings";
+		String FDROID_PKG = "org.fdroid.fdroid";
 		String installedAppDetails = "com.android.settings.applications.InstalledAppDetails";
 		String packageInstallerActivity = "com.android.packageinstaller.PackageInstallerActivity";
+		String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
+		String fDroidApkClass = "org.fdroid.fdroid.data.Apk";
 
 		if (PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			findAndHookMethod(packageInstallerActivity, lpparam.classLoader,
@@ -264,8 +296,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 							lpparam.classLoader, "isThisASystemPackage",
 							systemAppsHook);
 		}
-		;
-
+		
+		if (FDROID_PKG.equals(lpparam.packageName)) {
+			XposedHelpers
+					.findAndHookMethod(fDroidAppDetails,
+							lpparam.classLoader, "install", fDroidApkClass,
+							fDroidInstallHook);
+		}
 	}
 
 	public void log(String text) {

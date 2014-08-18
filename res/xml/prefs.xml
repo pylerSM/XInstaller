@@ -23,6 +23,10 @@
                     android:key="disable_signatures_check"
                     android:title="@string/signatures_check" />
                 <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="disable_signatures_check_fdroid"
+                    android:title="@string/signatures_check_fdroid" />
+                <CheckBoxPreference
                     android:defaultValue="true"
                     android:key="disable_forward_lock"
                     android:title="@string/forward_lock" />

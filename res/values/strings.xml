@@ -17,4 +17,5 @@
 	<string name="install_external_storage">Installing apps on external storage</string>
 	<string name="disable_system_apps">Disabling system apps</string>
 	<string name="uninstall_device_admins">Uninstalling device admins</string>
+	<string name="signatures_check_fdroid">Checking signatures (F-Droid)</string>
 </resources>
