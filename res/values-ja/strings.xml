@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_description">パッケージインストーラの動作を変更するモジュール</string>
+    <string name="app_settings">設定</string>
+    <string name="installations">インストール</string>
+    <string name="uninstallations">アンインストール</string>
+    <string name="misc">その他</string>
+    <string name="enable">有効化</string>
+    <string name="disable">無効化</string>
+    <string name="signatures_check">署名のチェック</string>
+    <string name="keep_apps_data">アプリのデータを残す</string>
+    <string name="downgrade_apps">アプリのダウングレード</string>
+    <string name="forward_lock">有料アプリの暗号化</string>
+    <string name="install_unknown_apps">提供元不明なアプリのインストール</string>
+    <string name="verify_apps">アプリの確認</string>
+    <string name="install_external_storage">アプリを外部ストレージにインストール</string>
+    <string name="disable_system_apps">システムアプリの無効化</string>
+    <string name="uninstall_device_admins">機器管理機能が有効でもアンインストールする</string>
+</resources>
