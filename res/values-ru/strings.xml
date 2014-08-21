@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_description">Различные твики для Программа установки пакета</string>
+    <string name="app_settings">Настройки</string>
+    <string name="installations">Инсталяция</string>
+    <string name="uninstallations">Деинсталяция</string>
+    <string name="misc">Разное</string>
+    <string name="enable">Включить</string>
+    <string name="disable">Выключить</string>
+    <string name="signatures_check">Проверка подписи</string>
+    <string name="keep_apps_data">Сохранение данных приложений</string>
+    <string name="downgrade_apps">Понижение версии приложений</string>
+    <string name="forward_lock">Впредь блокировать</string>
+    <string name="install_unknown_apps">Установка неизвестных приложений</string>
+    <string name="verify_apps">Верификация приложений</string>
+    <string name="install_external_storage">Установка на внешнюю память</string>
+    <string name="disable_system_apps">Отключение системных приложений</string>
+    <string name="uninstall_device_admins">Удаление администраторов устройств</string>
+    <string name="signatures_check_fdroid">Проверка подписи (F-Droid)</string>
+</resources>
