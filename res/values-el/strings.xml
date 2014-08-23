@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="app_name">XInstaller</string>
+    <string name="app_description">Διάφορες τροποποιήσεις στον εγκαταστάτη πακέτων</string>
+    <string name="app_settings">Ρυθμίσεις</string>
+    <string name="installations">Εγκατάσταση</string>
+    <string name="uninstallations">Απεγκατάσταση</string>
+    <string name="misc">Διάφορα</string>
+    <string name="enable">Ενεργοποίηση</string>
+    <string name="disable">Απενεργοποίηση</string>
+    <string name="signatures_check">Έλεγχος υπογραφών</string>
+    <string name="keep_apps_data">Διατήρηση δεδομένων εφαρμογών</string>
+    <string name="downgrade_apps">Υποβάθμιση εφαρμογών</string>
+    <string name="forward_lock">Σήμανση FORWAD_LOCK</string>
+    <string name="install_unknown_apps">Εγκατάσταση άγνωστων εφαρμογών</string>
+    <string name="verify_apps">Έλεγχος εφαρμογών</string>
+    <string name="install_external_storage">Εγκατάσταση εφαρμογών στον εξωτερικό αποθηκευτικό χώρο</string>
+    <string name="disable_system_apps">Απενεργοποίηση εφαρμογών συστήματος</string>
+    <string name="uninstall_device_admins">Απεγκατάσταση διαχειριστών συσκευής</string>
+    <string name="signatures_check_fdroid">Έλεγχος υπογραφών Checking signatures (F-Droid)</string>
+
+</resources>
