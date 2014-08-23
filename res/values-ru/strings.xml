@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_description">Различные твики для Программа установки пакета</string>
     <string name="app_settings">Настройки</string>
     <string name="installations">Инсталяция</string>
@@ -17,4 +18,5 @@
     <string name="disable_system_apps">Отключение системных приложений</string>
     <string name="uninstall_device_admins">Удаление администраторов устройств</string>
     <string name="signatures_check_fdroid">Проверка подписи (F-Droid)</string>
+
 </resources>
