@@ -17,5 +17,8 @@
     <string name="disable_system_apps">Zakázanie systémových aplikácií</string>
     <string name="uninstall_device_admins">Odinštalovanie správcov zariadenia</string>
     <string name="signatures_check_fdroid">Kontrolovanie podpisov (F-Droid)</string>
+    <string name="auto_install">Automatické inštalovanie</string>
+    <string name="auto_uninstall">Automatické odinštalovanie</string>
+    <string name="auto_close_uninstall">Automatické zavrietie inštalovania</string>
 
 </resources>
