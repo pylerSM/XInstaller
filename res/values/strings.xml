@@ -1,6 +1,8 @@
 <resources>
 
-    <string name="app_name">XInstaller</string>
+    <string name="app_name" translatable="false">XInstaller</string>
+    <string name="app_developer" translatable="false">pyler</string>
+    <string name="app_version">2.6 beta1</string>
     <string name="app_description">Various tweaks for Package Installer</string>
     <string name="app_settings">Settings</string>
     <string name="installations">Installations</string>
@@ -18,8 +20,13 @@
     <string name="disable_system_apps">Disabling system apps</string>
     <string name="uninstall_device_admins">Uninstalling device administrators</string>
     <string name="signatures_check_fdroid">Checking signatures (F-Droid)</string>
-    <string name="auto_install">Auto installing</string>
-    <string name="auto_uninstall">Auto uninstalling</string>
-    <string name="auto_close_uninstall">Auto close uninstalling</string>
+    <string name="auto_install">Auto installing after opening APK</string>
+    <string name="auto_uninstall">Auto uninstalling after opening APK</string>
+    <string name="auto_close_install">Auto closing after uninstalling</string>
+    <string name="auto_close_uninstall">Auto closing after uninstalling</string>
+    <string name="auto_launch_install">Auto launching after uninstalling</string>
+    <string name="about">About</string>
+    <string name="developer">Developer</string>
+    <string name="version">Version</string>
 
 </resources>
