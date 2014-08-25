@@ -271,7 +271,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						"enable_auto_close_install", true);
 				autoLaunchInstall = prefs.getBoolean(
 						"enable_auto_launch_install", false);
-				if (autoCloseUninstall) {
+				if (autoCloseInstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							XposedHelpers.getSurroundingThis(param.thisObject),
 							"mDoneButton");
