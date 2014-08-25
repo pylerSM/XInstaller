@@ -22,9 +22,9 @@
     <string name="signatures_check_fdroid">Checking signatures (F-Droid)</string>
     <string name="auto_install">Auto installing after opening APK</string>
     <string name="auto_uninstall">Auto uninstalling after opening APK</string>
-    <string name="auto_close_install">Auto closing after uninstalling</string>
+    <string name="auto_close_install">Auto closing after installing</string>
     <string name="auto_close_uninstall">Auto closing after uninstalling</string>
-    <string name="auto_launch_install">Auto launching after uninstalling</string>
+    <string name="auto_launch_install">Auto launching after installing</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>
