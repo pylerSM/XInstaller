@@ -19,8 +19,8 @@
     <string name="signatures_check_fdroid">Kontrolovanie podpisov (F-Droid)</string>
     <string name="auto_install">Automatické inštalovanie po otvorení APK</string>
     <string name="auto_uninstall">Automatické odinštalovanie po otvorení APK</string>
-    <string name="auto_close_install">Automatické zavrietie po nainštalovaní</string>
-    <string name="auto_close_uninstall">Automatické zavrietie po odinštalovaní</string>
+    <string name="auto_close_install">Automatické zavretie po nainštalovaní</string>
+    <string name="auto_close_uninstall">Automatické zavretie po odinštalovaní</string>
     <string name="auto_launch_install">Automatické spustenie po nainštalovaní</string>
     <string name="about">O aplikácii</string>
     <string name="developer">Vývojár</string>

@@ -17,5 +17,13 @@
     <string name="disable_system_apps">Zakázání systémových aplikací</string>
     <string name="uninstall_device_admins">Odinstalování správců zařízení</string>
     <string name="signatures_check_fdroid">Kontrolování podpisů (F-Droid)</string>
+    <string name="auto_install">Automatické instalování po otevření APK</string>
+    <string name="auto_uninstall">Automatické odinstalování po otevření APK</string>
+    <string name="auto_close_install">Automatické zavření po nainstalování</string>
+    <string name="auto_close_uninstall">Automatické zavření po nainstalování</string>
+    <string name="auto_launch_install">Automatické spuštění po nainstalování</string>
+    <string name="about">O aplikaci</string>
+    <string name="developer">Vývojář</string>
+    <string name="version">Verze</string>
 
 </resources>
