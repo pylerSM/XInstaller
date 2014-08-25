@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">XInstaller</string>
     <string name="app_description">对应用包安装程序进行各种调整</string>
     <string name="app_settings">设置</string>
@@ -18,4 +18,5 @@
     <string name="disable_system_apps">停用系统应用</string>
     <string name="uninstall_device_admins">卸载激活的设备管理器</string>
     <string name="signatures_check_fdroid">签名检查（F-Droid）</string>
+
 </resources>

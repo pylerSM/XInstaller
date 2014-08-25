@@ -1,6 +1,5 @@
 <resources>
 
-    <string name="app_name">XInstaller</string>
     <string name="app_description">Διάφορες τροποποιήσεις στον εγκαταστάτη πακέτων</string>
     <string name="app_settings">Ρυθμίσεις</string>
     <string name="installations">Εγκατάσταση</string>
