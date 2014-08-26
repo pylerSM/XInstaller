@@ -17,8 +17,8 @@
     <string name="disable_system_apps">Désactivation des applis système</string>
     <string name="uninstall_device_admins">Désinstallation des administrateurs de l\'appareil</string>
     <string name="signatures_check_fdroid">Vérification des signatures (F-Droid)</string>
-    <string name="auto_install">Installation auto après ouverture de l\'APK</string>
-    <string name="auto_uninstall">Désinstallation auto après ouverture de l\'APK</string>
+    <string name="auto_install">Installation auto</string>
+    <string name="auto_uninstall">Désinstallation auto</string>
     <string name="auto_close_install">Fermeture auto après installation</string>
     <string name="auto_close_uninstall">Fermeture auto après désinstallation</string>
     <string name="auto_launch_install">Lancement auto après installation</string>

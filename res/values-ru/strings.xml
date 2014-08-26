@@ -17,8 +17,8 @@
     <string name="disable_system_apps">Отключение системных приложений</string>
     <string name="uninstall_device_admins">Удаление администраторов устройств</string>
     <string name="signatures_check_fdroid">Проверка подписи (F-Droid)</string>
-    <string name="auto_install">Авто установка после открытия APK</string>
-    <string name="auto_uninstall">Авто удаление после открытия APK</string>
+    <string name="auto_install">Авто установка</string>
+    <string name="auto_uninstall">Авто удаление</string>
     <string name="auto_close_install">Авто закрытие после установки</string>
     <string name="auto_close_uninstall">Авто закрытие после удаления</string>
     <string name="auto_launch_install">Авто запуск после установки</string>
