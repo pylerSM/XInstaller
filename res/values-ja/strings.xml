@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-
-
     <string name="app_description">パッケージインストーラの動作を変更するモジュール</string>
     <string name="app_settings">設定</string>
     <string name="installations">インストール</string>
