@@ -1,6 +1,7 @@
 package com.pyler.disablesignaturecheck;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
@@ -49,6 +50,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 	boolean JB_MR1_NEWER;
 	boolean KITKAT_NEWER;
 
+	String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
+	String SETTINGS_PKG = "com.android.settings";
+	String FDROID_PKG = "org.fdroid.fdroid";
+	String packageManagerService = "com.android.server.pm.PackageManagerService";
+	String devicePolicyManager = "com.android.server.DevicePolicyManagerService";
+	String installedAppDetails = "com.android.settings.applications.InstalledAppDetails";
+	String packageInstallerActivity = "com.android.packageinstaller.PackageInstallerActivity";
+	String installAppProgress = "com.android.packageinstaller.InstallAppProgress";
+	String uninstallerActivity = "com.android.packageinstaller.UninstallerActivity";
+	String uninstallAppProgress = "com.android.packageinstaller.UninstallAppProgress";
+	String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
+
 	// flags
 	int DELETE_KEEP_DATA = 0x00000001;
 	int INSTALL_ALLOW_DOWNGRADE = 0x00000080;
@@ -57,8 +70,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
-		String packageManagerService = "com.android.server.pm.PackageManagerService";
-		String devicePolicyManager = "com.android.server.DevicePolicyManagerService";
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
 
@@ -105,6 +116,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					param.args[ID] = flags;
 
 				}
+
 			}
 
 		};
@@ -122,7 +134,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 					flags |= DELETE_KEEP_DATA;
 					param.args[ID] = flags;
 				}
-
 			}
 
 		};
@@ -337,22 +348,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 			findAndHookMethod(devicePolicyManager, null,
 					"packageHasActiveAdmins", String.class, deviceAdminsHook);
 		}
-
 	}
 
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
-		String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
-		String SETTINGS_PKG = "com.android.settings";
-		String FDROID_PKG = "org.fdroid.fdroid";
-		String installedAppDetails = "com.android.settings.applications.InstalledAppDetails";
-		String packageInstallerActivity = "com.android.packageinstaller.PackageInstallerActivity";
-		String installAppProgress = "com.android.packageinstaller.InstallAppProgress";
-		String uninstallerActivity = "com.android.packageinstaller.UninstallerActivity";
-		String uninstallAppProgress = "com.android.packageinstaller.UninstallAppProgress";
-		String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
-
 		if (PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			findAndHookMethod(packageInstallerActivity, lpparam.classLoader,
 					"isInstallingUnknownAppsAllowed", unknownAppsHook);
