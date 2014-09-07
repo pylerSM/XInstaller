@@ -102,21 +102,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0 && downgradeApps) {
 					// we dont have this flag, add it
 					flags |= INSTALL_ALLOW_DOWNGRADE;
-					param.args[ID] = flags;
 				}
 				if ((flags & INSTALL_FORWARD_LOCK) != 0 && forwardLock) {
 					// we have this flag, remove it
 					flags &= ~INSTALL_FORWARD_LOCK;
-					param.args[ID] = flags;
-
 				}
 				if ((flags & INSTALL_EXTERNAL) == 0 && installAppsOnExternal) {
 					// we dont have this flag, add it
 					flags |= INSTALL_EXTERNAL;
-					param.args[ID] = flags;
-
 				}
-
+				param.args[ID] = flags;
 			}
 
 		};
@@ -132,8 +127,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				if ((flags & DELETE_KEEP_DATA) == 0 && keepAppsData) {
 					// we dont have this flag, add it
 					flags |= DELETE_KEEP_DATA;
-					param.args[ID] = flags;
 				}
+				param.args[ID] = flags;
 			}
 
 		};
