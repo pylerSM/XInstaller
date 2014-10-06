@@ -1,7 +1,10 @@
 package com.pyler.disablesignaturecheck;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
@@ -9,10 +12,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.widget.Button;
+import android.widget.Toast;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -34,7 +39,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	boolean autoCloseUninstall;
 	boolean autoCloseInstall;
 	boolean autoLaunchInstall;
-	XC_MethodHook compareSignaturesHook;
+	boolean permissionsCheck;
+	XC_MethodHook checkSignaturesHook;
 	XC_MethodHook deletePackageHook;
 	XC_MethodHook installPackageHook;
 	XC_MethodHook systemAppsHook;
@@ -46,9 +52,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 	XC_MethodHook autoUninstallHook;
 	XC_MethodHook autoCloseUninstallHook;
 	XC_MethodHook autoCloseInstallHook;
+	XC_MethodHook packageManagerHook;
+	XC_MethodHook checkPermissionsHook;
 	boolean JB_MR2_NEWER;
 	boolean JB_MR1_NEWER;
 	boolean KITKAT_NEWER;
+	static Context mContext;
+	Object packageManager;
+	BroadcastReceiver mBroadcastReceiver;
 
 	String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	String SETTINGS_PKG = "com.android.settings";
@@ -62,6 +73,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	String uninstallAppProgress = "com.android.packageinstaller.UninstallAppProgress";
 	String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
 
+	Class<?> packageManagerClass = XposedHelpers.findClass(
+			packageManagerService, null);
+
 	// flags
 	int DELETE_KEEP_DATA = 0x00000001;
 	int INSTALL_ALLOW_DOWNGRADE = 0x00000080;
@@ -74,8 +88,41 @@ public class XInstaller implements IXposedHookZygoteInit,
 		prefs.makeWorldReadable();
 
 		// hooks
+		/*
+		packageManagerHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(final MethodHookParam param)
+					throws Throwable {
+				packageManager = param.thisObject;
+				Context context = (Context) XposedHelpers.getObjectField(
+						param.thisObject, "mContext");
+				if (context == null && param.args.length != 0) {
+					context = (Context) param.args[0];
+				}
+				if (context != null) {
+					mContext = context;
+					IntentFilter intentFilter = new IntentFilter();
+					intentFilter.addAction("intent.lol");
+					// context.registerReceiver(new ActionReceiver(),
+					// intentFilter);
+				}
+			}
+		};*/
 
-		compareSignaturesHook = new XC_MethodHook() {
+		checkPermissionsHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				permissionsCheck = prefs.getBoolean(
+						"disable_permissions_check", false);
+				if (permissionsCheck) {
+					param.setResult(PackageManager.PERMISSION_GRANTED);
+				}
+			}
+		};
+
+		checkSignaturesHook = new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
@@ -303,19 +350,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 				: false;
 
 		// enablers
+		//XposedBridge.hookAllConstructors(packageManagerClass,
+		//		packageManagerHook);
 
-		findAndHookMethod(packageManagerService, null, "compareSignatures",
-				Signature[].class, Signature[].class, compareSignaturesHook);
+		findAndHookMethod(packageManagerClass, "compareSignatures",
+				Signature[].class, Signature[].class, checkSignaturesHook);
+
+		findAndHookMethod(packageManagerClass, "checkSignatures", String.class,
+				String.class, checkSignaturesHook);
+
+		findAndHookMethod(packageManagerClass, "checkUidSignatures", int.class,
+				int.class, checkSignaturesHook);
+
+		findAndHookMethod(packageManagerClass, "checkPermission", String.class,
+				String.class, checkPermissionsHook);
+
+		findAndHookMethod(packageManagerClass, "checkUidPermission",
+				String.class, int.class, checkPermissionsHook);
 
 		if (JB_MR1_NEWER) {
-			findAndHookMethod(packageManagerService, null,
+			findAndHookMethod(packageManagerClass,
 					"installPackageWithVerificationAndEncryption", Uri.class,
 					"android.content.pm.IPackageInstallObserver", int.class,
 					String.class, "android.content.pm.VerificationParams",
 					"android.content.pm.ContainerEncryptionParams",
 					installPackageHook);
 		} else {
-			findAndHookMethod(packageManagerService, null,
+			findAndHookMethod(packageManagerClass,
 					"installPackageWithVerification", Uri.class,
 					"android.content.pm.IPackageInstallObserver", int.class,
 					String.class, Uri.class,
@@ -325,12 +386,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (JB_MR2_NEWER) {
-			findAndHookMethod(packageManagerService, null,
-					"deletePackageAsUser", String.class,
-					"android.content.pm.IPackageDeleteObserver", int.class,
-					int.class, deletePackageHook);
+			findAndHookMethod(packageManagerClass, "deletePackageAsUser",
+					String.class, "android.content.pm.IPackageDeleteObserver",
+					int.class, int.class, deletePackageHook);
 		} else {
-			findAndHookMethod(packageManagerService, null, "deletePackage",
+			findAndHookMethod(packageManagerClass, "deletePackage",
 					String.class, "android.content.pm.IPackageDeleteObserver",
 					int.class, deletePackageHook);
 		}
@@ -378,5 +438,4 @@ public class XInstaller implements IXposedHookZygoteInit,
 					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
 		}
 	}
-
 }

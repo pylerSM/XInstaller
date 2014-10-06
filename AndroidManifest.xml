@@ -40,6 +40,10 @@
                 </action>
                 <action android:name="xinstaller.intent.action.ENABLE_SIGNATURE_CHECK" >
                 </action>
+                <action android:name="xinstaller.intent.action.DISABLE_PERMISSION_CHECK" >
+                </action>
+                <action android:name="xinstaller.intent.action.ENABLE_PERMISSION_CHECK" >
+                </action>
             </intent-filter>
         </receiver>
     </application>

@@ -25,6 +25,7 @@
     <string name="auto_close_install">Auto closing after installing</string>
     <string name="auto_close_uninstall">Auto closing after uninstalling</string>
     <string name="auto_launch_install">Auto launching after installing</string>
+    <string name="permissions_check">Checking permissions</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>
