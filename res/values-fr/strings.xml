@@ -22,6 +22,7 @@
     <string name="auto_close_install">Fermeture auto après installation</string>
     <string name="auto_close_uninstall">Fermeture auto après désinstallation</string>
     <string name="auto_launch_install">Lancement auto après installation</string>
+    <string name="permissions_check">Vérification des autorisations</string>    
     <string name="about">À propos</string>
     <string name="developer">Développeur</string>
     <string name="version">Version</string>
