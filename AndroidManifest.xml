@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.disablesignaturecheck"
-    android:versionCode="28"
-    android:versionName="2.8" >
+    android:versionCode="29"
+    android:versionName="2.9 beta1" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -31,21 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver
-            android:name=".ActionReceiver"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="xinstaller.intent.action.DISABLE_SIGNATURE_CHECK" >
-                </action>
-                <action android:name="xinstaller.intent.action.ENABLE_SIGNATURE_CHECK" >
-                </action>
-                <action android:name="xinstaller.intent.action.DISABLE_PERMISSION_CHECK" >
-                </action>
-                <action android:name="xinstaller.intent.action.ENABLE_PERMISSION_CHECK" >
-                </action>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
