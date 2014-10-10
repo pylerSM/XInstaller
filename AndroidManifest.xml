@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.disablesignaturecheck"
     android:versionCode="29"
-    android:versionName="2.9 beta1" >
+    android:versionName="2.9" >
 
     <uses-sdk
         android:minSdkVersion="15"

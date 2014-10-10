@@ -80,7 +80,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_FORCE_STOP_PACKAGE = "xinstaller.intent.action.FORCE_STOP_PACKAGE";
 	public static final String ACTION_DELETE_PACKAGE = "xinstaller.intent.action.DELETE_PACKAGE";
 	public static final String ACTION_CLEAR_APP_CACHE = "xinstaller.intent.action.CLEAR_APP_CACHE";
-	
+	public static final String ACTION_MOVE_PACKAGE = "xinstaller.intent.action.MOVE_PACKAGE";
+	public static final String ACTION_GRANT_PERMISSION = "xinstaller.intent.action.GRANT_PERMISSION";
+	public static final String ACTION_REVOKE_PERMISSION = "xinstaller.intent.action.REVOKE_PERMISSION";
+
 	// prefs
 	public static final String PREF_DISABLE_SIGNATURE_CHECK = "disable_signatures_check";
 	public static final String PREF_DISABLE_PERMISSION_CHECK = "disable_permissions_check";
@@ -171,6 +174,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 						intentFilter.addAction(ACTION_FORCE_STOP_PACKAGE);
 						intentFilter.addAction(ACTION_DELETE_PACKAGE);
 						intentFilter.addAction(ACTION_CLEAR_APP_CACHE);
+						intentFilter.addAction(ACTION_MOVE_PACKAGE);
+						intentFilter.addAction(ACTION_GRANT_PERMISSION);
+						intentFilter.addAction(ACTION_REVOKE_PERMISSION);
 						mContext.registerReceiver(systemAPI, intentFilter);
 						APIEnabled = true;
 					}
@@ -420,7 +426,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 			public void onReceive(Context context, Intent intent) {
 
 				String action = intent.getAction();
-				XposedBridge.log("got action " + action);
 				Bundle extras = intent.getExtras();
 				boolean hasExtras = (extras != null) ? true : false;
 				if (ACTION_DISABLE_SIGNATURE_CHECK.equals(action)) {
@@ -432,7 +437,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				} else if (ACTION_ENABLE_PERMISSION_CHECK.equals(action)) {
 					disablePermissionCheck(false);
 				} else if (ACTION_INSTALL_PACKAGE.equals(action)) {
-					XposedBridge.log("Act: ACTION_INSTALL_PACKAGE ");
 					if (hasExtras) {
 						String apkFile = extras.getString("apk");
 						Integer flag = extras.getInt("flags");
@@ -447,7 +451,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						}
 					}
 				} else if (ACTION_CLEAR_APP_DATA.equals(action)) {
-					XposedBridge.log("Act: ACTION_CLEAR_APP_DATA ");
 					if (hasExtras) {
 						String packageName = extras.getString("package");
 						if (packageName != null) {
@@ -455,7 +458,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						}
 					}
 				} else if (ACTION_SWITCH_USER.equals(action)) {
-					XposedBridge.log("Act: ACTION_SWITCH_USER ");
 					if (hasExtras) {
 						Integer user = extras.getInt("user");
 						if (user != null) {
@@ -474,11 +476,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 					if (hasExtras) {
 						String packageName = extras.getString("package");
 						Integer flag = extras.getInt("flags");
-
 						if (packageName != null) {
 							if (flag != null) {
 								int flags = flag;
-                                deletePackage(packageName, flags);
+								deletePackage(packageName, flags);
 							} else {
 								deletePackage(packageName, 0);
 							}
@@ -490,6 +491,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 						String packageName = extras.getString("package");
 						if (packageName != null) {
 							clearAppCache(packageName);
+						}
+					}
+				} else if (ACTION_MOVE_PACKAGE.equals(action)) {
+					if (hasExtras) {
+						String packageName = extras.getString("package");
+						Integer flag = extras.getInt("flags");
+						if (packageName != null) {
+							if (flag != null) {
+								int flags = flag;
+								movePackage(packageName, flags);
+							}
+						}
+					}
+				} else if (ACTION_GRANT_PERMISSION.equals(action)) {
+					if (hasExtras) {
+						String packageName = extras.getString("package");
+						String permission = extras.getString("permission");
+						if (packageName != null && permission != null) {
+							grantPermission(packageName, permission);
+						}
+					}
+				} else if (ACTION_REVOKE_PERMISSION.equals(action)) {
+					if (hasExtras) {
+						String packageName = extras.getString("package");
+						String permission = extras.getString("permission");
+						if (packageName != null && permission != null) {
+							revokePermission(packageName, permission);
 						}
 					}
 				}
@@ -599,9 +627,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	// system API
-	
+
 	public static void forceStopPackage(String packageName) {
-		XposedHelpers.callMethod(activityManagerObj, "forceStopPackage", packageName);
+		XposedHelpers.callMethod(activityManagerObj, "forceStopPackage",
+				packageName);
 	}
 
 	public static void clearAppData(String packageName) {
@@ -619,40 +648,36 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public static void movePackage(String packageName, int flags) {
-		XposedHelpers.callMethod(packageManagerObj, "movePackage", packageName, null,
-				flags);
+		XposedHelpers.callMethod(packageManagerObj, "movePackage", packageName,
+				null, flags);
 	}
 
 	public static void installPackage(String apkFile, int flags) {
-		XposedBridge.log("Act: installing " + apkFile + " flags " + flags);
-
 		Uri apk = Uri.fromFile(new File(apkFile));
 		XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
 				null, flags);
-
-		XposedBridge.log("Act: installed");
 
 	}
 
 	public static void deletePackage(String packageName, int flags) {
 		if (JB_MR2_NEWER) {
-			int USER_OWNER = -2;
+			int userId = -2; // USER_CURRENT
 			XposedHelpers.callMethod(packageManagerObj, "deletePackageAsUser",
-					packageName, null, USER_OWNER, flags);
+					packageName, null, userId, flags);
 		} else {
-			XposedHelpers.callMethod(packageManagerObj, "deletePackage", packageName,
-					null, flags);
+			XposedHelpers.callMethod(packageManagerObj, "deletePackage",
+					packageName, null, flags);
 		}
 	}
 
 	public static void grantPermission(String packageName, String permission) {
-		XposedHelpers.callMethod(packageManagerObj, "grantPermission", packageName,
-				permission);
+		XposedHelpers.callMethod(packageManagerObj, "grantPermission",
+				packageName, permission);
 	}
 
 	public static void revokePermission(String packageName, String permission) {
-		XposedHelpers.callMethod(packageManagerObj, "revokePermission", packageName,
-				permission);
+		XposedHelpers.callMethod(packageManagerObj, "revokePermission",
+				packageName, permission);
 	}
 
 	public static void disableSignatureCheck(boolean disabled) {
