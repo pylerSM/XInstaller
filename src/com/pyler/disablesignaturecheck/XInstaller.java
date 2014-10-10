@@ -83,6 +83,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_MOVE_PACKAGE = "xinstaller.intent.action.MOVE_PACKAGE";
 	public static final String ACTION_GRANT_PERMISSION = "xinstaller.intent.action.GRANT_PERMISSION";
 	public static final String ACTION_REVOKE_PERMISSION = "xinstaller.intent.action.REVOKE_PERMISSION";
+	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 
 	// prefs
 	public static final String PREF_DISABLE_SIGNATURE_CHECK = "disable_signatures_check";
@@ -177,6 +178,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						intentFilter.addAction(ACTION_MOVE_PACKAGE);
 						intentFilter.addAction(ACTION_GRANT_PERMISSION);
 						intentFilter.addAction(ACTION_REVOKE_PERMISSION);
+						intentFilter.addAction(ACTION_RUN_XINSTALLER);
 						mContext.registerReceiver(systemAPI, intentFilter);
 						APIEnabled = true;
 					}
@@ -520,6 +522,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 							revokePermission(packageName, permission);
 						}
 					}
+				} else if (ACTION_RUN_XINSTALLER.equals(action)) {
+					runXInstaller();
 				}
 			}
 
@@ -699,6 +703,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 			prefs.edit().putBoolean(PREF_DISABLE_PERMISSION_CHECK, disabled)
 					.apply();
 		} catch (NameNotFoundException e) {
+		}
+	}
+
+	public static void runXInstaller() {
+		Intent launchIntent = mContext.getPackageManager()
+				.getLaunchIntentForPackage(PACKAGE_NAME);
+		if (launchIntent != null) {
+			launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			mContext.startActivity(launchIntent);
 		}
 	}
 }
