@@ -36,11 +36,12 @@ INSTALL_ALLOW_DOWNGRADE (0x00000080);
 xinstaller.intent.action.DELETE_PACKAGE
 - delete package
 Arguments: package name (string), flags (integer; optional)
+Flags: DELETE_KEEP_DATA (0x00000001), DELETE_ALL_USERS (0x00000002), DELETE_SYSTEM_APP (0x00000004)
 
 xinstaller.intent.action.MOVE_PACKAGE
 - delete package
 Arguments: package name (string), flags (integer)
-Flags: DELETE_KEEP_DATA (0x00000001), DELETE_ALL_USERS (0x00000002), DELETE_SYSTEM_APP (0x00000004)
+Flags: MOVE_INTERNAL (0x00000001), MOVE_EXTERNAL_MEDIA (0x00000002)
 
 xinstaller.intent.action.GRANT_PERMISSION
 - grant permission
