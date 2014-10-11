@@ -21,10 +21,10 @@
     <string name="uninstall_device_admins">Apparaat administrators de-installeren</string>
     <string name="signatures_check_fdroid">Handtekening controleren (F-Droid)</string>
     <string name="auto_install">Automatisch installeren</string>
-    <string name="auto_uninstall">Autotomatisch de-installeren</string>
+    <string name="auto_uninstall">Automatisch de-installeren</string>
     <string name="auto_close_install">Automatisch sluiten na installatie</string>
-    <string name="auto_close_uninstall">Autotomatisch sluiten na installatie</string>
-    <string name="auto_launch_install">Autotomatisch openen na installatie</string>
+    <string name="auto_close_uninstall">Automatisch sluiten na de-installatie</string>
+    <string name="auto_launch_install">Automatisch openen na installatie</string>
     <string name="permissions_check">Machtigingen controleren</string>
     <string name="about">Over</string>
     <string name="developer">Ontwikkelaar</string>
