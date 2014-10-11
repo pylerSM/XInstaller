@@ -1,0 +1,33 @@
+<resources>
+
+    <string name="app_name" translatable="false">XInstaller</string>
+    <string name="app_developer" translatable="false">pyler</string>
+    <string name="app_version" translatable="false">2.9</string>
+    <string name="app_description">Diverse toepassingen voor Pakket Installatie</string>
+    <string name="app_settings">Instellingen</string>
+    <string name="installations">Installatie</string>
+    <string name="uninstallations">De-installatie</string>
+    <string name="misc">Diversen</string>
+    <string name="enable">Inschakelen</string>
+    <string name="disable">Uitschakelen</string>
+    <string name="signatures_check">Handtekening controle</string>
+    <string name="keep_apps_data">App gegevens behouden</string>
+    <string name="downgrade_apps">Apps terugzetten</string>
+    <string name="forward_lock">Protectie vergrendeling</string>
+    <string name="install_unknown_apps">Onbekende apps installeren</string>
+    <string name="verify_apps">Apps verifiëren</string>
+    <string name="install_external_storage">Apps installeren op externe opslag</string>
+    <string name="disable_system_apps">Systeem applicaties uitschakelen</string>
+    <string name="uninstall_device_admins">Apparaat administrators de-installeren</string>
+    <string name="signatures_check_fdroid">Handtekening controleren (F-Droid)</string>
+    <string name="auto_install">Automatisch installeren</string>
+    <string name="auto_uninstall">Automatisch de-installeren</string>
+    <string name="auto_close_install">Automatisch sluiten na installatie</string>
+    <string name="auto_close_uninstall">Automatisch sluiten na de-installatie</string>
+    <string name="auto_launch_install">Automatisch openen na installatie</string>
+    <string name="permissions_check">Machtigingen controleren</string>
+    <string name="about">Over</string>
+    <string name="developer">Ontwikkelaar</string>
+    <string name="version">Versie</string>
+
+</resources>
