@@ -76,13 +76,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_DISABLE_PERMISSION_CHECK = "xinstaller.intent.action.DISABLE_PERMISSION_CHECK";
 	public static final String ACTION_ENABLE_PERMISSION_CHECK = "xinstaller.intent.action.ENABLE_PERMISSION_CHECK";
 	public static final String ACTION_CLEAR_APP_DATA = "xinstaller.intent.action.CLEAR_APP_DATA";
-	public static final String ACTION_SWITCH_USER = "xinstaller.intent.action.SWITCH_USER";
 	public static final String ACTION_FORCE_STOP_PACKAGE = "xinstaller.intent.action.FORCE_STOP_PACKAGE";
 	public static final String ACTION_DELETE_PACKAGE = "xinstaller.intent.action.DELETE_PACKAGE";
 	public static final String ACTION_CLEAR_APP_CACHE = "xinstaller.intent.action.CLEAR_APP_CACHE";
 	public static final String ACTION_MOVE_PACKAGE = "xinstaller.intent.action.MOVE_PACKAGE";
-	public static final String ACTION_GRANT_PERMISSION = "xinstaller.intent.action.GRANT_PERMISSION";
-	public static final String ACTION_REVOKE_PERMISSION = "xinstaller.intent.action.REVOKE_PERMISSION";
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 
 	// prefs
@@ -171,13 +168,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 						intentFilter.addAction(ACTION_ENABLE_PERMISSION_CHECK);
 						intentFilter.addAction(ACTION_INSTALL_PACKAGE);
 						intentFilter.addAction(ACTION_CLEAR_APP_DATA);
-						intentFilter.addAction(ACTION_SWITCH_USER);
 						intentFilter.addAction(ACTION_FORCE_STOP_PACKAGE);
 						intentFilter.addAction(ACTION_DELETE_PACKAGE);
 						intentFilter.addAction(ACTION_CLEAR_APP_CACHE);
 						intentFilter.addAction(ACTION_MOVE_PACKAGE);
-						intentFilter.addAction(ACTION_GRANT_PERMISSION);
-						intentFilter.addAction(ACTION_REVOKE_PERMISSION);
 						intentFilter.addAction(ACTION_RUN_XINSTALLER);
 						mContext.registerReceiver(systemAPI, intentFilter);
 						APIEnabled = true;
@@ -459,14 +453,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 							clearAppData(packageName);
 						}
 					}
-				} else if (ACTION_SWITCH_USER.equals(action)) {
-					if (hasExtras) {
-						Integer user = extras.getInt("user");
-						if (user != null) {
-							int userId = user;
-							switchUser(userId);
-						}
-					}
 				} else if (ACTION_FORCE_STOP_PACKAGE.equals(action)) {
 					if (hasExtras) {
 						String packageName = extras.getString("package");
@@ -488,7 +474,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						}
 					}
 				} else if (ACTION_CLEAR_APP_CACHE.equals(action)) {
-					XposedBridge.log("Act: ACTION_CLEAR_APP_DATA");
 					if (hasExtras) {
 						String packageName = extras.getString("package");
 						if (packageName != null) {
@@ -504,22 +489,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 								int flags = flag;
 								movePackage(packageName, flags);
 							}
-						}
-					}
-				} else if (ACTION_GRANT_PERMISSION.equals(action)) {
-					if (hasExtras) {
-						String packageName = extras.getString("package");
-						String permission = extras.getString("permission");
-						if (packageName != null && permission != null) {
-							grantPermission(packageName, permission);
-						}
-					}
-				} else if (ACTION_REVOKE_PERMISSION.equals(action)) {
-					if (hasExtras) {
-						String packageName = extras.getString("package");
-						String permission = extras.getString("permission");
-						if (packageName != null && permission != null) {
-							revokePermission(packageName, permission);
 						}
 					}
 				} else if (ACTION_RUN_XINSTALLER.equals(action)) {
@@ -607,8 +576,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						lpparam.classLoader, "isVerifyAppsEnabled",
 						verifyAppsHook);
 			}
-			XposedHelpers
-					.findAndHookMethod(packageInstallerActivity,
+			findAndHookMethod(packageInstallerActivity,
 							lpparam.classLoader, "startInstallConfirm",
 							autoInstallHook);
 			findAndHookMethod(uninstallerActivity, lpparam.classLoader,
@@ -647,10 +615,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				"deleteApplicationCacheFiles", packageName, null);
 	}
 
-	public static void switchUser(int user) {
-		XposedHelpers.callMethod(packageManagerObj, "switchUser", user);
-	}
-
 	public static void movePackage(String packageName, int flags) {
 		XposedHelpers.callMethod(packageManagerObj, "movePackage", packageName,
 				null, flags);
@@ -672,16 +636,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.callMethod(packageManagerObj, "deletePackage",
 					packageName, null, flags);
 		}
-	}
-
-	public static void grantPermission(String packageName, String permission) {
-		XposedHelpers.callMethod(packageManagerObj, "grantPermission",
-				packageName, permission);
-	}
-
-	public static void revokePermission(String packageName, String permission) {
-		XposedHelpers.callMethod(packageManagerObj, "revokePermission",
-				packageName, permission);
 	}
 
 	public static void disableSignatureCheck(boolean disabled) {
