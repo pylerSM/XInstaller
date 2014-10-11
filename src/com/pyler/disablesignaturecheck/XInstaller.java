@@ -1,7 +1,5 @@
 package com.pyler.disablesignaturecheck;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-
 import java.io.File;
 
 import android.content.BroadcastReceiver;
@@ -513,30 +511,30 @@ public class XInstaller implements IXposedHookZygoteInit,
 		XposedBridge.hookAllConstructors(activityManagerClass,
 				activityManagerHook);
 
-		findAndHookMethod(packageManagerClass, "compareSignatures",
+		XposedHelpers.findAndHookMethod(packageManagerClass, "compareSignatures",
 				Signature[].class, Signature[].class, checkSignaturesHook);
 
-		findAndHookMethod(packageManagerClass, "checkSignatures", String.class,
+		XposedHelpers.findAndHookMethod(packageManagerClass, "checkSignatures", String.class,
 				String.class, checkSignaturesHook);
 
-		findAndHookMethod(packageManagerClass, "checkUidSignatures", int.class,
+		XposedHelpers.findAndHookMethod(packageManagerClass, "checkUidSignatures", int.class,
 				int.class, checkSignaturesHook);
 
-		findAndHookMethod(packageManagerClass, "checkPermission", String.class,
+		XposedHelpers.findAndHookMethod(packageManagerClass, "checkPermission", String.class,
 				String.class, checkPermissionsHook);
 
-		findAndHookMethod(packageManagerClass, "checkUidPermission",
+		XposedHelpers.findAndHookMethod(packageManagerClass, "checkUidPermission",
 				String.class, int.class, checkPermissionsHook);
 
 		if (JB_MR1_NEWER) {
-			findAndHookMethod(packageManagerClass,
+			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"installPackageWithVerificationAndEncryption", Uri.class,
 					"android.content.pm.IPackageInstallObserver", int.class,
 					String.class, "android.content.pm.VerificationParams",
 					"android.content.pm.ContainerEncryptionParams",
 					installPackageHook);
 		} else {
-			findAndHookMethod(packageManagerClass,
+			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"installPackageWithVerification", Uri.class,
 					"android.content.pm.IPackageInstallObserver", int.class,
 					String.class, Uri.class,
@@ -546,21 +544,21 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (JB_MR2_NEWER) {
-			findAndHookMethod(packageManagerClass, "deletePackageAsUser",
+			XposedHelpers.findAndHookMethod(packageManagerClass, "deletePackageAsUser",
 					String.class, "android.content.pm.IPackageDeleteObserver",
 					int.class, int.class, deletePackageHook);
 		} else {
-			findAndHookMethod(packageManagerClass, "deletePackage",
+			XposedHelpers.findAndHookMethod(packageManagerClass, "deletePackage",
 					String.class, "android.content.pm.IPackageDeleteObserver",
 					int.class, deletePackageHook);
 		}
 
 		if (JB_MR1_NEWER) {
-			findAndHookMethod(devicePolicyManager, null,
+			XposedHelpers.findAndHookMethod(devicePolicyManager, null,
 					"packageHasActiveAdmins", String.class, int.class,
 					deviceAdminsHook);
 		} else {
-			findAndHookMethod(devicePolicyManager, null,
+			XposedHelpers.findAndHookMethod(devicePolicyManager, null,
 					"packageHasActiveAdmins", String.class, deviceAdminsHook);
 		}
 	}
@@ -569,31 +567,31 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
 		if (PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
-			findAndHookMethod(packageInstallerActivity, lpparam.classLoader,
+			XposedHelpers.findAndHookMethod(packageInstallerActivity, lpparam.classLoader,
 					"isInstallingUnknownAppsAllowed", unknownAppsHook);
 			if (KITKAT_NEWER) {
-				findAndHookMethod(packageInstallerActivity,
+				XposedHelpers.findAndHookMethod(packageInstallerActivity,
 						lpparam.classLoader, "isVerifyAppsEnabled",
 						verifyAppsHook);
 			}
-			findAndHookMethod(packageInstallerActivity,
+			XposedHelpers.findAndHookMethod(packageInstallerActivity,
 							lpparam.classLoader, "startInstallConfirm",
 							autoInstallHook);
-			findAndHookMethod(uninstallerActivity, lpparam.classLoader,
+			XposedHelpers.findAndHookMethod(uninstallerActivity, lpparam.classLoader,
 					"onCreate", Bundle.class, autoUninstallHook);
-			findAndHookMethod(uninstallAppProgress, lpparam.classLoader,
+			XposedHelpers.findAndHookMethod(uninstallAppProgress, lpparam.classLoader,
 					"initView", autoCloseUninstallHook);
-			findAndHookMethod(installAppProgress + "$1", lpparam.classLoader,
+			XposedHelpers.findAndHookMethod(installAppProgress + "$1", lpparam.classLoader,
 					"handleMessage", Message.class, autoCloseInstallHook);
 		}
 
 		if (SETTINGS_PKG.equals(lpparam.packageName)) {
-			findAndHookMethod(installedAppDetails, lpparam.classLoader,
+			XposedHelpers.findAndHookMethod(installedAppDetails, lpparam.classLoader,
 					"isThisASystemPackage", systemAppsHook);
 		}
 
 		if (FDROID_PKG.equals(lpparam.packageName)) {
-			findAndHookMethod(fDroidAppDetails, lpparam.classLoader, "install",
+			XposedHelpers.findAndHookMethod(fDroidAppDetails, lpparam.classLoader, "install",
 					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
 		}
 	}
