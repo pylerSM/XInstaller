@@ -1,6 +1,6 @@
-Package name = "package"
-Flags = "flags"
-APK file = "file"
+- Package name = "package"
+- Flags = "flags"
+- APK file = "file"
 
 xinstaller.intent.action.DISABLE_SIGNATURE_CHECK
 - disable signature check
@@ -39,7 +39,7 @@ xinstaller.intent.action.DELETE_PACKAGE
 - Flags: DELETE_KEEP_DATA (0x00000001), DELETE_ALL_USERS (0x00000002), DELETE_SYSTEM_APP (0x00000004)
 
 xinstaller.intent.action.MOVE_PACKAGE
-- delete package
+- move package
 - Arguments: package name (string), flags (integer)
 - Flags: MOVE_INTERNAL (0x00000001), MOVE_EXTERNAL_MEDIA (0x00000002)
 
