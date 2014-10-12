@@ -26,7 +26,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
-	public XSharedPreferences prefs;
+	public static XSharedPreferences prefs;
 	public boolean signaturesCheck;
 	public boolean signaturesCheckFDroid;
 	public boolean keepAppsData;
@@ -81,6 +81,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 
 	// prefs
+	public static final String PREF_ENABLE_XINSTALLER = "enable_xinstaller";
 	public static final String PREF_DISABLE_SIGNATURE_CHECK = "disable_signatures_check";
 	public static final String PREF_DISABLE_PERMISSION_CHECK = "disable_permissions_check";
 	public static final String PREF_ENABLED_DOWNGRADE_APP = "enable_downgrade_apps";
@@ -102,6 +103,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	// constants
 	public static final String PACKAGE_NAME = XInstaller.class.getPackage()
 			.getName();
+	
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
@@ -156,7 +158,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					context = (Context) param.args[0];
 				}
 				if (context != null) {
-					if (!APIEnabled
+					if (isXInstallerEnabled() && !APIEnabled
 							&& androidSystem.equals(context.getPackageName())) {
 						mContext = context;
 						IntentFilter intentFilter = new IntentFilter();
@@ -185,7 +187,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				permissionsCheck = prefs.getBoolean(
 						PREF_DISABLE_PERMISSION_CHECK, false);
-				if (permissionsCheck) {
+				if (isXInstallerEnabled() && permissionsCheck) {
 					param.setResult(PackageManager.PERMISSION_GRANTED);
 				}
 			}
@@ -198,7 +200,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				signaturesCheck = prefs.getBoolean(
 						PREF_DISABLE_SIGNATURE_CHECK, false);
-				if (signaturesCheck) {
+				if (isXInstallerEnabled() && signaturesCheck) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);
 				}
 			}
@@ -216,15 +218,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
-				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0 && downgradeApps) {
+				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0 && isXInstallerEnabled() && downgradeApps) {
 					// we dont have this flag, add it
 					flags |= INSTALL_ALLOW_DOWNGRADE;
 				}
-				if ((flags & INSTALL_FORWARD_LOCK) != 0 && forwardLock) {
+				if ((flags & INSTALL_FORWARD_LOCK) != 0 && isXInstallerEnabled() && forwardLock) {
 					// we have this flag, remove it
 					flags &= ~INSTALL_FORWARD_LOCK;
 				}
-				if ((flags & INSTALL_EXTERNAL) == 0 && installAppsOnExternal) {
+				if ((flags & INSTALL_EXTERNAL) == 0 && isXInstallerEnabled() && installAppsOnExternal) {
 					// we dont have this flag, add it
 					flags |= INSTALL_EXTERNAL;
 				}
@@ -242,7 +244,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[ID];
-				if ((flags & DELETE_KEEP_DATA) == 0 && keepAppsData) {
+				if ((flags & DELETE_KEEP_DATA) == 0 && isXInstallerEnabled() && keepAppsData) {
 					// we dont have this flag, add it
 					flags |= DELETE_KEEP_DATA;
 				}
@@ -258,7 +260,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				disableSystemApps = prefs.getBoolean(PREF_DISABLE_SYSTEM_APP,
 						true);
-				if (disableSystemApps) {
+				if (isXInstallerEnabled() && disableSystemApps) {
 					param.setResult(false);
 				}
 
@@ -273,7 +275,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				installUnknownApps = prefs.getBoolean(
 						PREF_ENABLE_INSTALL_UNKNOWN_APP, true);
-				if (installUnknownApps) {
+				if (isXInstallerEnabled() && installUnknownApps) {
 					param.setResult(true);
 				}
 
@@ -287,7 +289,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				verifyApps = prefs.getBoolean(PREF_DISABLE_VERIFY_APP, true);
-				if (verifyApps) {
+				if (isXInstallerEnabled() && verifyApps) {
 					param.setResult(false);
 				}
 
@@ -302,7 +304,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				deviceAdmins = prefs.getBoolean(
 						PREF_ENABLE_UNINSTALL_DEVICE_ADMIN, true);
-				if (deviceAdmins) {
+				if (isXInstallerEnabled() && deviceAdmins) {
 					param.setResult(false);
 				}
 
@@ -319,7 +321,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				signaturesCheckFDroid = prefs.getBoolean(
 						PREF_DISABLE_SIGNATURE_CHECK_FDROID, false);
-				if (signaturesCheckFDroid) {
+				if (isXInstallerEnabled() && signaturesCheckFDroid) {
 					mInstalledSigID = (String) XposedHelpers.getObjectField(
 							param.thisObject, "mInstalledSigID");
 					XposedHelpers.setObjectField(param.thisObject,
@@ -330,7 +332,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
-				if (signaturesCheckFDroid) {
+				if (isXInstallerEnabled() && signaturesCheckFDroid) {
 					XposedHelpers.setObjectField(param.thisObject,
 							"mInstalledSigID", mInstalledSigID);
 				}
@@ -344,7 +346,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoInstall = prefs.getBoolean(PREF_ENABLE_AUTO_INSTALL, true);
-				if (autoInstall) {
+				if (isXInstallerEnabled() && autoInstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOk");
 					XposedHelpers.setBooleanField(param.thisObject,
@@ -362,7 +364,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoUninstall = prefs.getBoolean(PREF_ENABLE_AUTO_UNINSTALL,
 						true);
-				if (autoUninstall) {
+				if (isXInstallerEnabled() && autoUninstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOk");
 					mOk.performClick();
@@ -378,7 +380,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
 						PREF_ENABLE_AUTO_CLOSE_UNINSTALL, true);
-				if (autoCloseUninstall) {
+				if (isXInstallerEnabled() && autoCloseUninstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOkButton");
 					mOk.performClick();
@@ -396,7 +398,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						PREF_ENABLE_AUTO_CLOSE_INSTALL, true);
 				autoLaunchInstall = prefs.getBoolean(
 						PREF_ENABLE_LAUNCH_INSTALL, false);
-				if (autoCloseInstall) {
+				if (isXInstallerEnabled() && autoCloseInstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							XposedHelpers.getSurroundingThis(param.thisObject),
 							"mDoneButton");
@@ -619,14 +621,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public static void installPackage(String apkFile, int flags) {
-		Uri apk = Uri.fromFile(new File(apkFile));
-		XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
+	    Uri apk = Uri.fromFile(new File(apkFile));
+		enableXInstaller(false);
+	    XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
 				null, flags);
+		enableXInstaller(true);
 
 	}
 
 	public static void deletePackage(String packageName, int flags) {
-		if (JB_MR2_NEWER) {
+	    enableXInstaller(false);
+	    if (JB_MR2_NEWER) {
 			int userId = -2; // USER_CURRENT
 			XposedHelpers.callMethod(packageManagerObj, "deletePackageAsUser",
 					packageName, null, userId, flags);
@@ -634,13 +639,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.callMethod(packageManagerObj, "deletePackage",
 					packageName, null, flags);
 		}
+		enableXInstaller(true);
 	}
 
 	public static void disableSignatureCheck(boolean disabled) {
 		try {
-			Context appContext = mContext.createPackageContext(PACKAGE_NAME, 0);
+			Context PACKAGE_CONTEXT = mContext.createPackageContext(PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
 			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(appContext);
+					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
 			prefs.edit().putBoolean(PREF_DISABLE_SIGNATURE_CHECK, disabled)
 					.apply();
 		} catch (NameNotFoundException e) {
@@ -649,9 +655,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	public static void disablePermissionCheck(boolean disabled) {
 		try {
-			Context appContext = mContext.createPackageContext(PACKAGE_NAME, 0);
+			Context PACKAGE_CONTEXT = mContext.createPackageContext(PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
 			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(appContext);
+					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
 			prefs.edit().putBoolean(PREF_DISABLE_PERMISSION_CHECK, disabled)
 					.apply();
 		} catch (NameNotFoundException e) {
@@ -664,6 +670,24 @@ public class XInstaller implements IXposedHookZygoteInit,
 		if (launchIntent != null) {
 			launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			mContext.startActivity(launchIntent);
+		}
+	}
+	
+	public static boolean isXInstallerEnabled() {
+		boolean enabled;
+		prefs.reload();
+		enabled = prefs.getBoolean(PREF_ENABLE_XINSTALLER, true);
+		return enabled;
+	}
+	
+	public static void enableXInstaller(boolean enabled) {
+		try {
+			Context PACKAGE_CONTEXT = mContext.createPackageContext(PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
+			prefs.edit().putBoolean(PREF_ENABLE_XINSTALLER, enabled)
+					.apply();
+		} catch (NameNotFoundException e) {
 		}
 	}
 }

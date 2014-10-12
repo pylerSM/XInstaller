@@ -1,8 +1,5 @@
 <resources>
 
-    <string name="app_name" translatable="false">XInstaller</string>
-    <string name="app_developer" translatable="false">pyler</string>
-    <string name="app_version" translatable="false">2.9</string>
     <string name="app_description">Diverse toepassingen voor Pakket Installatie</string>
     <string name="app_settings">Instellingen</string>
     <string name="installations">Installatie</string>
