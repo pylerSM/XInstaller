@@ -22,7 +22,6 @@ public class Preferences extends Activity {
 			getPreferenceManager().setSharedPreferencesMode(
 					Context.MODE_WORLD_READABLE);
 			addPreferencesFromResource(R.xml.prefs);
-
 		}
 
 	}

@@ -13,6 +13,7 @@ import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.widget.Button;
@@ -101,9 +102,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_ENABLE_INSTALL_EXTERNAL_STORAGE = "enable_install_external_storage";
 
 	// constants
+	public static final String PACKAGE_TAG = "XInstaller";
+	public static final String PACKAGE_DIR = Environment
+			.getExternalStorageDirectory()
+			+ File.separator
+			+ PACKAGE_TAG
+			+ File.separator;
 	public static final String PACKAGE_NAME = XInstaller.class.getPackage()
 			.getName();
-	
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
@@ -218,15 +224,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
-				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0 && isXInstallerEnabled() && downgradeApps) {
+				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0
+						&& isXInstallerEnabled() && downgradeApps) {
 					// we dont have this flag, add it
 					flags |= INSTALL_ALLOW_DOWNGRADE;
 				}
-				if ((flags & INSTALL_FORWARD_LOCK) != 0 && isXInstallerEnabled() && forwardLock) {
+				if ((flags & INSTALL_FORWARD_LOCK) != 0
+						&& isXInstallerEnabled() && forwardLock) {
 					// we have this flag, remove it
 					flags &= ~INSTALL_FORWARD_LOCK;
 				}
-				if ((flags & INSTALL_EXTERNAL) == 0 && isXInstallerEnabled() && installAppsOnExternal) {
+				if ((flags & INSTALL_EXTERNAL) == 0 && isXInstallerEnabled()
+						&& installAppsOnExternal) {
 					// we dont have this flag, add it
 					flags |= INSTALL_EXTERNAL;
 				}
@@ -244,7 +253,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[ID];
-				if ((flags & DELETE_KEEP_DATA) == 0 && isXInstallerEnabled() && keepAppsData) {
+				if ((flags & DELETE_KEEP_DATA) == 0 && isXInstallerEnabled()
+						&& keepAppsData) {
 					// we dont have this flag, add it
 					flags |= DELETE_KEEP_DATA;
 				}
@@ -434,7 +444,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					disablePermissionCheck(false);
 				} else if (ACTION_INSTALL_PACKAGE.equals(action)) {
 					if (hasExtras) {
-						String apkFile = extras.getString("apk");
+						String apkFile = extras.getString("file");
 						Integer flag = extras.getInt("flags");
 						if (apkFile != null) {
 							if (flag != null) {
@@ -508,25 +518,30 @@ public class XInstaller implements IXposedHookZygoteInit,
 				: false;
 
 		// enablers
+
 		XposedBridge.hookAllConstructors(packageManagerClass,
 				packageManagerHook);
+
 		XposedBridge.hookAllConstructors(activityManagerClass,
 				activityManagerHook);
 
-		XposedHelpers.findAndHookMethod(packageManagerClass, "compareSignatures",
-				Signature[].class, Signature[].class, checkSignaturesHook);
+		XposedHelpers.findAndHookMethod(packageManagerClass,
+				"compareSignatures", Signature[].class, Signature[].class,
+				checkSignaturesHook);
 
-		XposedHelpers.findAndHookMethod(packageManagerClass, "checkSignatures", String.class,
-				String.class, checkSignaturesHook);
+		XposedHelpers.findAndHookMethod(packageManagerClass, "checkSignatures",
+				String.class, String.class, checkSignaturesHook);
 
-		XposedHelpers.findAndHookMethod(packageManagerClass, "checkUidSignatures", int.class,
-				int.class, checkSignaturesHook);
+		XposedHelpers
+				.findAndHookMethod(packageManagerClass, "checkUidSignatures",
+						int.class, int.class, checkSignaturesHook);
 
-		XposedHelpers.findAndHookMethod(packageManagerClass, "checkPermission", String.class,
-				String.class, checkPermissionsHook);
+		XposedHelpers.findAndHookMethod(packageManagerClass, "checkPermission",
+				String.class, String.class, checkPermissionsHook);
 
-		XposedHelpers.findAndHookMethod(packageManagerClass, "checkUidPermission",
-				String.class, int.class, checkPermissionsHook);
+		XposedHelpers.findAndHookMethod(packageManagerClass,
+				"checkUidPermission", String.class, int.class,
+				checkPermissionsHook);
 
 		if (JB_MR1_NEWER) {
 			XposedHelpers.findAndHookMethod(packageManagerClass,
@@ -546,13 +561,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (JB_MR2_NEWER) {
-			XposedHelpers.findAndHookMethod(packageManagerClass, "deletePackageAsUser",
-					String.class, "android.content.pm.IPackageDeleteObserver",
-					int.class, int.class, deletePackageHook);
-		} else {
-			XposedHelpers.findAndHookMethod(packageManagerClass, "deletePackage",
-					String.class, "android.content.pm.IPackageDeleteObserver",
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"deletePackageAsUser", String.class,
+					"android.content.pm.IPackageDeleteObserver", int.class,
 					int.class, deletePackageHook);
+		} else {
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"deletePackage", String.class,
+					"android.content.pm.IPackageDeleteObserver", int.class,
+					deletePackageHook);
 		}
 
 		if (JB_MR1_NEWER) {
@@ -569,31 +586,38 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
 		if (PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
-			XposedHelpers.findAndHookMethod(packageInstallerActivity, lpparam.classLoader,
-					"isInstallingUnknownAppsAllowed", unknownAppsHook);
+			XposedHelpers.findAndHookMethod(packageInstallerActivity,
+					lpparam.classLoader, "isInstallingUnknownAppsAllowed",
+					unknownAppsHook);
 			if (KITKAT_NEWER) {
 				XposedHelpers.findAndHookMethod(packageInstallerActivity,
 						lpparam.classLoader, "isVerifyAppsEnabled",
 						verifyAppsHook);
 			}
-			XposedHelpers.findAndHookMethod(packageInstallerActivity,
+			XposedHelpers
+					.findAndHookMethod(packageInstallerActivity,
 							lpparam.classLoader, "startInstallConfirm",
 							autoInstallHook);
-			XposedHelpers.findAndHookMethod(uninstallerActivity, lpparam.classLoader,
-					"onCreate", Bundle.class, autoUninstallHook);
-			XposedHelpers.findAndHookMethod(uninstallAppProgress, lpparam.classLoader,
-					"initView", autoCloseUninstallHook);
-			XposedHelpers.findAndHookMethod(installAppProgress + "$1", lpparam.classLoader,
-					"handleMessage", Message.class, autoCloseInstallHook);
+			XposedHelpers.findAndHookMethod(uninstallerActivity,
+					lpparam.classLoader, "onCreate", Bundle.class,
+					autoUninstallHook);
+			XposedHelpers.findAndHookMethod(uninstallAppProgress,
+					lpparam.classLoader, "initView", autoCloseUninstallHook);
+			XposedHelpers.findAndHookMethod(installAppProgress + "$1",
+					lpparam.classLoader, "handleMessage", Message.class,
+					autoCloseInstallHook);
 		}
 
 		if (SETTINGS_PKG.equals(lpparam.packageName)) {
-			XposedHelpers.findAndHookMethod(installedAppDetails, lpparam.classLoader,
-					"isThisASystemPackage", systemAppsHook);
+			XposedHelpers
+					.findAndHookMethod(installedAppDetails,
+							lpparam.classLoader, "isThisASystemPackage",
+							systemAppsHook);
 		}
 
 		if (FDROID_PKG.equals(lpparam.packageName)) {
-			XposedHelpers.findAndHookMethod(fDroidAppDetails, lpparam.classLoader, "install",
+			XposedHelpers.findAndHookMethod(fDroidAppDetails,
+					lpparam.classLoader, "install",
 					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
 		}
 	}
@@ -621,17 +645,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public static void installPackage(String apkFile, int flags) {
-	    Uri apk = Uri.fromFile(new File(apkFile));
+		Uri apk = Uri.fromFile(new File(apkFile));
 		enableXInstaller(false);
-	    XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
+		XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
 				null, flags);
 		enableXInstaller(true);
 
 	}
 
 	public static void deletePackage(String packageName, int flags) {
-	    enableXInstaller(false);
-	    if (JB_MR2_NEWER) {
+		enableXInstaller(false);
+		if (JB_MR2_NEWER) {
 			int userId = -2; // USER_CURRENT
 			XposedHelpers.callMethod(packageManagerObj, "deletePackageAsUser",
 					packageName, null, userId, flags);
@@ -644,7 +668,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	public static void disableSignatureCheck(boolean disabled) {
 		try {
-			Context PACKAGE_CONTEXT = mContext.createPackageContext(PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+			Context PACKAGE_CONTEXT = mContext.createPackageContext(
+					PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
 			prefs.edit().putBoolean(PREF_DISABLE_SIGNATURE_CHECK, disabled)
@@ -655,7 +680,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	public static void disablePermissionCheck(boolean disabled) {
 		try {
-			Context PACKAGE_CONTEXT = mContext.createPackageContext(PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+			Context PACKAGE_CONTEXT = mContext.createPackageContext(
+					PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
 			prefs.edit().putBoolean(PREF_DISABLE_PERMISSION_CHECK, disabled)
@@ -672,21 +698,21 @@ public class XInstaller implements IXposedHookZygoteInit,
 			mContext.startActivity(launchIntent);
 		}
 	}
-	
+
 	public static boolean isXInstallerEnabled() {
 		boolean enabled;
 		prefs.reload();
 		enabled = prefs.getBoolean(PREF_ENABLE_XINSTALLER, true);
 		return enabled;
 	}
-	
+
 	public static void enableXInstaller(boolean enabled) {
 		try {
-			Context PACKAGE_CONTEXT = mContext.createPackageContext(PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+			Context PACKAGE_CONTEXT = mContext.createPackageContext(
+					PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
-			prefs.edit().putBoolean(PREF_ENABLE_XINSTALLER, enabled)
-					.apply();
+			prefs.edit().putBoolean(PREF_ENABLE_XINSTALLER, enabled).apply();
 		} catch (NameNotFoundException e) {
 		}
 	}

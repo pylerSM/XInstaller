@@ -1,3 +1,7 @@
+Package name = "package"
+Flags = "flags"
+APK file = "file"
+
 xinstaller.intent.action.DISABLE_SIGNATURE_CHECK
 - disable signature check
 
