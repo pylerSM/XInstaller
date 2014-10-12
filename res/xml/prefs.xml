@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <PreferenceCategory android:title="@string/app" >
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="enable_module"
+            android:title="@string/module" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/app_settings" >
         <PreferenceScreen android:title="@string/installations" >
             <PreferenceCategory android:title="@string/enable" >
@@ -82,14 +88,14 @@
                     android:title="@string/permissions_check" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen android:title="@string/about" >
-            <Preference
-                android:summary="@string/app_developer"
-                android:title="@string/developer" />
-            <Preference
-                android:summary="@string/app_version"
-                android:title="@string/version" />
-        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/about" >
+        <Preference
+            android:summary="@string/app_developer"
+            android:title="@string/developer" />
+        <Preference
+            android:summary="@string/app_version"
+            android:title="@string/version" />
     </PreferenceCategory>
 
 </PreferenceScreen>

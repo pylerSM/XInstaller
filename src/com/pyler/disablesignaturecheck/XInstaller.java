@@ -82,7 +82,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 
 	// prefs
-	public static final String PREF_ENABLE_XINSTALLER = "enable_xinstaller";
+	public static final String PREF_ENABLE_MODULE = "enable_module";
 	public static final String PREF_DISABLE_SIGNATURE_CHECK = "disable_signatures_check";
 	public static final String PREF_DISABLE_PERMISSION_CHECK = "disable_permissions_check";
 	public static final String PREF_ENABLED_DOWNGRADE_APP = "enable_downgrade_apps";
@@ -164,7 +164,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					context = (Context) param.args[0];
 				}
 				if (context != null) {
-					if (isXInstallerEnabled() && !APIEnabled
+					if (isModuleEnabled() && !APIEnabled
 							&& androidSystem.equals(context.getPackageName())) {
 						mContext = context;
 						IntentFilter intentFilter = new IntentFilter();
@@ -193,7 +193,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				permissionsCheck = prefs.getBoolean(
 						PREF_DISABLE_PERMISSION_CHECK, false);
-				if (isXInstallerEnabled() && permissionsCheck) {
+				if (isModuleEnabled() && permissionsCheck) {
 					param.setResult(PackageManager.PERMISSION_GRANTED);
 				}
 			}
@@ -206,7 +206,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				signaturesCheck = prefs.getBoolean(
 						PREF_DISABLE_SIGNATURE_CHECK, false);
-				if (isXInstallerEnabled() && signaturesCheck) {
+				if (isModuleEnabled() && signaturesCheck) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);
 				}
 			}
@@ -225,16 +225,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
 				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0
-						&& isXInstallerEnabled() && downgradeApps) {
+						&& isModuleEnabled() && downgradeApps) {
 					// we dont have this flag, add it
 					flags |= INSTALL_ALLOW_DOWNGRADE;
 				}
 				if ((flags & INSTALL_FORWARD_LOCK) != 0
-						&& isXInstallerEnabled() && forwardLock) {
+						&& isModuleEnabled() && forwardLock) {
 					// we have this flag, remove it
 					flags &= ~INSTALL_FORWARD_LOCK;
 				}
-				if ((flags & INSTALL_EXTERNAL) == 0 && isXInstallerEnabled()
+				if ((flags & INSTALL_EXTERNAL) == 0 && isModuleEnabled()
 						&& installAppsOnExternal) {
 					// we dont have this flag, add it
 					flags |= INSTALL_EXTERNAL;
@@ -253,7 +253,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[ID];
-				if ((flags & DELETE_KEEP_DATA) == 0 && isXInstallerEnabled()
+				if ((flags & DELETE_KEEP_DATA) == 0 && isModuleEnabled()
 						&& keepAppsData) {
 					// we dont have this flag, add it
 					flags |= DELETE_KEEP_DATA;
@@ -270,7 +270,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				disableSystemApps = prefs.getBoolean(PREF_DISABLE_SYSTEM_APP,
 						true);
-				if (isXInstallerEnabled() && disableSystemApps) {
+				if (isModuleEnabled() && disableSystemApps) {
 					param.setResult(false);
 				}
 
@@ -285,7 +285,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				installUnknownApps = prefs.getBoolean(
 						PREF_ENABLE_INSTALL_UNKNOWN_APP, true);
-				if (isXInstallerEnabled() && installUnknownApps) {
+				if (isModuleEnabled() && installUnknownApps) {
 					param.setResult(true);
 				}
 
@@ -299,7 +299,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				verifyApps = prefs.getBoolean(PREF_DISABLE_VERIFY_APP, true);
-				if (isXInstallerEnabled() && verifyApps) {
+				if (isModuleEnabled() && verifyApps) {
 					param.setResult(false);
 				}
 
@@ -314,7 +314,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				deviceAdmins = prefs.getBoolean(
 						PREF_ENABLE_UNINSTALL_DEVICE_ADMIN, true);
-				if (isXInstallerEnabled() && deviceAdmins) {
+				if (isModuleEnabled() && deviceAdmins) {
 					param.setResult(false);
 				}
 
@@ -331,7 +331,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				signaturesCheckFDroid = prefs.getBoolean(
 						PREF_DISABLE_SIGNATURE_CHECK_FDROID, false);
-				if (isXInstallerEnabled() && signaturesCheckFDroid) {
+				if (isModuleEnabled() && signaturesCheckFDroid) {
 					mInstalledSigID = (String) XposedHelpers.getObjectField(
 							param.thisObject, "mInstalledSigID");
 					XposedHelpers.setObjectField(param.thisObject,
@@ -342,7 +342,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
-				if (isXInstallerEnabled() && signaturesCheckFDroid) {
+				if (isModuleEnabled() && signaturesCheckFDroid) {
 					XposedHelpers.setObjectField(param.thisObject,
 							"mInstalledSigID", mInstalledSigID);
 				}
@@ -356,7 +356,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoInstall = prefs.getBoolean(PREF_ENABLE_AUTO_INSTALL, true);
-				if (isXInstallerEnabled() && autoInstall) {
+				if (isModuleEnabled() && autoInstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOk");
 					XposedHelpers.setBooleanField(param.thisObject,
@@ -374,7 +374,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoUninstall = prefs.getBoolean(PREF_ENABLE_AUTO_UNINSTALL,
 						true);
-				if (isXInstallerEnabled() && autoUninstall) {
+				if (isModuleEnabled() && autoUninstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOk");
 					mOk.performClick();
@@ -390,7 +390,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
 						PREF_ENABLE_AUTO_CLOSE_UNINSTALL, true);
-				if (isXInstallerEnabled() && autoCloseUninstall) {
+				if (isModuleEnabled() && autoCloseUninstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOkButton");
 					mOk.performClick();
@@ -408,7 +408,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						PREF_ENABLE_AUTO_CLOSE_INSTALL, true);
 				autoLaunchInstall = prefs.getBoolean(
 						PREF_ENABLE_LAUNCH_INSTALL, false);
-				if (isXInstallerEnabled() && autoCloseInstall) {
+				if (isModuleEnabled() && autoCloseInstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							XposedHelpers.getSurroundingThis(param.thisObject),
 							"mDoneButton");
@@ -646,15 +646,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	public static void installPackage(String apkFile, int flags) {
 		Uri apk = Uri.fromFile(new File(apkFile));
-		enableXInstaller(false);
+		enableModule(false);
 		XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
 				null, flags);
-		enableXInstaller(true);
+		enableModule(true);
 
 	}
 
 	public static void deletePackage(String packageName, int flags) {
-		enableXInstaller(false);
+		enableModule(false);
 		if (JB_MR2_NEWER) {
 			int userId = -2; // USER_CURRENT
 			XposedHelpers.callMethod(packageManagerObj, "deletePackageAsUser",
@@ -663,7 +663,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.callMethod(packageManagerObj, "deletePackage",
 					packageName, null, flags);
 		}
-		enableXInstaller(true);
+		enableModule(true);
 	}
 
 	public static void disableSignatureCheck(boolean disabled) {
@@ -699,20 +699,20 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 	}
 
-	public static boolean isXInstallerEnabled() {
+	public static boolean isModuleEnabled() {
 		boolean enabled;
 		prefs.reload();
-		enabled = prefs.getBoolean(PREF_ENABLE_XINSTALLER, true);
+		enabled = prefs.getBoolean(PREF_ENABLE_MODULE, true);
 		return enabled;
 	}
 
-	public static void enableXInstaller(boolean enabled) {
+	public static void enableModule(boolean enabled) {
 		try {
 			Context PACKAGE_CONTEXT = mContext.createPackageContext(
 					PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
-			prefs.edit().putBoolean(PREF_ENABLE_XINSTALLER, enabled).apply();
+			prefs.edit().putBoolean(PREF_ENABLE_MODULE, enabled).apply();
 		} catch (NameNotFoundException e) {
 		}
 	}

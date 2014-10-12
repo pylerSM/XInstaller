@@ -1,6 +1,8 @@
 <resources>
 
     <string name="app_description">Různá vylepšení pro Instalátor balíků</string>
+    <string name="app">Aplikace</string>
+    <string name="module">Modul</string>
     <string name="app_settings">Nastavení</string>
     <string name="installations">Instalace</string>
     <string name="uninstallations">Odinstalace</string>
