@@ -224,13 +224,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
-				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0
-						&& isModuleEnabled() && downgradeApps) {
+				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0 && isModuleEnabled()
+						&& downgradeApps) {
 					// we dont have this flag, add it
 					flags |= INSTALL_ALLOW_DOWNGRADE;
 				}
-				if ((flags & INSTALL_FORWARD_LOCK) != 0
-						&& isModuleEnabled() && forwardLock) {
+				if ((flags & INSTALL_FORWARD_LOCK) != 0 && isModuleEnabled()
+						&& forwardLock) {
 					// we have this flag, remove it
 					flags &= ~INSTALL_FORWARD_LOCK;
 				}

@@ -94,7 +94,7 @@
             android:summary="@string/app_developer"
             android:title="@string/developer" />
         <Preference
-            android:summary="@string/app_version"
+            android:key="app_version"
             android:title="@string/version" />
     </PreferenceCategory>
 
