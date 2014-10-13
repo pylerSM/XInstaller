@@ -24,7 +24,10 @@
     <string name="auto_close_install">Automatické zavření po nainstalování</string>
     <string name="auto_close_uninstall">Automatické zavření po nainstalování</string>
     <string name="auto_launch_install">Automatické spuštění po nainstalování</string>
+<<<<<<< HEAD
+=======
     <string name="permissions_check">Kontrolování povolení</string>
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
     <string name="about">O aplikaci</string>
     <string name="developer">Vývojář</string>
     <string name="version">Verze</string>

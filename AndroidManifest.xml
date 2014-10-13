@@ -1,12 +1,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.disablesignaturecheck"
+<<<<<<< HEAD
+    android:versionCode="26"
+    android:versionName="2.6" >
+=======
     android:versionCode="210"
     android:versionName="2.10" >
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="19" />
+<<<<<<< HEAD
+=======
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> -->
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 
     <application
         android:allowBackup="true"

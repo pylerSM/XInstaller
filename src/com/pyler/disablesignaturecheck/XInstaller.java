@@ -13,20 +13,56 @@ import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+<<<<<<< HEAD
+import android.os.Message;
+=======
 import android.os.Environment;
 import android.os.Message;
 import android.preference.PreferenceManager;
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 import android.widget.Button;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
+<<<<<<< HEAD
+	XSharedPreferences prefs;
+	boolean signaturesCheck;
+	boolean signaturesCheckFDroid;
+	boolean keepAppsData;
+	boolean downgradeApps;
+	boolean forwardLock;
+	boolean disableSystemApps;
+	boolean installUnknownApps;
+	boolean verifyApps;
+	boolean installAppsOnExternal;
+	boolean deviceAdmins;
+	boolean autoInstall;
+	boolean autoUninstall;
+	boolean autoCloseUninstall;
+	boolean autoCloseInstall;
+	boolean autoLaunchInstall;
+	XC_MethodHook compareSignaturesHook;
+	XC_MethodHook deletePackageHook;
+	XC_MethodHook installPackageHook;
+	XC_MethodHook systemAppsHook;
+	XC_MethodHook unknownAppsHook;
+	XC_MethodHook verifyAppsHook;
+	XC_MethodHook deviceAdminsHook;
+	XC_MethodHook fDroidInstallHook;
+	XC_MethodHook autoInstallHook;
+	XC_MethodHook autoUninstallHook;
+	XC_MethodHook autoCloseUninstallHook;
+	XC_MethodHook autoCloseInstallHook;
+	boolean JB_MR2_NEWER;
+	boolean JB_MR1_NEWER;
+	boolean KITKAT_NEWER;
+=======
 	public static XSharedPreferences prefs;
 	public boolean signaturesCheck;
 	public boolean signaturesCheckFDroid;
@@ -129,6 +165,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			packageManagerService, null);
 	public Class<?> activityManagerClass = XposedHelpers.findClass(
 			activityManager, null);
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;
@@ -147,6 +184,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		packageManagerHook = new XC_MethodHook() {
 			@Override
+<<<<<<< HEAD
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				signaturesCheck = prefs.getBoolean("disable_signatures_check",
+						false);
+				if (signaturesCheck) {
+=======
 			protected void afterHookedMethod(final MethodHookParam param)
 					throws Throwable {
 				packageManagerObj = param.thisObject;
@@ -207,6 +252,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				signaturesCheck = prefs.getBoolean(
 						PREF_DISABLE_SIGNATURE_CHECK, false);
 				if (isModuleEnabled() && signaturesCheck) {
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					param.setResult(PackageManager.SIGNATURE_MATCH);
 				}
 			}
@@ -221,6 +267,27 @@ public class XInstaller implements IXposedHookZygoteInit,
 						true);
 				forwardLock = prefs.getBoolean(PREF_DISABLE_FORWARD_LOCK, true);
 				installAppsOnExternal = prefs.getBoolean(
+<<<<<<< HEAD
+						"enable_install_external_storage", false);
+				int ID = JB_MR1_NEWER ? 2 : 1;
+				int flags = (Integer) param.args[ID];
+				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0 && downgradeApps) {
+					// we dont have this flag, add it
+					flags |= INSTALL_ALLOW_DOWNGRADE;
+					param.args[ID] = flags;
+				}
+				if ((flags & INSTALL_FORWARD_LOCK) != 0 && forwardLock) {
+					// we have this flag, remove it
+					flags &= ~INSTALL_FORWARD_LOCK;
+					param.args[ID] = flags;
+
+				}
+				if ((flags & INSTALL_EXTERNAL) == 0 && installAppsOnExternal) {
+					// we dont have this flag, add it
+					flags |= INSTALL_EXTERNAL;
+					param.args[ID] = flags;
+
+=======
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
@@ -238,6 +305,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						&& installAppsOnExternal) {
 					// we dont have this flag, add it
 					flags |= INSTALL_EXTERNAL;
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 				}
 				param.args[ID] = flags;
 			}
@@ -249,6 +317,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
+<<<<<<< HEAD
+				keepAppsData = prefs.getBoolean("enable_keep_apps_data", false);
+				int ID = JB_MR2_NEWER ? 3 : 2;
+				int flags = (Integer) param.args[ID];
+				if ((flags & DELETE_KEEP_DATA) == 0 && keepAppsData) {
+					// we dont have this flag, add it
+					flags |= DELETE_KEEP_DATA;
+					param.args[ID] = flags;
+=======
 				keepAppsData = prefs.getBoolean(PREF_ENABLE_KEEP_APP_DATA,
 						false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
@@ -257,6 +334,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						&& keepAppsData) {
 					// we dont have this flag, add it
 					flags |= DELETE_KEEP_DATA;
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 				}
 				param.args[ID] = flags;
 			}
@@ -355,8 +433,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
+<<<<<<< HEAD
+				autoInstall = prefs.getBoolean("enable_auto_install", true);
+				if (autoInstall) {
+=======
 				autoInstall = prefs.getBoolean(PREF_ENABLE_AUTO_INSTALL, true);
 				if (isModuleEnabled() && autoInstall) {
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOk");
 					XposedHelpers.setBooleanField(param.thisObject,
@@ -372,9 +455,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
+<<<<<<< HEAD
+				autoUninstall = prefs.getBoolean("enable_auto_uninstall", true);
+				if (autoUninstall) {
+=======
 				autoUninstall = prefs.getBoolean(PREF_ENABLE_AUTO_UNINSTALL,
 						true);
 				if (isModuleEnabled() && autoUninstall) {
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOk");
 					mOk.performClick();
@@ -389,8 +477,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
+<<<<<<< HEAD
+						"enable_auto_close_uninstall", true);
+				if (autoCloseUninstall) {
+=======
 						PREF_ENABLE_AUTO_CLOSE_UNINSTALL, true);
 				if (isModuleEnabled() && autoCloseUninstall) {
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOkButton");
 					mOk.performClick();
@@ -405,10 +498,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoCloseInstall = prefs.getBoolean(
+<<<<<<< HEAD
+						"enable_auto_close_install", true);
+				autoLaunchInstall = prefs.getBoolean(
+						"enable_auto_launch_install", false);
+				if (autoCloseInstall) {
+=======
 						PREF_ENABLE_AUTO_CLOSE_INSTALL, true);
 				autoLaunchInstall = prefs.getBoolean(
 						PREF_ENABLE_LAUNCH_INSTALL, false);
 				if (isModuleEnabled() && autoCloseInstall) {
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							XposedHelpers.getSurroundingThis(param.thisObject),
 							"mDoneButton");
@@ -424,6 +524,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
+<<<<<<< HEAD
+=======
 		// system API
 
 		systemAPI = new BroadcastReceiver() {
@@ -508,6 +610,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 		// checks
 
 		JB_MR1_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
@@ -519,6 +622,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		// enablers
 
+<<<<<<< HEAD
+		findAndHookMethod(packageManagerService, null, "compareSignatures",
+				Signature[].class, Signature[].class, compareSignaturesHook);
+
+		if (JB_MR1_NEWER) {
+			findAndHookMethod(packageManagerService, null,
+=======
 		XposedBridge.hookAllConstructors(packageManagerClass,
 				packageManagerHook);
 
@@ -545,13 +655,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		if (JB_MR1_NEWER) {
 			XposedHelpers.findAndHookMethod(packageManagerClass,
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					"installPackageWithVerificationAndEncryption", Uri.class,
 					"android.content.pm.IPackageInstallObserver", int.class,
 					String.class, "android.content.pm.VerificationParams",
 					"android.content.pm.ContainerEncryptionParams",
 					installPackageHook);
 		} else {
+<<<<<<< HEAD
+			findAndHookMethod(packageManagerService, null,
+=======
 			XposedHelpers.findAndHookMethod(packageManagerClass,
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					"installPackageWithVerification", Uri.class,
 					"android.content.pm.IPackageInstallObserver", int.class,
 					String.class, Uri.class,
@@ -561,23 +676,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (JB_MR2_NEWER) {
+<<<<<<< HEAD
+			findAndHookMethod(packageManagerService, null,
+=======
 			XposedHelpers.findAndHookMethod(packageManagerClass,
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 					"deletePackageAsUser", String.class,
 					"android.content.pm.IPackageDeleteObserver", int.class,
 					int.class, deletePackageHook);
 		} else {
+<<<<<<< HEAD
+			findAndHookMethod(packageManagerService, null, "deletePackage",
+					String.class, "android.content.pm.IPackageDeleteObserver",
+					int.class, deletePackageHook);
+=======
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"deletePackage", String.class,
 					"android.content.pm.IPackageDeleteObserver", int.class,
 					deletePackageHook);
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 		}
 
 		if (JB_MR1_NEWER) {
-			XposedHelpers.findAndHookMethod(devicePolicyManager, null,
+			findAndHookMethod(devicePolicyManager, null,
 					"packageHasActiveAdmins", String.class, int.class,
 					deviceAdminsHook);
 		} else {
-			XposedHelpers.findAndHookMethod(devicePolicyManager, null,
+			findAndHookMethod(devicePolicyManager, null,
 					"packageHasActiveAdmins", String.class, deviceAdminsHook);
 		}
 	}
@@ -585,12 +710,25 @@ public class XInstaller implements IXposedHookZygoteInit,
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
+<<<<<<< HEAD
+		String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
+		String SETTINGS_PKG = "com.android.settings";
+		String FDROID_PKG = "org.fdroid.fdroid";
+		String installedAppDetails = "com.android.settings.applications.InstalledAppDetails";
+		String packageInstallerActivity = "com.android.packageinstaller.PackageInstallerActivity";
+		String installAppProgress = "com.android.packageinstaller.InstallAppProgress";
+		String uninstallerActivity = "com.android.packageinstaller.UninstallerActivity";
+		String uninstallAppProgress = "com.android.packageinstaller.UninstallAppProgress";
+		String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
+
+=======
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 		if (PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			XposedHelpers.findAndHookMethod(packageInstallerActivity,
 					lpparam.classLoader, "isInstallingUnknownAppsAllowed",
 					unknownAppsHook);
 			if (KITKAT_NEWER) {
-				XposedHelpers.findAndHookMethod(packageInstallerActivity,
+				findAndHookMethod(packageInstallerActivity,
 						lpparam.classLoader, "isVerifyAppsEnabled",
 						verifyAppsHook);
 			}
@@ -598,6 +736,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 					.findAndHookMethod(packageInstallerActivity,
 							lpparam.classLoader, "startInstallConfirm",
 							autoInstallHook);
+<<<<<<< HEAD
+			findAndHookMethod(uninstallerActivity, lpparam.classLoader,
+					"onCreate", Bundle.class, autoUninstallHook);
+			findAndHookMethod(uninstallAppProgress, lpparam.classLoader,
+					"initView", autoCloseUninstallHook);
+			findAndHookMethod(installAppProgress + "$1", lpparam.classLoader,
+					"handleMessage", Message.class, autoCloseInstallHook);
+=======
 			XposedHelpers.findAndHookMethod(uninstallerActivity,
 					lpparam.classLoader, "onCreate", Bundle.class,
 					autoUninstallHook);
@@ -606,16 +752,19 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(installAppProgress + "$1",
 					lpparam.classLoader, "handleMessage", Message.class,
 					autoCloseInstallHook);
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 		}
 
 		if (SETTINGS_PKG.equals(lpparam.packageName)) {
-			XposedHelpers
-					.findAndHookMethod(installedAppDetails,
-							lpparam.classLoader, "isThisASystemPackage",
-							systemAppsHook);
+			findAndHookMethod(installedAppDetails, lpparam.classLoader,
+					"isThisASystemPackage", systemAppsHook);
 		}
 
 		if (FDROID_PKG.equals(lpparam.packageName)) {
+<<<<<<< HEAD
+			findAndHookMethod(fDroidAppDetails, lpparam.classLoader, "install",
+					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
+=======
 			XposedHelpers.findAndHookMethod(fDroidAppDetails,
 					lpparam.classLoader, "install",
 					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
@@ -662,6 +811,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		} else {
 			XposedHelpers.callMethod(packageManagerObj, "deletePackage",
 					packageName, null, flags);
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 		}
 		enableModule(true);
 	}
@@ -706,6 +856,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 		return enabled;
 	}
 
+<<<<<<< HEAD
+}
+=======
 	public static void enableModule(boolean enabled) {
 		try {
 			Context PACKAGE_CONTEXT = mContext.createPackageContext(
@@ -717,3 +870,4 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 	}
 }
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
