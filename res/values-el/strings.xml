@@ -16,6 +16,18 @@
     <string name="install_external_storage">Εγκατάσταση εφαρμογών στον εξωτερικό αποθηκευτικό χώρο</string>
     <string name="disable_system_apps">Απενεργοποίηση εφαρμογών συστήματος</string>
     <string name="uninstall_device_admins">Απεγκατάσταση διαχειριστών συσκευής</string>
+<<<<<<< HEAD
     <string name="signatures_check_fdroid">Έλεγχος υπογραφών Checking signatures (F-Droid)</string>
+=======
+    <string name="signatures_check_fdroid">Έλεγχος υπογραφών (F-Droid)</string>
+    <string name="auto_install">Αυτόματη εγκατάσταση</string>
+    <string name="auto_uninstall">Αυτόματη απεγκατάσταση</string>
+    <string name="auto_close_install">Αυτόματο κλείσιμο μετά την εγκατάσταση</string>
+    <string name="auto_close_uninstall">Αυτόματο κλείσιμο μετά την απεγκατάσταση</string>
+    <string name="auto_launch_install">Αυτόματο άνοιγμα μετά την εγκατάσταση</string>
+    <string name="about">Σχετικά</string>
+    <string name="developer">Προγραμματιστής</string>
+    <string name="version">Έκδοση</string>
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 
 </resources>

@@ -1,9 +1,14 @@
 <resources>
 
+<<<<<<< HEAD
     <string name="app_name" translatable="false">XInstaller</string>
     <string name="app_developer" translatable="false">pyler</string>
     <string name="app_version" translatable="false">2.6</string>
+=======
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
     <string name="app_description">Various tweaks for Package Installer</string>
+    <string name="app">App</string>
+    <string name="module">Module</string>
     <string name="app_settings">Settings</string>
     <string name="installations">Installations</string>
     <string name="uninstallations">Uninstallations</string>
@@ -25,6 +30,10 @@
     <string name="auto_close_install">Auto closing after installing</string>
     <string name="auto_close_uninstall">Auto closing after uninstalling</string>
     <string name="auto_launch_install">Auto launching after installing</string>
+<<<<<<< HEAD
+=======
+    <string name="permissions_check">Checking permissions</string>
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

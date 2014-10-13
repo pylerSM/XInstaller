@@ -19,8 +19,13 @@ public class Preferences extends Activity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+<<<<<<< HEAD
 			getPreferenceManager()
 					.setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
+=======
+			getPreferenceManager().setSharedPreferencesMode(
+					Context.MODE_WORLD_READABLE);
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
 			addPreferencesFromResource(R.xml.prefs);
 		}
 
