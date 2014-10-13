@@ -3,14 +3,22 @@
     <string name="app_description">Различные твики для Программа установки пакета</string>
     <string name="app_settings">Настройки</string>
     <string name="installations">Инсталляция</string>
+<<<<<<< HEAD
     <string name="uninstallations">Деинсталляция</string> 
+=======
+    <string name="uninstallations">Деинсталляция</string>
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
     <string name="misc">Разное</string>
     <string name="enable">Включить</string>
     <string name="disable">Выключить</string>
     <string name="signatures_check">Проверка подписи</string>
     <string name="keep_apps_data">Сохранение данных приложений</string>
     <string name="downgrade_apps">Понижение версии приложений</string>
+<<<<<<< HEAD
     <string name="forward_lock">Блокировка повторной установки</string> 
+=======
+    <string name="forward_lock">Блокировка повторной установки</string>
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
     <string name="install_unknown_apps">Установка неизвестных приложений</string>
     <string name="verify_apps">Верификация приложений</string>
     <string name="install_external_storage">Установка на внешнюю память</string>
@@ -22,8 +30,16 @@
     <string name="auto_close_install">Авто закрытие после установки</string>
     <string name="auto_close_uninstall">Авто закрытие после удаления</string>
     <string name="auto_launch_install">Авто запуск после установки</string>
+<<<<<<< HEAD
+=======
+    <string name="permissions_check">Проверка разрешений</string>
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
     <string name="about">О программе</string>
     <string name="developer">Разработчик</string>
     <string name="version">Версия</string>
 
+<<<<<<< HEAD
 </resources>
+=======
+</resources>
+>>>>>>> 7a87eb664fb84695567f5a467d0a129c32b85e7a
