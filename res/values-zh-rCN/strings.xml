@@ -1,6 +1,8 @@
 <resources>
 
     <string name="app_description">对应用包安装程序进行各种调整</string>
+    <string name="app">应用</string>
+    <string name="module">模块</string>
     <string name="app_settings">设置</string>
     <string name="installations">安装设置</string>
     <string name="uninstallations">卸载设置</string>
@@ -22,6 +24,7 @@
     <string name="auto_close_install">安装后自动关闭</string>
     <string name="auto_close_uninstall">卸载后自动关闭</string>
     <string name="auto_launch_install">安装后自动运行</string>
+    <string name="permissions_check">检查权限</string>
     <string name="about">关于</string>
     <string name="developer">开发者</string>
     <string name="version">版本</string>
