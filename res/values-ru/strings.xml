@@ -1,6 +1,8 @@
 <resources>
 
     <string name="app_description">Различные твики для Программа установки пакета</string>
+    <string name="app">Приложение</string>
+    <string name="module">Модуль</string
     <string name="app_settings">Настройки</string>
     <string name="installations">Инсталляция</string>
     <string name="uninstallations">Деинсталляция</string>
