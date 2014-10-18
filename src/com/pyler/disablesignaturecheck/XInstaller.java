@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
@@ -44,6 +46,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean autoCloseInstall;
 	public boolean autoLaunchInstall;
 	public boolean permissionsCheck;
+	public boolean backupAppsPackage;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -81,6 +84,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_MOVE_PACKAGE = "xinstaller.intent.action.MOVE_PACKAGE";
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 
+	// file utils
+	public static final String ACTION_DELETE_FILE = "xinstaller.intent.action.DELETE_FILE";
+	public static final String ACTION_COPY_FILE = "xinstaller.intent.action.COPY_FILE";
+	public static final String SOURCE_FILE = "source";
+	public static final String TARGET_FILE = "destination";
+	public static final String FILE = "file";
+
 	// prefs
 	public static final String PREF_ENABLE_MODULE = "enable_module";
 	public static final String PREF_DISABLE_SIGNATURE_CHECK = "disable_signatures_check";
@@ -100,6 +110,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_ENABLE_AUTO_CLOSE_INSTALL = "enable_auto_close_install";
 	public static final String PREF_ENABLE_LAUNCH_INSTALL = "enable_auto_launch_install";
 	public static final String PREF_ENABLE_INSTALL_EXTERNAL_STORAGE = "enable_install_external_storage";
+	public static final String PREF_ENABLE_BACKUP_APP_PACKAGE = "enable_backup_apps_package";
 
 	// constants
 	public static final String PACKAGE_TAG = "XInstaller";
@@ -181,6 +192,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 						intentFilter.addAction(ACTION_RUN_XINSTALLER);
 						mContext.registerReceiver(systemAPI, intentFilter);
 						APIEnabled = true;
+
+						// File utils
+						IntentFilter fileUtils = new IntentFilter();
+						fileUtils.addAction(ACTION_DELETE_FILE);
+						fileUtils.addAction(ACTION_COPY_FILE);
+						FileUtils fUtils = new FileUtils();
+						getXInstallerContext().registerReceiver(fUtils,
+								fileUtils);
+
 					}
 				}
 			}
@@ -224,17 +244,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
-				if ((flags & INSTALL_ALLOW_DOWNGRADE) == 0 && isModuleEnabled()
+				if (isModuleEnabled() && (flags & INSTALL_ALLOW_DOWNGRADE) == 0
 						&& downgradeApps) {
 					// we dont have this flag, add it
 					flags |= INSTALL_ALLOW_DOWNGRADE;
 				}
-				if ((flags & INSTALL_FORWARD_LOCK) != 0 && isModuleEnabled()
+				if (isModuleEnabled() && (flags & INSTALL_FORWARD_LOCK) != 0
 						&& forwardLock) {
 					// we have this flag, remove it
 					flags &= ~INSTALL_FORWARD_LOCK;
 				}
-				if ((flags & INSTALL_EXTERNAL) == 0 && isModuleEnabled()
+				if (isModuleEnabled() && (flags & INSTALL_EXTERNAL) == 0
 						&& installAppsOnExternal) {
 					// we dont have this flag, add it
 					flags |= INSTALL_EXTERNAL;
@@ -251,14 +271,20 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				keepAppsData = prefs.getBoolean(PREF_ENABLE_KEEP_APP_DATA,
 						false);
+				backupAppsPackage = prefs.getBoolean(
+						PREF_ENABLE_BACKUP_APP_PACKAGE, false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[ID];
-				if ((flags & DELETE_KEEP_DATA) == 0 && isModuleEnabled()
+				if (isModuleEnabled() && (flags & DELETE_KEEP_DATA) == 0
 						&& keepAppsData) {
 					// we dont have this flag, add it
 					flags |= DELETE_KEEP_DATA;
 				}
 				param.args[ID] = flags;
+				if (isModuleEnabled() && backupAppsPackage) {
+					String packageName = (String) param.args[0];
+					backupAppPackage(packageName);
+				}
 			}
 
 		};
@@ -414,7 +440,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 							"mDoneButton");
 					mOk.performClick();
 				}
-				if (autoLaunchInstall) {
+				if (isModuleEnabled() && autoLaunchInstall) {
 					Button mLaunch = (Button) XposedHelpers.getObjectField(
 							XposedHelpers.getSurroundingThis(param.thisObject),
 							"mLaunchButton");
@@ -451,8 +477,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 								int flags = flag;
 								installPackage(apkFile, flags);
 							} else {
-								installPackage(apkFile,
-										INSTALL_REPLACE_EXISTING);
+								installPackage(apkFile, 0);
 							}
 						}
 					}
@@ -647,6 +672,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static void installPackage(String apkFile, int flags) {
 		Uri apk = Uri.fromFile(new File(apkFile));
 		enableModule(false);
+		if ((flags & INSTALL_REPLACE_EXISTING) == 0) {
+			flags |= INSTALL_REPLACE_EXISTING;
+		}
 		XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
 				null, flags);
 		enableModule(true);
@@ -667,27 +695,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public static void disableSignatureCheck(boolean disabled) {
-		try {
-			Context PACKAGE_CONTEXT = mContext.createPackageContext(
-					PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
-			prefs.edit().putBoolean(PREF_DISABLE_SIGNATURE_CHECK, disabled)
-					.apply();
-		} catch (NameNotFoundException e) {
-		}
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(getXInstallerContext());
+		prefs.edit().putBoolean(PREF_DISABLE_SIGNATURE_CHECK, disabled).apply();
+
 	}
 
 	public static void disablePermissionCheck(boolean disabled) {
-		try {
-			Context PACKAGE_CONTEXT = mContext.createPackageContext(
-					PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
-			prefs.edit().putBoolean(PREF_DISABLE_PERMISSION_CHECK, disabled)
-					.apply();
-		} catch (NameNotFoundException e) {
-		}
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(getXInstallerContext());
+		prefs.edit().putBoolean(PREF_DISABLE_PERMISSION_CHECK, disabled)
+				.apply();
+
 	}
 
 	public static void runXInstaller() {
@@ -707,12 +726,38 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public static void enableModule(boolean enabled) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(getXInstallerContext());
+		prefs.edit().putBoolean(PREF_ENABLE_MODULE, enabled).apply();
+
+	}
+
+	public static Context getXInstallerContext() {
+		Context XInstallerContext;
 		try {
-			Context PACKAGE_CONTEXT = mContext.createPackageContext(
-					PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(PACKAGE_CONTEXT);
-			prefs.edit().putBoolean(PREF_ENABLE_MODULE, enabled).apply();
+			XInstallerContext = mContext.createPackageContext(PACKAGE_NAME,
+					Context.CONTEXT_IGNORE_SECURITY);
+		} catch (NameNotFoundException e) {
+			XInstallerContext = null;
+		}
+		return XInstallerContext;
+	}
+
+	public static void backupAppPackage(String packageName) {
+		PackageManager pm = mContext.getPackageManager();
+		try {
+			PackageInfo pi = pm.getPackageInfo(packageName, 0);
+			ApplicationInfo ai = pi.applicationInfo;
+			String apkFile = pi.applicationInfo.publicSourceDir;
+			String appName = (String) pm.getApplicationLabel(ai);
+			String versionName = pi.versionName;
+			String fileName = appName + "_" + versionName + ".apk";
+			String backupApkFile = PACKAGE_DIR + fileName;
+			Intent backupApp = new Intent(ACTION_COPY_FILE);
+			backupApp.setPackage(PACKAGE_NAME);
+			backupApp.putExtra(SOURCE_FILE, apkFile);
+			backupApp.putExtra(TARGET_FILE, backupApkFile);
+			mContext.sendBroadcast(backupApp);
 		} catch (NameNotFoundException e) {
 		}
 	}

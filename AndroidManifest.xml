@@ -1,12 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.disablesignaturecheck"
-    android:versionCode="210"
-    android:versionName="2.10" >
+    android:versionCode="215"
+    android:versionName="2.15" >
 
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="19" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -32,19 +33,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Uninstaller"
-            android:label="@string/app_name" >
+
+        <receiver
+            android:name=".FileUtils"
+            android:exported="true" >
             <intent-filter>
-                <action android:name="android.intent.action.DELETE" />
-                <action android:name="android.intent.action.UNINSTALL_PACKAGE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="package" />
+                <action android:name="xinstaller.intent.action.DELETE_FILE" >
+                </action>
+                <action android:name="xinstaller.intent.action.COPY_FILE" >
+                </action>
             </intent-filter>
-        </activity>
-
+        </receiver>
     </application>
 
 </manifest>

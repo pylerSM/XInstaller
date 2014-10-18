@@ -9,7 +9,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 public class Preferences extends Activity {
-	static Context context;
+	public static Context context;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

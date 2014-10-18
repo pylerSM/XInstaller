@@ -25,6 +25,7 @@
     <string name="auto_close_uninstall">Automatické zavretie po odinštalovaní</string>
     <string name="auto_launch_install">Automatické spustenie po nainštalovaní</string>
     <string name="permissions_check">Kontrolovanie povolení</string>
+    <string name="backup_apps_package">Zálohovanie balíkov aplikácií</string>
     <string name="about">O aplikácii</string>
     <string name="developer">Vývojár</string>
     <string name="version">Verzia</string>
