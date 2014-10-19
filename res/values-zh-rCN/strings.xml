@@ -25,6 +25,7 @@
     <string name="auto_close_uninstall">卸载后自动关闭</string>
     <string name="auto_launch_install">安装后自动运行</string>
     <string name="permissions_check">检查权限</string>
+    <string name="backup_apps_package">备份应用包</string>
     <string name="about">关于</string>
     <string name="developer">开发者</string>
     <string name="version">版本</string>
