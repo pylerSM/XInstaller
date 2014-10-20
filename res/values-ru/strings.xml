@@ -25,6 +25,7 @@
     <string name="auto_close_uninstall">Авто закрытие после удаления</string>
     <string name="auto_launch_install">Авто запуск после установки</string>
     <string name="permissions_check">Проверка разрешений</string>
+    <string name="backup_apps_package">Резервное копирование приложения</string>
     <string name="about">О программе</string>
     <string name="developer">Разработчик</string>
     <string name="version">Версия</string>
