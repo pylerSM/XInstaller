@@ -10,6 +10,9 @@ import java.io.OutputStream;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -19,37 +22,39 @@ public class FileUtils extends BroadcastReceiver {
 			+ File.separator
 			+ XInstaller.PACKAGE_TAG + File.separator;
 	public static final File APP_DIR = new File(PACKAGE_DIR);
+	public static Context PACKAGE_CONTEXT;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (!APP_DIR.exists()) {
 			APP_DIR.mkdir();
 		}
+		PACKAGE_CONTEXT = context;
 		String action = intent.getAction();
 		Bundle extras = intent.getExtras();
 		boolean hasExtras = (extras != null) ? true : false;
-		if (XInstaller.ACTION_DELETE_FILE.equals(action)) {
+		if (XInstaller.ACTION_BACKUP_APK_FILE.equals(action)) {
 			if (hasExtras) {
-				String file = extras.getString(XInstaller.FILE);
-				File apkFile = new File(file);
-				deleteFile(apkFile);
-			}
-		} else if (XInstaller.ACTION_COPY_FILE.equals(action)) {
-			if (hasExtras) {
-				String source = extras.getString(XInstaller.SOURCE_FILE);
-				String destination = extras.getString(XInstaller.TARGET_FILE);
-				File srcFile = new File(source);
-				File dstFile = new File(destination);
-				try {
-					copyFile(srcFile, dstFile);
-				} catch (IOException e) {
-				}
+				String apkFile = extras.getString(XInstaller.APK_FILE);
+				backupApkFile(apkFile);
 			}
 		}
 	}
 
-	public static void deleteFile(File file) {
-		file.delete();
+	public static void backupApkFile(String apkFile) {
+		PackageManager pm = PACKAGE_CONTEXT.getPackageManager();
+		try {
+			PackageInfo pi = pm.getPackageArchiveInfo(apkFile, 0);
+			pi.applicationInfo.publicSourceDir = apkFile;
+			pi.applicationInfo.sourceDir = apkFile;
+			ApplicationInfo ai = pi.applicationInfo;
+			String appName = (String) pm.getApplicationLabel(ai);
+			String versionName = pi.versionName;
+			String fileName = appName + " " + versionName + ".apk";
+			String backupApkFile = PACKAGE_DIR + fileName;
+			copyFile(new File(apkFile), new File(backupApkFile));
+		} catch (Exception e) {
+		}
 	}
 
 	public static void copyFile(File src, File dst) throws IOException {

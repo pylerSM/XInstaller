@@ -34,6 +34,14 @@
                     android:defaultValue="false"
                     android:key="enable_auto_launch_install"
                     android:title="@string/auto_launch_install" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_backup_apk_files"
+                    android:title="@string/backup_apk_files" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_install_unsigned_apps"
+                    android:title="@string/install_unsigned_apps" />
             </PreferenceCategory>
             <PreferenceCategory android:title="@string/disable" >
                 <CheckBoxPreference
@@ -72,10 +80,6 @@
                     android:defaultValue="true"
                     android:key="enable_auto_close_uninstall"
                     android:title="@string/auto_close_uninstall" />
-				<CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_backup_apps_package"
-                    android:title="@string/backup_apps_package" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen android:title="@string/misc" >

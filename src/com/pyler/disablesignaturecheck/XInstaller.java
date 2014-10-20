@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
@@ -46,7 +44,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean autoCloseInstall;
 	public boolean autoLaunchInstall;
 	public boolean permissionsCheck;
-	public boolean backupAppsPackage;
+	public boolean backupApkFiles;
+	public boolean installUnsignedApps;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -62,6 +61,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook packageManagerHook;
 	public XC_MethodHook checkPermissionsHook;
 	public XC_MethodHook activityManagerHook;
+	public XC_MethodHook installUnsignedAppsHook;
 	public static boolean JB_MR2_NEWER;
 	public static boolean JB_MR1_NEWER;
 	public static boolean KITKAT_NEWER;
@@ -85,11 +85,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 
 	// file utils
-	public static final String ACTION_DELETE_FILE = "xinstaller.intent.action.DELETE_FILE";
-	public static final String ACTION_COPY_FILE = "xinstaller.intent.action.COPY_FILE";
-	public static final String SOURCE_FILE = "source";
-	public static final String TARGET_FILE = "destination";
-	public static final String FILE = "file";
+	public static final String ACTION_BACKUP_APK_FILE = "xinstaller.intent.action.BACKUP_APK_FILE";
+	public static final String APK_FILE = "apk_file";
 
 	// prefs
 	public static final String PREF_ENABLE_MODULE = "enable_module";
@@ -110,7 +107,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_ENABLE_AUTO_CLOSE_INSTALL = "enable_auto_close_install";
 	public static final String PREF_ENABLE_LAUNCH_INSTALL = "enable_auto_launch_install";
 	public static final String PREF_ENABLE_INSTALL_EXTERNAL_STORAGE = "enable_install_external_storage";
-	public static final String PREF_ENABLE_BACKUP_APP_PACKAGE = "enable_backup_apps_package";
+	public static final String PREF_ENABLE_BACKUP_APP_PACKAGE = "enable_backup_app_packages";
+	public static final String PREF_ENABLE_BACKUP_APK_FILE = "enable_backup_apk_files";
+	public static final String PREF_ENABLE_INSTALL_UNSIGNED_APP = "enable_install_unsigned_apps";
 
 	// constants
 	public static final String PACKAGE_TAG = "XInstaller";
@@ -133,6 +132,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String uninstallAppProgress = "com.android.packageinstaller.UninstallAppProgress";
 	public static final String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
 	public static final String activityManager = "android.app.ActivityManager";
+	public static final String packageParser = "android.content.pm.PackageParser";
 	public static final String androidSystem = "android";
 
 	// classes
@@ -195,13 +195,24 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 						// File utils
 						IntentFilter fileUtils = new IntentFilter();
-						fileUtils.addAction(ACTION_DELETE_FILE);
-						fileUtils.addAction(ACTION_COPY_FILE);
+						fileUtils.addAction(ACTION_BACKUP_APK_FILE);
 						FileUtils fUtils = new FileUtils();
 						getXInstallerContext().registerReceiver(fUtils,
 								fileUtils);
-
 					}
+				}
+			}
+		};
+
+		installUnsignedAppsHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				installUnsignedApps = prefs.getBoolean(
+						PREF_ENABLE_INSTALL_UNSIGNED_APP, false);
+				if (isModuleEnabled() && installUnsignedApps) {
+					param.setResult(PackageManager.PERMISSION_GRANTED);
 				}
 			}
 		};
@@ -242,6 +253,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				forwardLock = prefs.getBoolean(PREF_DISABLE_FORWARD_LOCK, true);
 				installAppsOnExternal = prefs.getBoolean(
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
+				backupApkFiles = prefs.getBoolean(PREF_ENABLE_BACKUP_APK_FILE,
+						false);
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
 				if (isModuleEnabled() && (flags & INSTALL_ALLOW_DOWNGRADE) == 0
@@ -260,6 +273,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 					flags |= INSTALL_EXTERNAL;
 				}
 				param.args[ID] = flags;
+				if (isModuleEnabled() && backupApkFiles) {
+					Uri packageUri = (Uri) param.args[0];
+					String apkFile = packageUri.getPath();
+					backupApkFile(apkFile);
+				}
 			}
 
 		};
@@ -271,8 +289,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				keepAppsData = prefs.getBoolean(PREF_ENABLE_KEEP_APP_DATA,
 						false);
-				backupAppsPackage = prefs.getBoolean(
-						PREF_ENABLE_BACKUP_APP_PACKAGE, false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[ID];
 				if (isModuleEnabled() && (flags & DELETE_KEEP_DATA) == 0
@@ -281,10 +297,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 					flags |= DELETE_KEEP_DATA;
 				}
 				param.args[ID] = flags;
-				if (isModuleEnabled() && backupAppsPackage) {
-					String packageName = (String) param.args[0];
-					backupAppPackage(packageName);
-				}
 			}
 
 		};
@@ -544,6 +556,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		// enablers
 
+		XposedHelpers.findAndHookMethod(packageParser, null,
+				"collectCertificates",
+				"android.content.pm.PackageParser$Package", int.class,
+				installUnsignedAppsHook);
+
 		XposedBridge.hookAllConstructors(packageManagerClass,
 				packageManagerHook);
 
@@ -743,22 +760,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 		return XInstallerContext;
 	}
 
-	public static void backupAppPackage(String packageName) {
-		PackageManager pm = mContext.getPackageManager();
-		try {
-			PackageInfo pi = pm.getPackageInfo(packageName, 0);
-			ApplicationInfo ai = pi.applicationInfo;
-			String apkFile = pi.applicationInfo.publicSourceDir;
-			String appName = (String) pm.getApplicationLabel(ai);
-			String versionName = pi.versionName;
-			String fileName = appName + "_" + versionName + ".apk";
-			String backupApkFile = PACKAGE_DIR + fileName;
-			Intent backupApp = new Intent(ACTION_COPY_FILE);
-			backupApp.setPackage(PACKAGE_NAME);
-			backupApp.putExtra(SOURCE_FILE, apkFile);
-			backupApp.putExtra(TARGET_FILE, backupApkFile);
-			mContext.sendBroadcast(backupApp);
-		} catch (NameNotFoundException e) {
-		}
+	public static void backupApkFile(String apkFile) {
+		Intent backupApkFile = new Intent(ACTION_BACKUP_APK_FILE);
+		backupApkFile.setPackage(PACKAGE_NAME);
+		backupApkFile.putExtra(APK_FILE, apkFile);
+		mContext.sendBroadcast(backupApkFile);
+
 	}
 }

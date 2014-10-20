@@ -10,6 +10,7 @@ import android.preference.PreferenceFragment;
 
 public class Preferences extends Activity {
 	public static Context context;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,13 +28,15 @@ public class Preferences extends Activity {
 			getPreferenceManager().setSharedPreferencesMode(
 					Context.MODE_WORLD_READABLE);
 			addPreferencesFromResource(R.xml.prefs);
-			Preference appVersion = getPreferenceScreen().findPreference("app_version");
+			Preference appVersion = getPreferenceScreen().findPreference(
+					"app_version");
 			PackageManager pm = context.getPackageManager();
 			try {
 				String versionName = pm.getPackageInfo(
 						context.getPackageName(), 0).versionName;
 				appVersion.setSummary(versionName);
-			} catch (NameNotFoundException e) {}
+			} catch (NameNotFoundException e) {
+			}
 		}
 	}
 

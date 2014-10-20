@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.disablesignaturecheck"
-    android:versionCode="215"
-    android:versionName="2.15" >
+    android:versionCode="300"
+    android:versionName="3.0 beta" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -38,9 +38,7 @@
             android:name=".FileUtils"
             android:exported="true" >
             <intent-filter>
-                <action android:name="xinstaller.intent.action.DELETE_FILE" >
-                </action>
-                <action android:name="xinstaller.intent.action.COPY_FILE" >
+                <action android:name="xinstaller.intent.action.BACKUP_APK_FILE" >
                 </action>
             </intent-filter>
         </receiver>
