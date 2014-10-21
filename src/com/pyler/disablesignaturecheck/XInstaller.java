@@ -142,8 +142,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 			activityManager, null);
 	public Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
 			devicePolicyManager, null);
-	public Class<?> packageParserClass = XposedHelpers.findClass(
-			packageParser, null);
+	public Class<?> packageParserClass = XposedHelpers.findClass(packageParser,
+			null);
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;

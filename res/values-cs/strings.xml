@@ -25,6 +25,8 @@
     <string name="auto_close_uninstall">Automatické zavření po nainstalování</string>
     <string name="auto_launch_install">Automatické spuštění po nainstalování</string>
     <string name="permissions_check">Kontrolování povolení</string>
+    <string name="backup_apk_files">Zálohování APK souborů</string>
+    <string name="install_unsigned_apps">Instalování nepodepsaných aplikací</string>
     <string name="about">O aplikaci</string>
     <string name="developer">Vývojář</string>
     <string name="version">Verze</string>
