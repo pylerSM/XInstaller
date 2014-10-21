@@ -26,8 +26,8 @@
   <string name="auto_close_uninstall">Авто закрытие после удаления</string>
   <string name="auto_launch_install">Авто запуск после установки</string>
   <string name="permissions_check">Проверка разрешений</string>
-  <string name="backup_apk_files">Backing up APK files</string>
-  <string name="install_unsigned_apps">Installing unsigned apps</string>
+  <string name="backup_apk_files">Резервное копирование APK файлов</string>
+  <string name="install_unsigned_apps">Установка неподписанных приложений</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>
