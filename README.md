@@ -1,3 +1,7 @@
+Translations
+- https://crowdin.com/project/xinstaller
+
+APIs:
 - Package name = "package"
 - Flags = "flags"
 - APK file = "file"
