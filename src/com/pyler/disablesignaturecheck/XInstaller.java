@@ -140,6 +140,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 			packageManagerService, null);
 	public Class<?> activityManagerClass = XposedHelpers.findClass(
 			activityManager, null);
+	public Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
+			devicePolicyManager, null);
+	public Class<?> packageParserClass = XposedHelpers.findClass(
+			packageParser, null);
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;
@@ -212,7 +216,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				installUnsignedApps = prefs.getBoolean(
 						PREF_ENABLE_INSTALL_UNSIGNED_APP, false);
 				if (isModuleEnabled() && installUnsignedApps) {
-					param.setResult(PackageManager.PERMISSION_GRANTED);
+					param.setResult(true);
 				}
 			}
 		};
@@ -556,7 +560,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		// enablers
 
-		XposedHelpers.findAndHookMethod(packageParser, null,
+		XposedHelpers.findAndHookMethod(packageParserClass,
 				"collectCertificates",
 				"android.content.pm.PackageParser$Package", int.class,
 				installUnsignedAppsHook);
@@ -615,11 +619,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (JB_MR1_NEWER) {
-			XposedHelpers.findAndHookMethod(devicePolicyManager, null,
+			XposedHelpers.findAndHookMethod(devicePolicyManagerClass,
 					"packageHasActiveAdmins", String.class, int.class,
 					deviceAdminsHook);
 		} else {
-			XposedHelpers.findAndHookMethod(devicePolicyManager, null,
+			XposedHelpers.findAndHookMethod(devicePolicyManagerClass,
 					"packageHasActiveAdmins", String.class, deviceAdminsHook);
 		}
 	}
