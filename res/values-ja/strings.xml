@@ -26,8 +26,8 @@
   <string name="auto_close_uninstall">アンインストール後に自動で閉じる</string>
   <string name="auto_launch_install">インストール後にそのアプリを開く</string>
   <string name="permissions_check">権限の確認</string>
-  <string name="backup_apk_files">Backing up APK files</string>
-  <string name="install_unsigned_apps">Installing unsigned apps</string>
+  <string name="backup_apk_files">APKをバックアップする</string>
+  <string name="install_unsigned_apps">未署名のアプリをインストールする</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>
