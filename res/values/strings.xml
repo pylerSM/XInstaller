@@ -27,6 +27,8 @@
     <string name="permissions_check">Checking permissions</string>
     <string name="backup_apk_files">Backing up APK files</string>
     <string name="install_unsigned_apps">Installing unsigned apps</string>
+    <string name="verify_jar">Verifying JAR</string>
+    <string name="verify_signatures">Verifying signatures</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

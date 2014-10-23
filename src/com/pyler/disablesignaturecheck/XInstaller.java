@@ -1,6 +1,8 @@
 package com.pyler.disablesignaturecheck;
 
 import java.io.File;
+import java.security.cert.Certificate;
+import java.util.Hashtable;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -46,6 +48,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean permissionsCheck;
 	public boolean backupApkFiles;
 	public boolean installUnsignedApps;
+	public boolean verifyJar;
+	public boolean verifySignature;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -62,6 +66,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook checkPermissionsHook;
 	public XC_MethodHook activityManagerHook;
 	public XC_MethodHook installUnsignedAppsHook;
+	public XC_MethodHook verifyJarHook;
+	public XC_MethodHook verifySignatureHook;
 	public static boolean JB_MR2_NEWER;
 	public static boolean JB_MR1_NEWER;
 	public static boolean KITKAT_NEWER;
@@ -110,6 +116,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_ENABLE_BACKUP_APP_PACKAGE = "enable_backup_app_packages";
 	public static final String PREF_ENABLE_BACKUP_APK_FILE = "enable_backup_apk_files";
 	public static final String PREF_ENABLE_INSTALL_UNSIGNED_APP = "enable_install_unsigned_apps";
+	public static final String PREF_DISABLE_VERIFY_JAR = "disable_verify_jar";
+	public static final String PREF_DISABLE_VERIFY_SIGNATURE = "disable_verify_signatures";
 
 	// constants
 	public static final String PACKAGE_TAG = "XInstaller";
@@ -133,6 +141,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
 	public static final String activityManager = "android.app.ActivityManager";
 	public static final String packageParser = "android.content.pm.PackageParser";
+	public static final String jarVerifier = "java.util.jar.JarVerifier$VerifierEntry";
+	public static final String signature = "java.security.Signature";
 	public static final String androidSystem = "android";
 
 	// classes
@@ -144,6 +154,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 			devicePolicyManager, null);
 	public Class<?> packageParserClass = XposedHelpers.findClass(packageParser,
 			null);
+	public Class<?> jarVerifierClass = XposedHelpers.findClass(jarVerifier,
+			null);
+	public Class<?> signatureClass = XposedHelpers.findClass(signature, null);
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;
@@ -204,6 +217,49 @@ public class XInstaller implements IXposedHookZygoteInit,
 						getXInstallerContext().registerReceiver(fUtils,
 								fileUtils);
 					}
+				}
+			}
+		};
+
+		verifyJarHook = new XC_MethodHook() {
+			@SuppressWarnings("unchecked")
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				verifyJar = prefs.getBoolean(PREF_DISABLE_VERIFY_JAR, false);
+				if (isModuleEnabled() && verifyJar) {
+					String name = (String) XposedHelpers.getObjectField(
+							param.thisObject, "name");
+					Certificate[] certificates = (Certificate[]) XposedHelpers
+							.getObjectField(param.thisObject, "certificates");
+					Hashtable<String, Certificate[]> verifiedEntries = null;
+					try {
+						verifiedEntries = (Hashtable<String, Certificate[]>) XposedHelpers
+								.findField(param.thisObject.getClass(),
+										"verifiedEntries")
+								.get(param.thisObject);
+					} catch (NoSuchFieldError e) {
+						verifiedEntries = (Hashtable<String, Certificate[]>) XposedHelpers
+								.getObjectField(XposedHelpers
+										.getSurroundingThis(param.thisObject),
+										"verifiedEntries");
+					}
+					verifiedEntries.put(name, certificates);
+					param.setResult(null);
+				}
+			}
+		};
+
+		verifySignatureHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				verifySignature = prefs.getBoolean(
+						PREF_DISABLE_VERIFY_SIGNATURE, false);
+				if (isModuleEnabled() && verifySignature) {
+					param.setResult(true);
 				}
 			}
 		};
@@ -559,6 +615,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 				: false;
 
 		// enablers
+
+		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
+				int.class, int.class, verifySignatureHook);
+
+		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
+				verifySignatureHook);
+
+		XposedHelpers.findAndHookMethod(jarVerifierClass, "verify",
+				verifyJarHook);
 
 		XposedHelpers.findAndHookMethod(packageParserClass,
 				"collectCertificates",
