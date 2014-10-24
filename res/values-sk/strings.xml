@@ -28,6 +28,8 @@
   <string name="permissions_check">Kontrolovanie povolení</string>
   <string name="backup_apk_files">Zálohovanie APK súborov</string>
   <string name="install_unsigned_apps">Inštalovanie nepodpísaných aplikácií</string>
+  <string name="verify_jar">Overovanie JAR</string>
+  <string name="verify_signatures">Overovanie podpisov</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>

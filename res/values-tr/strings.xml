@@ -13,7 +13,6 @@
   <string name="signatures_check">İmza kontrolü</string>
   <string name="keep_apps_data">Uyg.ların verisini sakla</string>
   <string name="downgrade_apps">Uyg.larda sürüm düşürme</string>
-  <string name="forward_lock">Forward locking</string>
   <string name="install_unknown_apps">Bilinmeyen kaynaklar</string>
   <string name="verify_apps">Uygulamaları denetleme</string>
   <string name="install_external_storage">Harici hafızaya uyg. yükleme</string>
@@ -26,8 +25,6 @@
   <string name="auto_close_uninstall">Kaldırmadan sonra oto. kapatma</string>
   <string name="auto_launch_install">Yüklemeden sonra oto. açma</string>
   <string name="permissions_check">İzinleri denetleme</string>
-  <string name="backup_apk_files">Backing up APK files</string>
-  <string name="install_unsigned_apps">Installing unsigned apps</string>
   <string name="about">Hakkında</string>
   <string name="developer">Geliştirici</string>
   <string name="version">Versiyon</string>

@@ -28,6 +28,8 @@
   <string name="permissions_check">检查权限</string>
   <string name="backup_apk_files">备份APK文件</string>
   <string name="install_unsigned_apps">安装未签名应用</string>
+  <string name="verify_jar">验证 JAR</string>
+  <string name="verify_signatures">验证签名</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

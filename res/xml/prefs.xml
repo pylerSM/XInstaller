@@ -94,11 +94,11 @@
                     android:defaultValue="false"
                     android:key="disable_permissions_check"
                     android:title="@string/permissions_check" />
-            <CheckBoxPreference
+                <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_verify_jar"
                     android:title="@string/verify_jar" />
-            <CheckBoxPreference
+                <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_verify_signatures"
                     android:title="@string/verify_signatures" />

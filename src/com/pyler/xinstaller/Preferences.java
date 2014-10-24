@@ -1,4 +1,4 @@
-package com.pyler.disablesignaturecheck;
+package com.pyler.xinstaller;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
+import com.pyler.xinstaller.R;
 
 public class Preferences extends Activity {
 	public static Context context;

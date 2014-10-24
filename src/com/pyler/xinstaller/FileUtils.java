@@ -1,4 +1,4 @@
-package com.pyler.disablesignaturecheck;
+package com.pyler.xinstaller;
 
 import java.io.File;
 import java.io.FileInputStream;
