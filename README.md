@@ -1,7 +1,6 @@
 Dowmload module:
 - http://repo.xposed.info/module/com.pyler.xinstaller
-or
-- https://github.com/pylerSM/XInstaller/releases
+- https://github.com/pylerSM/XInstaller/tree/master/releases
 
 Translations
 - https://crowdin.com/project/xinstaller
