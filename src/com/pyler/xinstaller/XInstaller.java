@@ -616,6 +616,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		// enablers
 
+		XposedHelpers.findAndHookMethod(packageManagerClass,
+				"isVerificationEnabled", int.class, verifyAppsHook);
+
 		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
 				int.class, int.class, verifySignatureHook);
 
