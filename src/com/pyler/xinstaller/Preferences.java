@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
-import com.pyler.xinstaller.R;
-
 public class Preferences extends Activity {
 	public static Context context;
 

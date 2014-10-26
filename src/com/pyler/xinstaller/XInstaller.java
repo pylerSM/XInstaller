@@ -8,16 +8,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.widget.Button;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -29,7 +26,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
-	public static XSharedPreferences prefs;
+	public XSharedPreferences prefs;
 	public boolean signaturesCheck;
 	public boolean signaturesCheckFDroid;
 	public boolean keepAppsData;
@@ -68,14 +65,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook installUnsignedAppsHook;
 	public XC_MethodHook verifyJarHook;
 	public XC_MethodHook verifySignatureHook;
-	public static boolean JB_MR2_NEWER;
-	public static boolean JB_MR1_NEWER;
-	public static boolean KITKAT_NEWER;
-	public static boolean APIEnabled;
-	public static Context mContext;
-	public static Object packageManagerObj;
-	public static Object activityManagerObj;
-	public static BroadcastReceiver systemAPI;
+	public boolean JB_MR2_NEWER;
+	public boolean JB_MR1_NEWER;
+	public boolean KITKAT_NEWER;
+	public boolean APIEnabled;
+	public Context mContext;
+	public Object packageManagerObj;
+	public Object activityManagerObj;
+	public BroadcastReceiver systemAPI;
 
 	// intents
 	public static final String ACTION_INSTALL_PACKAGE = "xinstaller.intent.action.INSTALL_PACKAGE";
@@ -89,10 +86,20 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String ACTION_CLEAR_APP_CACHE = "xinstaller.intent.action.CLEAR_APP_CACHE";
 	public static final String ACTION_MOVE_PACKAGE = "xinstaller.intent.action.MOVE_PACKAGE";
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
+	public static final String ACTION_REMOVE_TASK = "xinstaller.intent.action.REMOVE_TASK";
 
-	// file utils
+	public static final String FILE = "file";
+	public static final String FLAGS = "flags";
+	public static final String PACKAGE = "package";
+	public static final String TASK = "task";
+
+	// utils
 	public static final String ACTION_BACKUP_APK_FILE = "xinstaller.intent.action.BACKUP_APK_FILE";
+	public static final String ACTION_SET_PREFERENCE = "xinstaller.intent.action.SET_PREFERENCE";
+
 	public static final String APK_FILE = "apk_file";
+	public static final String PREFERENCE = "preference";
+	public static final String VALUE = "value";
 
 	// prefs
 	public static final String PREF_ENABLE_MODULE = "enable_module";
@@ -120,12 +127,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_DISABLE_VERIFY_SIGNATURE = "disable_verify_signatures";
 
 	// constants
-	public static final String PACKAGE_TAG = "XInstaller";
-	public static final String PACKAGE_DIR = Environment
-			.getExternalStorageDirectory()
-			+ File.separator
-			+ PACKAGE_TAG
-			+ File.separator;
 	public static final String PACKAGE_NAME = XInstaller.class.getPackage()
 			.getName();
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
@@ -164,6 +165,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final int INSTALL_FORWARD_LOCK = 0x00000001;
 	public static final int INSTALL_EXTERNAL = 0x00000008;
 	public static final int INSTALL_REPLACE_EXISTING = 0x00000002;
+	public static final int REMOVE_TASK_KILL_PROCESS = 0x0001;
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
@@ -172,7 +174,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 		APIEnabled = false;
 
 		// hooks
-
 		packageManagerHook = new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(final MethodHookParam param)
@@ -207,15 +208,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 						intentFilter.addAction(ACTION_CLEAR_APP_CACHE);
 						intentFilter.addAction(ACTION_MOVE_PACKAGE);
 						intentFilter.addAction(ACTION_RUN_XINSTALLER);
+						intentFilter.addAction(ACTION_REMOVE_TASK);
 						mContext.registerReceiver(systemAPI, intentFilter);
 						APIEnabled = true;
 
-						// File utils
-						IntentFilter fileUtils = new IntentFilter();
-						fileUtils.addAction(ACTION_BACKUP_APK_FILE);
-						FileUtils fUtils = new FileUtils();
-						getXInstallerContext().registerReceiver(fUtils,
-								fileUtils);
+						// Utils
+						IntentFilter utils = new IntentFilter();
+						utils.addAction(ACTION_BACKUP_APK_FILE);
+						utils.addAction(ACTION_SET_PREFERENCE);
+						Utils pUtils = new Utils();
+						getXInstallerContext().registerReceiver(pUtils, utils);
 					}
 				}
 			}
@@ -542,8 +544,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 					disablePermissionCheck(false);
 				} else if (ACTION_INSTALL_PACKAGE.equals(action)) {
 					if (hasExtras) {
-						String apkFile = extras.getString("file");
-						Integer flag = extras.getInt("flags");
+						String apkFile = extras.getString(FILE);
+						Integer flag = extras.getInt(FLAGS);
 						if (apkFile != null) {
 							if (flag != null) {
 								int flags = flag;
@@ -555,22 +557,22 @@ public class XInstaller implements IXposedHookZygoteInit,
 					}
 				} else if (ACTION_CLEAR_APP_DATA.equals(action)) {
 					if (hasExtras) {
-						String packageName = extras.getString("package");
+						String packageName = extras.getString(PACKAGE);
 						if (packageName != null) {
 							clearAppData(packageName);
 						}
 					}
 				} else if (ACTION_FORCE_STOP_PACKAGE.equals(action)) {
 					if (hasExtras) {
-						String packageName = extras.getString("package");
+						String packageName = extras.getString(PACKAGE);
 						if (packageName != null) {
 							forceStopPackage(packageName);
 						}
 					}
 				} else if (ACTION_DELETE_PACKAGE.equals(action)) {
 					if (hasExtras) {
-						String packageName = extras.getString("package");
-						Integer flag = extras.getInt("flags");
+						String packageName = extras.getString(PACKAGE);
+						Integer flag = extras.getInt(FLAGS);
 						if (packageName != null) {
 							if (flag != null) {
 								int flags = flag;
@@ -582,15 +584,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 					}
 				} else if (ACTION_CLEAR_APP_CACHE.equals(action)) {
 					if (hasExtras) {
-						String packageName = extras.getString("package");
+						String packageName = extras.getString(PACKAGE);
 						if (packageName != null) {
 							clearAppCache(packageName);
 						}
 					}
 				} else if (ACTION_MOVE_PACKAGE.equals(action)) {
 					if (hasExtras) {
-						String packageName = extras.getString("package");
-						Integer flag = extras.getInt("flags");
+						String packageName = extras.getString(PACKAGE);
+						Integer flag = extras.getInt(FLAGS);
 						if (packageName != null) {
 							if (flag != null) {
 								int flags = flag;
@@ -600,13 +602,20 @@ public class XInstaller implements IXposedHookZygoteInit,
 					}
 				} else if (ACTION_RUN_XINSTALLER.equals(action)) {
 					runXInstaller();
+				} else if (ACTION_REMOVE_TASK.equals(action)) {
+					if (hasExtras) {
+						Integer taskId = extras.getInt(TASK);
+						if (taskId != null) {
+							int task = taskId;
+							removeTask(task);
+						}
+					}
 				}
 			}
 
 		};
 
 		// checks
-
 		JB_MR1_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
 				: false;
 		JB_MR2_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
@@ -615,7 +624,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				: false;
 
 		// enablers
-
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"isVerificationEnabled", int.class, verifyAppsHook);
 
@@ -738,27 +746,32 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	// system API
 
-	public static void forceStopPackage(String packageName) {
+	public void forceStopPackage(String packageName) {
 		XposedHelpers.callMethod(activityManagerObj, "forceStopPackage",
 				packageName);
 	}
 
-	public static void clearAppData(String packageName) {
+	public void clearAppData(String packageName) {
 		XposedHelpers.callMethod(activityManagerObj,
 				"clearApplicationUserData", packageName, null);
 	}
 
-	public static void clearAppCache(String packageName) {
+	public void removeTask(int taskId) {
+		XposedHelpers.callMethod(activityManagerObj, "removeTask", taskId,
+				REMOVE_TASK_KILL_PROCESS);
+	}
+
+	public void clearAppCache(String packageName) {
 		XposedHelpers.callMethod(packageManagerObj,
 				"deleteApplicationCacheFiles", packageName, null);
 	}
 
-	public static void movePackage(String packageName, int flags) {
+	public void movePackage(String packageName, int flags) {
 		XposedHelpers.callMethod(packageManagerObj, "movePackage", packageName,
 				null, flags);
 	}
 
-	public static void installPackage(String apkFile, int flags) {
+	public void installPackage(String apkFile, int flags) {
 		Uri apk = Uri.fromFile(new File(apkFile));
 		enableModule(false);
 		if ((flags & INSTALL_REPLACE_EXISTING) == 0) {
@@ -770,7 +783,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	}
 
-	public static void deletePackage(String packageName, int flags) {
+	public void deletePackage(String packageName, int flags) {
 		enableModule(false);
 		if (JB_MR2_NEWER) {
 			int userId = -2; // USER_CURRENT
@@ -783,22 +796,27 @@ public class XInstaller implements IXposedHookZygoteInit,
 		enableModule(true);
 	}
 
-	public static void disableSignatureCheck(boolean disabled) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getXInstallerContext());
-		prefs.edit().putBoolean(PREF_DISABLE_SIGNATURE_CHECK, disabled).apply();
+	public void disableSignatureCheck(boolean disabled) {
+		Intent disableSignatureCheck = new Intent(ACTION_SET_PREFERENCE);
+		disableSignatureCheck.setPackage(PACKAGE_NAME);
+		disableSignatureCheck
+				.putExtra(PREFERENCE, PREF_DISABLE_SIGNATURE_CHECK);
+		disableSignatureCheck.putExtra(VALUE, disabled);
+		mContext.sendBroadcast(disableSignatureCheck);
 
 	}
 
-	public static void disablePermissionCheck(boolean disabled) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getXInstallerContext());
-		prefs.edit().putBoolean(PREF_DISABLE_PERMISSION_CHECK, disabled)
-				.apply();
+	public void disablePermissionCheck(boolean disabled) {
+		Intent disablePermissionCheck = new Intent(ACTION_SET_PREFERENCE);
+		disablePermissionCheck.setPackage(PACKAGE_NAME);
+		disablePermissionCheck.putExtra(PREFERENCE,
+				PREF_DISABLE_PERMISSION_CHECK);
+		disablePermissionCheck.putExtra(VALUE, disabled);
+		mContext.sendBroadcast(disablePermissionCheck);
 
 	}
 
-	public static void runXInstaller() {
+	public void runXInstaller() {
 		Intent launchIntent = mContext.getPackageManager()
 				.getLaunchIntentForPackage(PACKAGE_NAME);
 		if (launchIntent != null) {
@@ -807,32 +825,32 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 	}
 
-	public static boolean isModuleEnabled() {
-		boolean enabled;
+	public boolean isModuleEnabled() {
 		prefs.reload();
-		enabled = prefs.getBoolean(PREF_ENABLE_MODULE, true);
+		boolean enabled = prefs.getBoolean(PREF_ENABLE_MODULE, true);
 		return enabled;
 	}
 
-	public static void enableModule(boolean enabled) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getXInstallerContext());
-		prefs.edit().putBoolean(PREF_ENABLE_MODULE, enabled).apply();
+	public void enableModule(boolean enabled) {
+		Intent enableModule = new Intent(ACTION_SET_PREFERENCE);
+		enableModule.setPackage(PACKAGE_NAME);
+		enableModule.putExtra(PREFERENCE, PREF_ENABLE_MODULE);
+		enableModule.putExtra(VALUE, enabled);
+		mContext.sendBroadcast(enableModule);
 
 	}
 
-	public static Context getXInstallerContext() {
+	public Context getXInstallerContext() {
 		Context XInstallerContext;
 		try {
-			XInstallerContext = mContext.createPackageContext(PACKAGE_NAME,
-					Context.CONTEXT_IGNORE_SECURITY);
+			XInstallerContext = mContext.createPackageContext(PACKAGE_NAME, 0);
 		} catch (NameNotFoundException e) {
 			XInstallerContext = null;
 		}
 		return XInstallerContext;
 	}
 
-	public static void backupApkFile(String apkFile) {
+	public void backupApkFile(String apkFile) {
 		Intent backupApkFile = new Intent(ACTION_BACKUP_APK_FILE);
 		backupApkFile.setPackage(PACKAGE_NAME);
 		backupApkFile.putExtra(APK_FILE, apkFile);

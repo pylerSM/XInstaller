@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="301"
-    android:versionName="3.01" >
+    android:versionCode="305"
+    android:versionName="3.05" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-       <meta-data
+        <meta-data
             android:name="xposedmodule"
             android:value="true" />
         <meta-data
@@ -35,11 +35,11 @@
         </activity>
 
         <receiver
-            android:name=".FileUtils"
+            android:name=".Utils"
             android:exported="true" >
             <intent-filter>
-                <action android:name="xinstaller.intent.action.BACKUP_APK_FILE" >
-                </action>
+                <action android:name="xinstaller.intent.action.BACKUP_APK_FILE" />
+                <action android:name="xinstaller.intent.action.SET_PREFERENCE" />
             </intent-filter>
         </receiver>
     </application>

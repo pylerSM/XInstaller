@@ -10,26 +10,30 @@ import java.io.OutputStream;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 
-public class FileUtils extends BroadcastReceiver {
+public class Utils extends BroadcastReceiver {
+	public static final String PACKAGE_TAG = "XInstaller";
 	public static final String PACKAGE_DIR = Environment
 			.getExternalStorageDirectory()
 			+ File.separator
-			+ XInstaller.PACKAGE_TAG + File.separator;
+			+ PACKAGE_TAG
+			+ File.separator;
 	public static final File APP_DIR = new File(PACKAGE_DIR);
-	public static Context PACKAGE_CONTEXT;
+	public Context sContext;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (!APP_DIR.exists()) {
 			APP_DIR.mkdir();
 		}
-		PACKAGE_CONTEXT = context;
+		sContext = context;
 		String action = intent.getAction();
 		Bundle extras = intent.getExtras();
 		boolean hasExtras = (extras != null) ? true : false;
@@ -38,11 +42,18 @@ public class FileUtils extends BroadcastReceiver {
 				String apkFile = extras.getString(XInstaller.APK_FILE);
 				backupApkFile(apkFile);
 			}
+		} else if (XInstaller.ACTION_SET_PREFERENCE.equals(action)) {
+			if (hasExtras) {
+				String preference = extras.getString(XInstaller.PREFERENCE);
+				boolean value = extras.getBoolean(XInstaller.VALUE);
+				setPreference(preference, value);
+
+			}
 		}
 	}
 
-	public static void backupApkFile(String apkFile) {
-		PackageManager pm = PACKAGE_CONTEXT.getPackageManager();
+	public void backupApkFile(String apkFile) {
+		PackageManager pm = sContext.getPackageManager();
 		try {
 			PackageInfo pi = pm.getPackageArchiveInfo(apkFile, 0);
 			pi.applicationInfo.publicSourceDir = apkFile;
@@ -57,7 +68,13 @@ public class FileUtils extends BroadcastReceiver {
 		}
 	}
 
-	public static void copyFile(File src, File dst) throws IOException {
+	public void setPreference(String preference, boolean value) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(sContext);
+		prefs.edit().putBoolean(preference, value).apply();
+	}
+
+	public void copyFile(File src, File dst) throws IOException {
 		InputStream in = new FileInputStream(src);
 		OutputStream out = new FileOutputStream(dst);
 
