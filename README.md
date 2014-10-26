@@ -55,6 +55,6 @@ xinstaller.intent.action.MOVE_PACKAGE
 xinstaller.intent.action.RUN_XINSTALLER
 - run XInstaller
 
-xinstaller.intent.action.REMOVE_TASL
+xinstaller.intent.action.REMOVE_TASK
 - remove task
 - Parameters: task ID (integer)
