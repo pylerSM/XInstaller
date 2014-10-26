@@ -4,6 +4,7 @@ import java.io.File;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -196,28 +197,28 @@ public class XInstaller implements IXposedHookZygoteInit,
 					if (isModuleEnabled() && !APIEnabled
 							&& androidSystem.equals(context.getPackageName())) {
 						mContext = context;
-						IntentFilter intentFilter = new IntentFilter();
-						intentFilter.addAction(ACTION_DISABLE_SIGNATURE_CHECK);
-						intentFilter.addAction(ACTION_ENABLE_SIGNATURE_CHECK);
-						intentFilter.addAction(ACTION_DISABLE_PERMISSION_CHECK);
-						intentFilter.addAction(ACTION_ENABLE_PERMISSION_CHECK);
-						intentFilter.addAction(ACTION_INSTALL_PACKAGE);
-						intentFilter.addAction(ACTION_CLEAR_APP_DATA);
-						intentFilter.addAction(ACTION_FORCE_STOP_PACKAGE);
-						intentFilter.addAction(ACTION_DELETE_PACKAGE);
-						intentFilter.addAction(ACTION_CLEAR_APP_CACHE);
-						intentFilter.addAction(ACTION_MOVE_PACKAGE);
-						intentFilter.addAction(ACTION_RUN_XINSTALLER);
-						intentFilter.addAction(ACTION_REMOVE_TASK);
-						mContext.registerReceiver(systemAPI, intentFilter);
+						IntentFilter systemApi = new IntentFilter();
+						systemApi.addAction(ACTION_DISABLE_SIGNATURE_CHECK);
+						systemApi.addAction(ACTION_ENABLE_SIGNATURE_CHECK);
+						systemApi.addAction(ACTION_DISABLE_PERMISSION_CHECK);
+						systemApi.addAction(ACTION_ENABLE_PERMISSION_CHECK);
+						systemApi.addAction(ACTION_INSTALL_PACKAGE);
+						systemApi.addAction(ACTION_CLEAR_APP_DATA);
+						systemApi.addAction(ACTION_FORCE_STOP_PACKAGE);
+						systemApi.addAction(ACTION_DELETE_PACKAGE);
+						systemApi.addAction(ACTION_CLEAR_APP_CACHE);
+						systemApi.addAction(ACTION_MOVE_PACKAGE);
+						systemApi.addAction(ACTION_RUN_XINSTALLER);
+						systemApi.addAction(ACTION_REMOVE_TASK);
+						mContext.registerReceiver(systemAPI, systemApi);
 						APIEnabled = true;
 
 						// Utils
-						IntentFilter utils = new IntentFilter();
-						utils.addAction(ACTION_BACKUP_APK_FILE);
-						utils.addAction(ACTION_SET_PREFERENCE);
-						Utils pUtils = new Utils();
-						getXInstallerContext().registerReceiver(pUtils, utils);
+						IntentFilter appApi = new IntentFilter();
+						appApi.addAction(ACTION_BACKUP_APK_FILE);
+						appApi.addAction(ACTION_SET_PREFERENCE);
+						Utils utils = new Utils();
+						getXInstallerContext().registerReceiver(utils, appApi);
 					}
 				}
 			}
@@ -786,7 +787,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public void deletePackage(String packageName, int flags) {
 		enableModule(false);
 		if (JB_MR2_NEWER) {
-			int userId = -2; // USER_CURRENT
+			int userId = (Integer) XposedHelpers.callStaticMethod(ActivityManager.class, "getCurrentUser");
 			XposedHelpers.callMethod(packageManagerObj, "deletePackageAsUser",
 					packageName, null, userId, flags);
 		} else {
