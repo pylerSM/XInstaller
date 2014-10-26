@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.Window;
 import android.widget.Button;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -432,9 +433,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				signaturesCheckFDroid = prefs.getBoolean(
 						PREF_DISABLE_SIGNATURE_CHECK_FDROID, false);
+				mInstalledSigID = (String) XposedHelpers.getObjectField(
+						param.thisObject, "mInstalledSigID");
 				if (isModuleEnabled() && signaturesCheckFDroid) {
-					mInstalledSigID = (String) XposedHelpers.getObjectField(
-							param.thisObject, "mInstalledSigID");
 					XposedHelpers.setObjectField(param.thisObject,
 							"mInstalledSigID", null);
 				}
@@ -457,9 +458,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoInstall = prefs.getBoolean(PREF_ENABLE_AUTO_INSTALL, true);
+				Button mOk = (Button) XposedHelpers.getObjectField(
+						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoInstall) {
-					Button mOk = (Button) XposedHelpers.getObjectField(
-							param.thisObject, "mOk");
 					XposedHelpers.setBooleanField(param.thisObject,
 							"mOkCanInstall", true);
 					mOk.performClick();
@@ -475,9 +476,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoUninstall = prefs.getBoolean(PREF_ENABLE_AUTO_UNINSTALL,
 						true);
+				Button mOk = (Button) XposedHelpers.getObjectField(
+						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoUninstall) {
-					Button mOk = (Button) XposedHelpers.getObjectField(
-							param.thisObject, "mOk");
 					mOk.performClick();
 				}
 			}
@@ -491,9 +492,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
 						PREF_ENABLE_AUTO_CLOSE_UNINSTALL, true);
+				Button mOk = (Button) XposedHelpers.getObjectField(
+						param.thisObject, "mOkButton");
 				if (isModuleEnabled() && autoCloseUninstall) {
-					Button mOk = (Button) XposedHelpers.getObjectField(
-							param.thisObject, "mOkButton");
 					mOk.performClick();
 				}
 			}
@@ -509,16 +510,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 						PREF_ENABLE_AUTO_CLOSE_INSTALL, true);
 				autoLaunchInstall = prefs.getBoolean(
 						PREF_ENABLE_LAUNCH_INSTALL, false);
+				Button mDone = (Button) XposedHelpers.getObjectField(
+						XposedHelpers.getSurroundingThis(param.thisObject),
+						"mDoneButton");
+
 				if (isModuleEnabled() && autoCloseInstall) {
-					Button mOk = (Button) XposedHelpers.getObjectField(
-							XposedHelpers.getSurroundingThis(param.thisObject),
-							"mDoneButton");
-					mOk.performClick();
+					mDone.performClick();
 				}
+				Button mLaunch = (Button) XposedHelpers.getObjectField(
+						XposedHelpers.getSurroundingThis(param.thisObject),
+						"mLaunchButton");
 				if (isModuleEnabled() && autoLaunchInstall) {
-					Button mLaunch = (Button) XposedHelpers.getObjectField(
-							XposedHelpers.getSurroundingThis(param.thisObject),
-							"mLaunchButton");
 					mLaunch.performClick();
 				}
 			}
@@ -787,7 +789,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public void deletePackage(String packageName, int flags) {
 		enableModule(false);
 		if (JB_MR2_NEWER) {
-			int userId = (Integer) XposedHelpers.callStaticMethod(ActivityManager.class, "getCurrentUser");
+			int userId = (Integer) XposedHelpers.callStaticMethod(
+					ActivityManager.class, "getCurrentUser");
 			XposedHelpers.callMethod(packageManagerObj, "deletePackageAsUser",
 					packageName, null, userId, flags);
 		} else {
