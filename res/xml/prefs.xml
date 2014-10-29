@@ -88,6 +88,10 @@
                     android:defaultValue="true"
                     android:key="enable_disable_system_apps"
                     android:title="@string/disable_system_apps" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_show_buttons"
+                    android:title="@string/show_buttons" />
             </PreferenceCategory>
             <PreferenceCategory android:title="@string/disable" >
                 <CheckBoxPreference

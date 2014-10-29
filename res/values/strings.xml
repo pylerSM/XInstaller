@@ -29,6 +29,7 @@
     <string name="install_unsigned_apps">Installing unsigned apps</string>
     <string name="verify_jar">Verifying JAR</string>
     <string name="verify_signatures">Verifying signatures</string>
+    <string name="show_buttons">Showing buttons when obsecured</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

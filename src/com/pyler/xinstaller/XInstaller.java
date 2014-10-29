@@ -16,7 +16,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.view.Window;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -49,6 +50,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean installUnsignedApps;
 	public boolean verifyJar;
 	public boolean verifySignature;
+	public boolean enableShowButtons;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -67,6 +69,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook installUnsignedAppsHook;
 	public XC_MethodHook verifyJarHook;
 	public XC_MethodHook verifySignatureHook;
+	public XC_MethodHook enableShowButtonsHook;
 	public boolean JB_MR2_NEWER;
 	public boolean JB_MR1_NEWER;
 	public boolean KITKAT_NEWER;
@@ -127,6 +130,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_ENABLE_INSTALL_UNSIGNED_APP = "enable_install_unsigned_apps";
 	public static final String PREF_DISABLE_VERIFY_JAR = "disable_verify_jar";
 	public static final String PREF_DISABLE_VERIFY_SIGNATURE = "disable_verify_signatures";
+	public static final String PREF_ENABLE_SHOW_BUTTON = "enable_show_buttons";
 
 	// constants
 	public static final String PACKAGE_NAME = XInstaller.class.getPackage()
@@ -221,6 +225,19 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Utils utils = new Utils();
 						getXInstallerContext().registerReceiver(utils, appApi);
 					}
+				}
+			}
+		};
+
+		enableShowButtonsHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				enableShowButtons = prefs.getBoolean(PREF_ENABLE_SHOW_BUTTON,
+						false);
+				if (isModuleEnabled() && enableShowButtons) {
+					param.setResult(true);
 				}
 			}
 		};
@@ -627,6 +644,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 				: false;
 
 		// enablers
+		XposedHelpers.findAndHookMethod(View.class,
+				"onFilterTouchEventForSecurity", MotionEvent.class,
+				enableShowButtonsHook);
+
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"isVerificationEnabled", int.class, verifyAppsHook);
 
