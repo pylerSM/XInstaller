@@ -245,7 +245,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		verifyJarHook = new XC_MethodHook() {
 			@SuppressWarnings("unchecked")
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				verifyJar = prefs.getBoolean(PREF_DISABLE_VERIFY_JAR, false);
