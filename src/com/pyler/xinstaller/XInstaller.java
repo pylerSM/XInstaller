@@ -280,7 +280,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				verifySignature = prefs.getBoolean(
 						PREF_DISABLE_VERIFY_SIGNATURE, false);
 				if (isModuleEnabled() && verifySignature) {
-					param.setResult(true);
+					param.setResult(false);
 				}
 			}
 		};
@@ -330,8 +330,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				downgradeApps = prefs.getBoolean(PREF_ENABLED_DOWNGRADE_APP,
-						true);
-				forwardLock = prefs.getBoolean(PREF_DISABLE_FORWARD_LOCK, true);
+						false);
+				forwardLock = prefs.getBoolean(PREF_DISABLE_FORWARD_LOCK, false);
 				installAppsOnExternal = prefs.getBoolean(
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				backupApkFiles = prefs.getBoolean(PREF_ENABLE_BACKUP_APK_FILE,
@@ -388,7 +388,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				disableSystemApps = prefs.getBoolean(PREF_DISABLE_SYSTEM_APP,
-						true);
+						false);
 				if (isModuleEnabled() && disableSystemApps) {
 					param.setResult(false);
 				}
@@ -403,7 +403,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				installUnknownApps = prefs.getBoolean(
-						PREF_ENABLE_INSTALL_UNKNOWN_APP, true);
+						PREF_ENABLE_INSTALL_UNKNOWN_APP, false);
 				if (isModuleEnabled() && installUnknownApps) {
 					param.setResult(true);
 				}
@@ -417,7 +417,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				verifyApps = prefs.getBoolean(PREF_DISABLE_VERIFY_APP, true);
+				verifyApps = prefs.getBoolean(PREF_DISABLE_VERIFY_APP, false);
 				if (isModuleEnabled() && verifyApps) {
 					param.setResult(false);
 				}
@@ -432,7 +432,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				deviceAdmins = prefs.getBoolean(
-						PREF_ENABLE_UNINSTALL_DEVICE_ADMIN, true);
+						PREF_ENABLE_UNINSTALL_DEVICE_ADMIN, false);
 				if (isModuleEnabled() && deviceAdmins) {
 					param.setResult(false);
 				}
@@ -474,7 +474,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				autoInstall = prefs.getBoolean(PREF_ENABLE_AUTO_INSTALL, true);
+				autoInstall = prefs.getBoolean(PREF_ENABLE_AUTO_INSTALL, false);
 				Button mOk = (Button) XposedHelpers.getObjectField(
 						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoInstall) {
@@ -492,7 +492,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoUninstall = prefs.getBoolean(PREF_ENABLE_AUTO_UNINSTALL,
-						true);
+						false);
 				Button mOk = (Button) XposedHelpers.getObjectField(
 						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoUninstall) {
@@ -508,7 +508,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
-						PREF_ENABLE_AUTO_CLOSE_UNINSTALL, true);
+						PREF_ENABLE_AUTO_CLOSE_UNINSTALL, false);
 				Button mOk = (Button) XposedHelpers.getObjectField(
 						param.thisObject, "mOkButton");
 				if (isModuleEnabled() && autoCloseUninstall) {
@@ -524,7 +524,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				autoCloseInstall = prefs.getBoolean(
-						PREF_ENABLE_AUTO_CLOSE_INSTALL, true);
+						PREF_ENABLE_AUTO_CLOSE_INSTALL, false);
 				autoLaunchInstall = prefs.getBoolean(
 						PREF_ENABLE_LAUNCH_INSTALL, false);
 				Button mDone = (Button) XposedHelpers.getObjectField(
