@@ -30,6 +30,7 @@
   <string name="install_unsigned_apps">Aláíratlan alkalmazások telepítése</string>
   <string name="verify_jar">JAR ellenőrzése</string>
   <string name="verify_signatures">Aláírások ellenőrzése</string>
+  <string name="show_buttons">Mutassa a gombokat amikor nem egyértelmű</string>
   <string name="about">Névjegy</string>
   <string name="developer">Fejlesztő</string>
   <string name="version">Verzió</string>

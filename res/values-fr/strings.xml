@@ -30,6 +30,7 @@
   <string name="install_unsigned_apps">Installation d\'applis non signées</string>
   <string name="verify_jar">Vérification JAR</string>
   <string name="verify_signatures">Vérification des signatures</string>
+  <string name="show_buttons">Affichage des boutons</string>
   <string name="about">À propos</string>
   <string name="developer">Développeur</string>
   <string name="version">Version</string>

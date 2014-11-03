@@ -30,6 +30,7 @@
   <string name="install_unsigned_apps">Установка неподписанных приложений</string>
   <string name="verify_jar">Проверка JAR</string>
   <string name="verify_signatures">Проверка подписей</string>
+  <string name="show_buttons">Показывать скрытые кнопки</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>

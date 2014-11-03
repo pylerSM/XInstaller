@@ -30,6 +30,7 @@
   <string name="install_unsigned_apps">未署名のアプリをインストールする</string>
   <string name="verify_jar">JAR の確認</string>
   <string name="verify_signatures">署名の確認</string>
+  <string name="show_buttons">隠されたボタンを表示する</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>

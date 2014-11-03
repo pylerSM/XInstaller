@@ -13,7 +13,7 @@
   <string name="signatures_check">签名检查</string>
   <string name="keep_apps_data">保留应用数据</string>
   <string name="downgrade_apps">降级安装</string>
-  <string name="forward_lock">收费应用加密</string>
+  <string name="forward_lock">付费应用加密</string>
   <string name="install_unknown_apps">安装未知来源应用</string>
   <string name="verify_apps">验证应用</string>
   <string name="install_external_storage">在外部存储中安装应用</string>
@@ -30,6 +30,7 @@
   <string name="install_unsigned_apps">安装未签名应用</string>
   <string name="verify_jar">验证 JAR</string>
   <string name="verify_signatures">验证签名</string>
+  <string name="show_buttons">显示被隐藏的按钮</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

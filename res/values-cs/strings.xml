@@ -30,6 +30,7 @@
   <string name="install_unsigned_apps">Instalování nepodepsaných aplikací</string>
   <string name="verify_jar">Ověřování JAR</string>
   <string name="verify_signatures">Ověřování podpisů</string>
+  <string name="show_buttons">Zobrazení tlačítek při překrytí</string>
   <string name="about">O aplikaci</string>
   <string name="developer">Vývojář</string>
   <string name="version">Verze</string>
