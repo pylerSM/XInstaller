@@ -16,8 +16,12 @@
             android:title="@string/expert_mode" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/app_settings" >
-        <PreferenceScreen android:title="@string/installations" android:key="installations">
-            <PreferenceCategory android:title="@string/enable" android:key="installations_enable">
+        <PreferenceScreen
+            android:key="installations"
+            android:title="@string/installations" >
+            <PreferenceCategory
+                android:key="installations_enable"
+                android:title="@string/enable" >
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="enable_downgrade_apps"
@@ -51,7 +55,9 @@
                     android:key="enable_install_unsigned_apps"
                     android:title="@string/install_unsigned_apps" />
             </PreferenceCategory>
-            <PreferenceCategory android:title="@string/disable" android:key="installations_disable">
+            <PreferenceCategory
+                android:key="installations_disable"
+                android:title="@string/disable" >
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_signatures_check"
@@ -70,8 +76,12 @@
                     android:title="@string/verify_apps" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen android:title="@string/uninstallations" android:key="uninstallations">
-            <PreferenceCategory android:title="@string/enable" android:key="uninstallations_enable">
+        <PreferenceScreen
+            android:key="uninstallations"
+            android:title="@string/uninstallations" >
+            <PreferenceCategory
+                android:key="uninstallations_enable"
+                android:title="@string/enable" >
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="enable_keep_apps_data"
@@ -90,8 +100,12 @@
                     android:title="@string/auto_close_uninstall" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen android:title="@string/misc" android:key="misc">
-            <PreferenceCategory android:title="@string/enable" android:key="misc_enable">
+        <PreferenceScreen
+            android:key="misc"
+            android:title="@string/misc" >
+            <PreferenceCategory
+                android:key="misc_enable"
+                android:title="@string/enable" >
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="enable_disable_system_apps"
@@ -104,8 +118,14 @@
                     android:defaultValue="false"
                     android:key="enable_apps_debugging"
                     android:title="@string/apps_debugging" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_auto_backup"
+                    android:title="@string/auto_backup" />
             </PreferenceCategory>
-            <PreferenceCategory android:title="@string/disable" android:key="misc_disable">
+            <PreferenceCategory
+                android:key="misc_disable"
+                android:title="@string/disable" >
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_permissions_check"

@@ -1,6 +1,7 @@
 package com.pyler.xinstaller;
 
 import java.io.File;
+import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
 
@@ -51,8 +52,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean installUnsignedApps;
 	public boolean verifyJar;
 	public boolean verifySignature;
-	public boolean enableShowButtons;
-	public boolean enableAppsDebugging;
+	public boolean showButtons;
+	public boolean appsDebugging;
+	public boolean autoBackup;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -71,8 +73,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook installUnsignedAppsHook;
 	public XC_MethodHook verifyJarHook;
 	public XC_MethodHook verifySignatureHook;
-	public XC_MethodHook enableShowButtonsHook;
-	public XC_MethodHook enableAppsDebuggingHook;
+	public XC_MethodHook showButtonsHook;
+	public XC_MethodHook appsDebuggingHook;
+	public XC_MethodHook autoBackupHook;
 	public boolean JB_MR2_NEWER;
 	public boolean JB_MR1_NEWER;
 	public boolean KITKAT_NEWER;
@@ -138,6 +141,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_DISABLE_VERIFY_SIGNATURE = "disable_verify_signatures";
 	public static final String PREF_ENABLE_SHOW_BUTTON = "enable_show_buttons";
 	public static final String PREF_ENABLE_APP_DEBUGGING = "enable_apps_debugging";
+	public static final String PREF_ENABLE_AUTO_BACKUP = "enable_auto_backup";
 
 	// constants
 	public static final String PACKAGE_NAME = XInstaller.class.getPackage()
@@ -145,6 +149,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
+	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
 	public static final String packageManagerService = "com.android.server.pm.PackageManagerService";
 	public static final String devicePolicyManagerService = "com.android.server.DevicePolicyManagerService";
 	public static final String installedAppDetails = "com.android.settings.applications.InstalledAppDetails";
@@ -156,6 +161,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String packageParser = "android.content.pm.PackageParser";
 	public static final String jarVerifier = "java.util.jar.JarVerifier$VerifierEntry";
 	public static final String signature = "java.security.Signature";
+	public static final String backupRestoreConfirmation = "com.android.backupconfirm.BackupRestoreConfirmation";
 	public static final String androidSystem = "android";
 
 	// classes
@@ -238,16 +244,29 @@ public class XInstaller implements IXposedHookZygoteInit,
 			}
 		};
 
-		enableAppsDebuggingHook = new XC_MethodHook() {
+		autoBackupHook = new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				enableAppsDebugging = prefs.getBoolean(
-						PREF_ENABLE_APP_DEBUGGING, false);
+				autoBackup = prefs.getBoolean(PREF_ENABLE_AUTO_BACKUP, false);
+				Button mAllowButton = (Button) XposedHelpers.getObjectField(
+						param.thisObject, "mAllowButton");
+				if (isModuleEnabled() && autoBackup) {
+					mAllowButton.performClick();
+				}
+			}
+		};
+		appsDebuggingHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				appsDebugging = prefs.getBoolean(PREF_ENABLE_APP_DEBUGGING,
+						false);
 				int flags = (Integer) param.args[5];
 				if (isModuleEnabled() && (flags & DEBUG_ENABLE_DEBUGGER) == 0
-						&& enableAppsDebugging) {
+						&& appsDebugging) {
 					// we dont have this flag, add it
 					flags |= DEBUG_ENABLE_DEBUGGER;
 				}
@@ -255,14 +274,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 			}
 		};
 
-		enableShowButtonsHook = new XC_MethodHook() {
+		showButtonsHook = new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				enableShowButtons = prefs.getBoolean(PREF_ENABLE_SHOW_BUTTON,
-						false);
-				if (isModuleEnabled() && enableShowButtons) {
+				showButtons = prefs.getBoolean(PREF_ENABLE_SHOW_BUTTON, false);
+				if (isModuleEnabled() && showButtons) {
 					param.setResult(true);
 				}
 			}
@@ -572,7 +590,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 		};
 
 		// system API
-
 		systemAPI = new BroadcastReceiver() {
 
 			@Override
@@ -675,12 +692,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Process.class, "start",
 					String.class, String.class, int.class, int.class,
 					int[].class, int.class, int.class, int.class, String.class,
-					String[].class, enableAppsDebuggingHook);
+					String[].class, appsDebuggingHook);
 		}
+
+		XposedHelpers.findAndHookMethod(MessageDigest.class, "isEqual",
+				byte[].class, byte[].class, verifySignatureHook);
 
 		XposedHelpers.findAndHookMethod(View.class,
 				"onFilterTouchEventForSecurity", MotionEvent.class,
-				enableShowButtonsHook);
+				showButtonsHook);
 
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"isVerificationEnabled", int.class, verifyAppsHook);
@@ -799,6 +819,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(fDroidAppDetails,
 					lpparam.classLoader, "install",
 					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
+		}
+
+		if (FDROID_PKG.equals(lpparam.packageName)) {
+			XposedHelpers.findAndHookMethod(fDroidAppDetails,
+					lpparam.classLoader, "install",
+					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
+		}
+
+		if (BACKUPCONFIRM_PKG.equals(lpparam.packageName)) {
+			XposedHelpers.findAndHookMethod(backupRestoreConfirmation,
+					lpparam.classLoader, "onCreate", Bundle.class,
+					autoBackupHook);
 		}
 	}
 

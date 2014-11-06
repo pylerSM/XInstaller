@@ -12,7 +12,7 @@
   <string name="backup_and_restore">Záloha a obnova</string>
   <string name="backup">Zálohovat</string>
   <string name="restore">Obnovit</string>
-  <string name="reset">Obnovit</string>
+  <string name="reset">Resetovat</string>
   <string name="enable">Povolit</string>
   <string name="disable">Zakázat</string>
   <string name="signatures_check">Kontrolování podpisů</string>

@@ -5,6 +5,7 @@
   <string name="app">Aplikácia</string>
   <string name="module">Modul</string>
   <string name="app_icon">Ikona v spúšťači</string>
+  <string name="expert_mode">Režim experta</string>
   <string name="app_settings">Nastavenia</string>
   <string name="installations">Inštalácie</string>
   <string name="uninstallations">Odinštalácie</string>
@@ -12,7 +13,7 @@
   <string name="backup_and_restore">Záloha a obnova</string>
   <string name="backup">Zálohovať</string>
   <string name="restore">Obnoviť</string>
-  <string name="reset">Obnoviť</string>
+  <string name="reset">Resetovať</string>
   <string name="enable">Povoliť</string>
   <string name="disable">Zakázať</string>
   <string name="signatures_check">Kontrolovanie podpisov</string>
