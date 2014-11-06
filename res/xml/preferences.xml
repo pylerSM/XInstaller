@@ -6,10 +6,18 @@
             android:defaultValue="true"
             android:key="enable_module"
             android:title="@string/module" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="enable_app_icon"
+            android:title="@string/app_icon" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="enable_expert_mode"
+            android:title="@string/expert_mode" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/app_settings" >
-        <PreferenceScreen android:title="@string/installations" >
-            <PreferenceCategory android:title="@string/enable" >
+        <PreferenceScreen android:title="@string/installations" android:key="installations">
+            <PreferenceCategory android:title="@string/enable" android:key="installations_enable">
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="enable_downgrade_apps"
@@ -43,7 +51,7 @@
                     android:key="enable_install_unsigned_apps"
                     android:title="@string/install_unsigned_apps" />
             </PreferenceCategory>
-            <PreferenceCategory android:title="@string/disable" >
+            <PreferenceCategory android:title="@string/disable" android:key="installations_disable">
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_signatures_check"
@@ -62,8 +70,8 @@
                     android:title="@string/verify_apps" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen android:title="@string/uninstallations" >
-            <PreferenceCategory android:title="@string/enable" >
+        <PreferenceScreen android:title="@string/uninstallations" android:key="uninstallations">
+            <PreferenceCategory android:title="@string/enable" android:key="uninstallations_enable">
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="enable_keep_apps_data"
@@ -82,8 +90,8 @@
                     android:title="@string/auto_close_uninstall" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen android:title="@string/misc" >
-            <PreferenceCategory android:title="@string/enable" >
+        <PreferenceScreen android:title="@string/misc" android:key="misc">
+            <PreferenceCategory android:title="@string/enable" android:key="misc_enable">
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="enable_disable_system_apps"
@@ -92,8 +100,12 @@
                     android:defaultValue="false"
                     android:key="enable_show_buttons"
                     android:title="@string/show_buttons" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_apps_debugging"
+                    android:title="@string/apps_debugging" />
             </PreferenceCategory>
-            <PreferenceCategory android:title="@string/disable" >
+            <PreferenceCategory android:title="@string/disable" android:key="misc_disable">
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_permissions_check"
@@ -107,6 +119,17 @@
                     android:key="disable_verify_signatures"
                     android:title="@string/verify_signatures" />
             </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/backup_and_restore" >
+            <Preference
+                android:key="backup_preferences"
+                android:title="@string/backup" />
+            <Preference
+                android:key="restore_preferences"
+                android:title="@string/restore" />
+            <Preference
+                android:key="reset_preferences"
+                android:title="@string/reset" />
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/about" >

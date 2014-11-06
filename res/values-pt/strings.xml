@@ -4,10 +4,15 @@
   <string name="app_description">Ajustes diversos para o \"Package Installer\"</string>
   <string name="app">Aplicação</string>
   <string name="module">Módulo</string>
+  <string name="app_icon">Ícone do Ecrã Principal</string>
   <string name="app_settings">Preferências</string>
   <string name="installations">Instalações</string>
   <string name="uninstallations">Desinstalações</string>
   <string name="misc">Diversos</string>
+  <string name="backup_and_restore">Cópia de segurança e restauro</string>
+  <string name="backup">Cópia de segurança</string>
+  <string name="restore">Restaurar</string>
+  <string name="reset">Valores de Fábrica</string>
   <string name="enable">Ativar</string>
   <string name="disable">Desactivar</string>
   <string name="signatures_check">Verificação de assinaturas</string>
@@ -30,7 +35,13 @@
   <string name="install_unsigned_apps">Instalar aplicações sem \"assinatura\"</string>
   <string name="verify_jar">Verificar JARs</string>
   <string name="verify_signatures">Verificar \"assinaturas\"</string>
+  <string name="show_buttons">Apresentar botões quando obscuro</string>
+  <string name="apps_debugging">Aplicativos de depuração</string>
   <string name="about">Sobre</string>
   <string name="developer">Desenvolvedor</string>
   <string name="version">Versão</string>
+  <string name="no_backup_file">Nenhuma cópia de segurança</string>
+  <string name="preferences_backed_up">Copia de segurança feita com sucesso</string>
+  <string name="preferences_restored">Restaurado com sucesso</string>
+  <string name="preferences_reset">Valores de fábrica restaurados com sucesso</string>
 </resources>

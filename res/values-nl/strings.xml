@@ -4,10 +4,14 @@
   <string name="app_description">Diverse toepassingen voor Pakket Installatie</string>
   <string name="app">App</string>
   <string name="module">Module</string>
+  <string name="app_icon">Launcher pictogram</string>
   <string name="app_settings">Instellingen</string>
   <string name="installations">Installatie</string>
   <string name="uninstallations">De-installatie</string>
   <string name="misc">Diversen</string>
+  <string name="backup_and_restore">Backup en herstellen</string>
+  <string name="backup">Backup</string>
+  <string name="restore">Herstellen</string>
   <string name="enable">Inschakelen</string>
   <string name="disable">Uitschakelen</string>
   <string name="signatures_check">Handtekening controle</string>
@@ -30,7 +34,11 @@
   <string name="install_unsigned_apps">Installeren van niet ondertekende apps</string>
   <string name="verify_jar">JAR verifiëren</string>
   <string name="verify_signatures">Handtekeningen verifiëren</string>
+  <string name="show_buttons">Knoppen tonen wanneer obsecured</string>
   <string name="about">Over</string>
   <string name="developer">Ontwikkelaar</string>
   <string name="version">Versie</string>
+  <string name="no_backup_file">Geen backup bestand</string>
+  <string name="preferences_backed_up">Backup succesvol gemaakt</string>
+  <string name="preferences_restored">Succesvol hersteld</string>
 </resources>

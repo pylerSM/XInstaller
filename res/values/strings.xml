@@ -3,10 +3,16 @@
     <string name="app_description">Various tweaks for Package Installer</string>
     <string name="app">App</string>
     <string name="module">Module</string>
+    <string name="app_icon">Launcher icon</string>
+    <string name="expert_mode">Expert mode</string>
     <string name="app_settings">Settings</string>
     <string name="installations">Installations</string>
     <string name="uninstallations">Uninstallations</string>
     <string name="misc">Misc</string>
+    <string name="backup_and_restore">Backup and restore</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restore</string>
+    <string name="reset">Reset</string>
     <string name="enable">Enable</string>
     <string name="disable">Disable</string>
     <string name="signatures_check">Checking signatures</string>
@@ -30,8 +36,13 @@
     <string name="verify_jar">Verifying JAR</string>
     <string name="verify_signatures">Verifying signatures</string>
     <string name="show_buttons">Showing buttons when obsecured</string>
+    <string name="apps_debugging">Debugging apps</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>
+    <string name="no_backup_file">No backup file</string>
+    <string name="preferences_backed_up">Successfully backed up</string>
+    <string name="preferences_restored">Successfully restored</string>
+    <string name="preferences_reset">Successfully reset</string>
 
 </resources>

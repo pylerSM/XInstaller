@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="310"
-    android:versionName="3.1" >
+    android:versionCode="317"
+    android:versionName="3.17" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -24,15 +24,26 @@
             android:name="xposedminversion"
             android:value="30" />
 
-        <activity
-            android:name=".Preferences"
-            android:label="@string/app_name" >
+        <activity android:name=".Preferences" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+            </intent-filter>
+        </activity>
+
+        <activity-alias
+            android:name=".Settings"
+            android:enabled="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity=".Preferences" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
 
         <receiver
             android:name=".Utils"
@@ -40,6 +51,9 @@
             <intent-filter>
                 <action android:name="xinstaller.intent.action.BACKUP_APK_FILE" />
                 <action android:name="xinstaller.intent.action.SET_PREFERENCE" />
+                <action android:name="xinstaller.intent.action.BACKUP_PREFERENCES" />
+                <action android:name="xinstaller.intent.action.RESTORE_PREFERENCES" />
+                <action android:name="xinstaller.intent.action.RESET_PREFERENCES" />
             </intent-filter>
         </receiver>
     </application>

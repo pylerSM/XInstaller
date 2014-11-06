@@ -4,10 +4,15 @@
   <string name="app_description">对应用包安装程序进行各种调整</string>
   <string name="app">应用</string>
   <string name="module">模块</string>
+  <string name="app_icon">启动器图标</string>
   <string name="app_settings">设置</string>
   <string name="installations">安装设置</string>
   <string name="uninstallations">卸载设置</string>
   <string name="misc">其他设置</string>
+  <string name="backup_and_restore">备份与恢复</string>
+  <string name="backup">备份</string>
+  <string name="restore">恢复</string>
+  <string name="reset">重置</string>
   <string name="enable">启用</string>
   <string name="disable">禁用</string>
   <string name="signatures_check">签名检查</string>
@@ -31,7 +36,12 @@
   <string name="verify_jar">验证 JAR</string>
   <string name="verify_signatures">验证签名</string>
   <string name="show_buttons">显示被隐藏的按钮</string>
+  <string name="apps_debugging">调试应用</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>
+  <string name="no_backup_file">没有备份文件</string>
+  <string name="preferences_backed_up">备份成功</string>
+  <string name="preferences_restored">恢复成功</string>
+  <string name="preferences_reset">重置成功</string>
 </resources>

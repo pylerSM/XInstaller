@@ -4,10 +4,15 @@
   <string name="app_description">Diverses modifications pour le programme d\'installation</string>
   <string name="app">Appli</string>
   <string name="module">Module</string>
+  <string name="app_icon">Icône du lanceur</string>
   <string name="app_settings">Paramètres</string>
   <string name="installations">Installations</string>
   <string name="uninstallations">Désinstallations</string>
   <string name="misc">Divers</string>
+  <string name="backup_and_restore">Sauvegarde et restauration</string>
+  <string name="backup">Sauvegarder</string>
+  <string name="restore">Restaurer</string>
+  <string name="reset">Réinitialiser</string>
   <string name="enable">Activer</string>
   <string name="disable">Désactiver</string>
   <string name="signatures_check">Contrôle des signatures</string>
@@ -30,8 +35,13 @@
   <string name="install_unsigned_apps">Installation d\'applis non signées</string>
   <string name="verify_jar">Vérification JAR</string>
   <string name="verify_signatures">Vérification des signatures</string>
-  <string name="show_buttons">Affichage des boutons</string>
+  <string name="show_buttons">Affichage des boutons obscurcis</string>
+  <string name="apps_debugging">Débogage d\'applis</string>
   <string name="about">À propos</string>
   <string name="developer">Développeur</string>
   <string name="version">Version</string>
+  <string name="no_backup_file">Aucun fichier de sauvegarde</string>
+  <string name="preferences_backed_up">Sauvegardé avec succès</string>
+  <string name="preferences_restored">Restauré avec succès</string>
+  <string name="preferences_reset">Réinitialisé avec succès</string>
 </resources>

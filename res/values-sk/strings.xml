@@ -4,10 +4,15 @@
   <string name="app_description">Rôzne vylepšenia pre Inštalátor balíkov</string>
   <string name="app">Aplikácia</string>
   <string name="module">Modul</string>
+  <string name="app_icon">Ikona v spúšťači</string>
   <string name="app_settings">Nastavenia</string>
   <string name="installations">Inštalácie</string>
   <string name="uninstallations">Odinštalácie</string>
   <string name="misc">Rôzne</string>
+  <string name="backup_and_restore">Záloha a obnova</string>
+  <string name="backup">Zálohovať</string>
+  <string name="restore">Obnoviť</string>
+  <string name="reset">Obnoviť</string>
   <string name="enable">Povoliť</string>
   <string name="disable">Zakázať</string>
   <string name="signatures_check">Kontrolovanie podpisov</string>
@@ -31,7 +36,12 @@
   <string name="verify_jar">Overovanie JAR</string>
   <string name="verify_signatures">Overovanie podpisov</string>
   <string name="show_buttons">Zobrazenie tlačidiel pri prekrytí</string>
+  <string name="apps_debugging">Ladenie aplikácií</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>
+  <string name="no_backup_file">Žiadny záložný súbor</string>
+  <string name="preferences_backed_up">Úspešne zálohované</string>
+  <string name="preferences_restored">Úspešne obnovené</string>
+  <string name="preferences_reset">Úspešne obnovené</string>
 </resources>

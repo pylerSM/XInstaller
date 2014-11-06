@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.os.Process;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +52,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean verifyJar;
 	public boolean verifySignature;
 	public boolean enableShowButtons;
+	public boolean enableAppsDebugging;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -70,6 +72,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook verifyJarHook;
 	public XC_MethodHook verifySignatureHook;
 	public XC_MethodHook enableShowButtonsHook;
+	public XC_MethodHook enableAppsDebuggingHook;
 	public boolean JB_MR2_NEWER;
 	public boolean JB_MR1_NEWER;
 	public boolean KITKAT_NEWER;
@@ -101,6 +104,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	// utils
 	public static final String ACTION_BACKUP_APK_FILE = "xinstaller.intent.action.BACKUP_APK_FILE";
 	public static final String ACTION_SET_PREFERENCE = "xinstaller.intent.action.SET_PREFERENCE";
+	public static final String ACTION_BACKUP_PREFERENCES = "xinstaller.intent.action.BACKUP_PREFERENCES";
+	public static final String ACTION_RESTORE_PREFERENCES = "xinstaller.intent.action.RESTORE_PREFERENCES";
+	public static final String ACTION_RESET_PREFERENCES = "xinstaller.intent.action.RESET_PREFERENCES";
 
 	public static final String APK_FILE = "apk_file";
 	public static final String PREFERENCE = "preference";
@@ -131,6 +137,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String PREF_DISABLE_VERIFY_JAR = "disable_verify_jar";
 	public static final String PREF_DISABLE_VERIFY_SIGNATURE = "disable_verify_signatures";
 	public static final String PREF_ENABLE_SHOW_BUTTON = "enable_show_buttons";
+	public static final String PREF_ENABLE_APP_DEBUGGING = "enable_apps_debugging";
 
 	// constants
 	public static final String PACKAGE_NAME = XInstaller.class.getPackage()
@@ -139,14 +146,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
 	public static final String packageManagerService = "com.android.server.pm.PackageManagerService";
-	public static final String devicePolicyManager = "com.android.server.DevicePolicyManagerService";
+	public static final String devicePolicyManagerService = "com.android.server.DevicePolicyManagerService";
 	public static final String installedAppDetails = "com.android.settings.applications.InstalledAppDetails";
 	public static final String packageInstallerActivity = "com.android.packageinstaller.PackageInstallerActivity";
 	public static final String installAppProgress = "com.android.packageinstaller.InstallAppProgress";
 	public static final String uninstallerActivity = "com.android.packageinstaller.UninstallerActivity";
 	public static final String uninstallAppProgress = "com.android.packageinstaller.UninstallAppProgress";
 	public static final String fDroidAppDetails = "org.fdroid.fdroid.AppDetails";
-	public static final String activityManager = "android.app.ActivityManager";
 	public static final String packageParser = "android.content.pm.PackageParser";
 	public static final String jarVerifier = "java.util.jar.JarVerifier$VerifierEntry";
 	public static final String signature = "java.security.Signature";
@@ -155,10 +161,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	// classes
 	public Class<?> packageManagerClass = XposedHelpers.findClass(
 			packageManagerService, null);
-	public Class<?> activityManagerClass = XposedHelpers.findClass(
-			activityManager, null);
+	public Class<?> activityManagerClass = ActivityManager.class;
 	public Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
-			devicePolicyManager, null);
+			devicePolicyManagerService, null);
 	public Class<?> packageParserClass = XposedHelpers.findClass(packageParser,
 			null);
 	public Class<?> jarVerifierClass = XposedHelpers.findClass(jarVerifier,
@@ -172,6 +177,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public static final int INSTALL_EXTERNAL = 0x00000008;
 	public static final int INSTALL_REPLACE_EXISTING = 0x00000002;
 	public static final int REMOVE_TASK_KILL_PROCESS = 0x0001;
+	public static final int DEBUG_ENABLE_DEBUGGER = 0x1;
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
@@ -219,13 +225,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 						APIEnabled = true;
 
 						// Utils
-						IntentFilter appApi = new IntentFilter();
-						appApi.addAction(ACTION_BACKUP_APK_FILE);
-						appApi.addAction(ACTION_SET_PREFERENCE);
+						IntentFilter tools = new IntentFilter();
+						tools.addAction(ACTION_BACKUP_APK_FILE);
+						tools.addAction(ACTION_SET_PREFERENCE);
+						tools.addAction(ACTION_BACKUP_PREFERENCES);
+						tools.addAction(ACTION_RESTORE_PREFERENCES);
+						tools.addAction(ACTION_RESET_PREFERENCES);
 						Utils utils = new Utils();
-						getXInstallerContext().registerReceiver(utils, appApi);
+						getXInstallerContext().registerReceiver(utils, tools);
 					}
 				}
+			}
+		};
+
+		enableAppsDebuggingHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				enableAppsDebugging = prefs.getBoolean(
+						PREF_ENABLE_APP_DEBUGGING, false);
+				int flags = (Integer) param.args[5];
+				if (isModuleEnabled() && (flags & DEBUG_ENABLE_DEBUGGER) == 0
+						&& enableAppsDebugging) {
+					// we dont have this flag, add it
+					flags |= DEBUG_ENABLE_DEBUGGER;
+				}
+				param.args[5] = flags;
 			}
 		};
 
@@ -280,7 +306,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				verifySignature = prefs.getBoolean(
 						PREF_DISABLE_VERIFY_SIGNATURE, false);
 				if (isModuleEnabled() && verifySignature) {
-					param.setResult(false);
+					param.setResult(true);
 				}
 			}
 		};
@@ -331,7 +357,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				downgradeApps = prefs.getBoolean(PREF_ENABLED_DOWNGRADE_APP,
 						false);
-				forwardLock = prefs.getBoolean(PREF_DISABLE_FORWARD_LOCK, false);
+				forwardLock = prefs
+						.getBoolean(PREF_DISABLE_FORWARD_LOCK, false);
 				installAppsOnExternal = prefs.getBoolean(
 						PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				backupApkFiles = prefs.getBoolean(PREF_ENABLE_BACKUP_APK_FILE,
@@ -636,14 +663,21 @@ public class XInstaller implements IXposedHookZygoteInit,
 		};
 
 		// checks
-		JB_MR1_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
+		int SDK = Build.VERSION.SDK_INT;
+		JB_MR1_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
 				: false;
-		JB_MR2_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
+		JB_MR2_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
 				: false;
-		KITKAT_NEWER = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) ? true
-				: false;
+		KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true : false;
 
 		// enablers
+		if (JB_MR1_NEWER) {
+			XposedHelpers.findAndHookMethod(Process.class, "start",
+					String.class, String.class, int.class, int.class,
+					int[].class, int.class, int.class, int.class, String.class,
+					String[].class, enableAppsDebuggingHook);
+		}
+
 		XposedHelpers.findAndHookMethod(View.class,
 				"onFilterTouchEventForSecurity", MotionEvent.class,
 				enableShowButtonsHook);
