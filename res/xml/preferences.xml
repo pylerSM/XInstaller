@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/app" >
+    <PreferenceCategory
+        android:key="app"
+        android:title="@string/app" >
         <SwitchPreference
             android:defaultValue="true"
             android:key="enable_module"
@@ -15,7 +17,9 @@
             android:key="enable_expert_mode"
             android:title="@string/expert_mode" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/app_settings" >
+    <PreferenceCategory
+        android:key="preferences"
+        android:title="@string/app_settings" >
         <PreferenceScreen
             android:key="installations"
             android:title="@string/installations" >
@@ -152,13 +156,19 @@
                 android:title="@string/reset" />
         </PreferenceScreen>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/about" >
+    <PreferenceCategory
+        android:key="about"
+        android:title="@string/about" >
         <Preference
             android:summary="@string/app_developer"
             android:title="@string/developer" />
         <Preference
             android:key="app_version"
             android:title="@string/version" />
+        <Preference
+            android:key="app_translator"
+            android:summary="@string/app_developer"
+            android:title="@string/translator" />
     </PreferenceCategory>
 
 </PreferenceScreen>

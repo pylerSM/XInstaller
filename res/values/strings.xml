@@ -41,6 +41,8 @@
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>
+    <string name="translator">Translator</string>
+    <string name="app_translator"></string>
     <string name="no_backup_file">No backup file</string>
     <string name="preferences_backed_up">Successfully backed up</string>
     <string name="preferences_restored">Successfully restored</string>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -19,6 +20,7 @@ public class Preferences extends Activity {
 			.getName();
 	public static Context context;
 	public static Activity activity;
+	public static Resources res;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class Preferences extends Activity {
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			activity = getActivity();
+			res = context.getResources();
 			getPreferenceManager().setSharedPreferencesMode(
 					Context.MODE_WORLD_READABLE);
 			addPreferencesFromResource(R.xml.preferences);
@@ -55,12 +58,19 @@ public class Preferences extends Activity {
 			PreferenceCategory installationsEnable = (PreferenceCategory) findPreference("installations_enable");
 			PreferenceCategory miscEnable = (PreferenceCategory) findPreference("misc_enable");
 			PreferenceCategory miscDisable = (PreferenceCategory) findPreference("misc_disable");
+			PreferenceCategory about = (PreferenceCategory) findPreference("about");
 
 			Preference installUnsignedApps = (Preference) findPreference("enable_install_unsigned_apps");
 			Preference debuggingApps = (Preference) findPreference("enable_apps_debugging");
 			Preference permissionsCheck = (Preference) findPreference("disable_permissions_check");
 			Preference verifyJar = (Preference) findPreference("disable_verify_jar");
 			Preference verifySignature = (Preference) findPreference("disable_verify_signatures");
+			Preference appTranslator = (Preference) findPreference("app_translator");
+
+			String translator = res.getString(R.string.app_translator);
+			if (translator.isEmpty()) {
+				about.removePreference(appTranslator);
+			}
 
 			if (!isExpertModeEnabled) {
 				installationsEnable.removePreference(installUnsignedApps);
