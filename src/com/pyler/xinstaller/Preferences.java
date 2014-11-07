@@ -16,8 +16,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 public class Preferences extends Activity {
-	public static final String PACKAGE_NAME = Preferences.class.getPackage()
-			.getName();
 	public static Context context;
 	public static Activity activity;
 	public static Resources res;
@@ -68,7 +66,7 @@ public class Preferences extends Activity {
 			Preference appTranslator = (Preference) findPreference("app_translator");
 
 			String translator = res.getString(R.string.app_translator);
-			if (translator.isEmpty()) {
+			if ("translator_name".equals(translator)) {
 				about.removePreference(appTranslator);
 			}
 
@@ -90,7 +88,7 @@ public class Preferences extends Activity {
 									.getPackageManager();
 							int state = (Boolean) newValue ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
 									: PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-							String settings = PACKAGE_NAME + ".Settings";
+							String settings = Common.PACKAGE_NAME + ".Settings";
 							ComponentName alias = new ComponentName(context,
 									settings);
 							packageManager.setComponentEnabledSetting(alias,
@@ -103,8 +101,8 @@ public class Preferences extends Activity {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						public boolean onPreferenceClick(Preference preference) {
 							Intent backupPrefs = new Intent(
-									XInstaller.ACTION_BACKUP_PREFERENCES);
-							backupPrefs.setPackage(PACKAGE_NAME);
+									Common.ACTION_BACKUP_PREFERENCES);
+							backupPrefs.setPackage(Common.PACKAGE_NAME);
 							context.sendBroadcast(backupPrefs);
 							return true;
 						}
@@ -114,8 +112,8 @@ public class Preferences extends Activity {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						public boolean onPreferenceClick(Preference preference) {
 							Intent restorePrefs = new Intent(
-									XInstaller.ACTION_RESTORE_PREFERENCES);
-							restorePrefs.setPackage(PACKAGE_NAME);
+									Common.ACTION_RESTORE_PREFERENCES);
+							restorePrefs.setPackage(Common.PACKAGE_NAME);
 							context.sendBroadcast(restorePrefs);
 							return true;
 						}
@@ -125,8 +123,8 @@ public class Preferences extends Activity {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						public boolean onPreferenceClick(Preference preference) {
 							Intent resetPrefs = new Intent(
-									XInstaller.ACTION_RESET_PREFERENCES);
-							resetPrefs.setPackage(PACKAGE_NAME);
+									Common.ACTION_RESET_PREFERENCES);
+							resetPrefs.setPackage(Common.PACKAGE_NAME);
 							context.sendBroadcast(resetPrefs);
 							return true;
 						}
