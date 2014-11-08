@@ -736,7 +736,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
 			XposedHelpers
-					.findAndHookMethod(Common.INSTALLAPPPROGRESS,
+					.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 							lpparam.classLoader, "isThisASystemPackage",
 							systemAppsHook);
 		}
