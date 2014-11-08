@@ -4,10 +4,16 @@
   <string name="app_description">Различные твики для установщика пакетов</string>
   <string name="app">Приложение</string>
   <string name="module">Модуль</string>
+  <string name="app_icon">Значок запуска</string>
+  <string name="expert_mode">Режим эксперта</string>
   <string name="app_settings">Настройки</string>
   <string name="installations">Инсталляция</string>
   <string name="uninstallations">Деинсталляция</string>
   <string name="misc">Разное</string>
+  <string name="backup_and_restore">Рез. копирование и восстановление</string>
+  <string name="backup">Резервное копирование</string>
+  <string name="restore">Восстановление</string>
+  <string name="reset">Сброс</string>
   <string name="enable">Включить</string>
   <string name="disable">Выключить</string>
   <string name="signatures_check">Проверка подписи</string>
@@ -31,7 +37,14 @@
   <string name="verify_jar">Проверка JAR</string>
   <string name="verify_signatures">Проверка подписей</string>
   <string name="show_buttons">Показывать скрытые кнопки</string>
+  <string name="apps_debugging">Отладка приложений</string>
+  <string name="auto_backup">Автоматического резервирования</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>
+  <string name="translator">Переводчик</string>
+  <string name="no_backup_file">Нет файла резервной копии</string>
+  <string name="preferences_backed_up">Успешное резервное копирование</string>
+  <string name="preferences_restored">Успешное восстановление</string>
+  <string name="preferences_reset">Успешный сброс</string>
 </resources>

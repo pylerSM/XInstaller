@@ -5,6 +5,7 @@
   <string name="app">Aplicação</string>
   <string name="module">Módulo</string>
   <string name="app_icon">Ícone do Ecrã Principal</string>
+  <string name="expert_mode">Modo avançado</string>
   <string name="app_settings">Preferências</string>
   <string name="installations">Instalações</string>
   <string name="uninstallations">Desinstalações</string>
@@ -37,9 +38,11 @@
   <string name="verify_signatures">Verificar \"assinaturas\"</string>
   <string name="show_buttons">Apresentar botões quando obscuro</string>
   <string name="apps_debugging">Aplicativos de depuração</string>
+  <string name="auto_backup">Cópia de segurança automática</string>
   <string name="about">Sobre</string>
   <string name="developer">Desenvolvedor</string>
   <string name="version">Versão</string>
+  <string name="translator">Tradutor</string>
   <string name="no_backup_file">Nenhuma cópia de segurança</string>
   <string name="preferences_backed_up">Copia de segurança feita com sucesso</string>
   <string name="preferences_restored">Restaurado com sucesso</string>

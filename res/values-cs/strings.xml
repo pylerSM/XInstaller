@@ -5,6 +5,7 @@
   <string name="app">Aplikace</string>
   <string name="module">Modul</string>
   <string name="app_icon">Ikona ve spouštěči</string>
+  <string name="expert_mode">Režim experta</string>
   <string name="app_settings">Nastavení</string>
   <string name="installations">Instalace</string>
   <string name="uninstallations">Odinstalace</string>
@@ -37,11 +38,13 @@
   <string name="verify_signatures">Ověřování podpisů</string>
   <string name="show_buttons">Zobrazení tlačítek při překrytí</string>
   <string name="apps_debugging">Ladění aplikací</string>
+  <string name="auto_backup">Automatické zálohování</string>
   <string name="about">O aplikaci</string>
   <string name="developer">Vývojář</string>
   <string name="version">Verze</string>
+  <string name="translator">Překladatel</string>
   <string name="no_backup_file">Žádný záložní soubor</string>
   <string name="preferences_backed_up">Úspěšně zálohováno</string>
   <string name="preferences_restored">Úspěšně obnoveno</string>
-  <string name="preferences_reset">Úspěšně obnoveno</string>
+  <string name="preferences_reset">Úspěšně resetováno</string>
 </resources>

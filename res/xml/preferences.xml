@@ -167,7 +167,7 @@
             android:title="@string/version" />
         <Preference
             android:key="app_translator"
-            android:summary="@string/app_developer"
+            android:summary="@string/app_translator"
             android:title="@string/translator" />
     </PreferenceCategory>
 

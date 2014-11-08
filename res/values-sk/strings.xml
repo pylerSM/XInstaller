@@ -38,11 +38,13 @@
   <string name="verify_signatures">Overovanie podpisov</string>
   <string name="show_buttons">Zobrazenie tlačidiel pri prekrytí</string>
   <string name="apps_debugging">Ladenie aplikácií</string>
+  <string name="auto_backup">Automatické zálohovanie</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>
+  <string name="translator">Prekladateľ</string>
   <string name="no_backup_file">Žiadny záložný súbor</string>
   <string name="preferences_backed_up">Úspešne zálohované</string>
   <string name="preferences_restored">Úspešne obnovené</string>
-  <string name="preferences_reset">Úspešne obnovené</string>
+  <string name="preferences_reset">Úspešne resetované</string>
 </resources>

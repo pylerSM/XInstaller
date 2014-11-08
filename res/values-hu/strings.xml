@@ -5,6 +5,7 @@
   <string name="app">Alkalmazás</string>
   <string name="module">Modul</string>
   <string name="app_icon">Launcher ikon</string>
+  <string name="expert_mode">Szakértő mód</string>
   <string name="app_settings">Beállítások</string>
   <string name="installations">Telepítések</string>
   <string name="uninstallations">Eltávolítások</string>
@@ -37,9 +38,11 @@
   <string name="verify_signatures">Aláírások ellenőrzése</string>
   <string name="show_buttons">Mutassa a gombokat amikor nem egyértelmű</string>
   <string name="apps_debugging">Alkalmazás hibakeresés</string>
+  <string name="auto_backup">Automatikus biztonsági mentés</string>
   <string name="about">Névjegy</string>
   <string name="developer">Fejlesztő</string>
   <string name="version">Verzió</string>
+  <string name="translator">Fordító</string>
   <string name="no_backup_file">Nincs biztonsági mentés fájl</string>
   <string name="preferences_backed_up">Sikeres biztonsági mentés</string>
   <string name="preferences_restored">Sikeres visszaállítás</string>

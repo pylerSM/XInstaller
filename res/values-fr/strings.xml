@@ -5,6 +5,7 @@
   <string name="app">Appli</string>
   <string name="module">Module</string>
   <string name="app_icon">Icône du lanceur</string>
+  <string name="expert_mode">Mode expert</string>
   <string name="app_settings">Paramètres</string>
   <string name="installations">Installations</string>
   <string name="uninstallations">Désinstallations</string>
@@ -37,9 +38,11 @@
   <string name="verify_signatures">Vérification des signatures</string>
   <string name="show_buttons">Affichage des boutons obscurcis</string>
   <string name="apps_debugging">Débogage d\'applis</string>
+  <string name="auto_backup">Sauvegarde auto</string>
   <string name="about">À propos</string>
   <string name="developer">Développeur</string>
   <string name="version">Version</string>
+  <string name="translator">Traducteur</string>
   <string name="no_backup_file">Aucun fichier de sauvegarde</string>
   <string name="preferences_backed_up">Sauvegardé avec succès</string>
   <string name="preferences_restored">Restauré avec succès</string>

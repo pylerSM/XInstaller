@@ -5,6 +5,7 @@
   <string name="app">Uygulama</string>
   <string name="module">Modül</string>
   <string name="app_icon">Başlatıcı simgesi</string>
+  <string name="expert_mode">Uzman modu</string>
   <string name="app_settings">Ayarlar</string>
   <string name="installations">Yüklemeler</string>
   <string name="uninstallations">Kaldırmalar</string>
@@ -37,9 +38,11 @@
   <string name="verify_signatures">İmza doğrulama</string>
   <string name="show_buttons">Gizlendiğinde butonları göster</string>
   <string name="apps_debugging">Hata ayıklama uygulamaları</string>
+  <string name="auto_backup">Otomatik yedekleme</string>
   <string name="about">Hakkında</string>
   <string name="developer">Geliştirici</string>
   <string name="version">Versiyon</string>
+  <string name="translator">Çevirmen</string>
   <string name="no_backup_file">Yedekleme dosyası yok</string>
   <string name="preferences_backed_up">Başarıyla yedeklendi</string>
   <string name="preferences_restored">Başarıyla geri yüklendi</string>

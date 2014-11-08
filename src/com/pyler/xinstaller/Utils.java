@@ -74,6 +74,7 @@ public class Utils extends BroadcastReceiver {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	public void setPreference(String preference, boolean value) {
 		SharedPreferences prefs = ctx.getSharedPreferences(

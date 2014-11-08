@@ -2,5 +2,6 @@
 
     <string name="app_name" translatable="false">XInstaller</string>
     <string name="app_developer" translatable="false">pyler</string>
+    <string name="app_translator"></string>
 
 </resources>

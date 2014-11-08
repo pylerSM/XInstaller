@@ -66,7 +66,7 @@ public class Preferences extends Activity {
 			Preference appTranslator = (Preference) findPreference("app_translator");
 
 			String translator = res.getString(R.string.app_translator);
-			if ("translator_name".equals(translator)) {
+			if (translator.isEmpty()) {
 				about.removePreference(appTranslator);
 			}
 
