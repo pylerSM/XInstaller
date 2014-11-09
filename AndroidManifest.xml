@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="332"
-    android:versionName="3.32" >
+    android:versionCode="333"
+    android:versionName="3.33" >
 
     <uses-sdk
         android:minSdkVersion="15"

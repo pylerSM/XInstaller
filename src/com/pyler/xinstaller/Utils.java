@@ -47,7 +47,6 @@ public class Utils extends BroadcastReceiver {
 				String preference = extras.getString(Common.PREFERENCE);
 				boolean value = extras.getBoolean(Common.VALUE);
 				setPreference(preference, value);
-
 			}
 		} else if (Common.ACTION_BACKUP_PREFERENCES.equals(action)) {
 			backupPreferences();
@@ -68,7 +67,7 @@ public class Utils extends BroadcastReceiver {
 			String appName = (String) pm.getApplicationLabel(ai);
 			String versionName = pi.versionName;
 			String fileName = appName + " " + versionName + ".apk";
-			String backupApkFile = Common.PACKAGE_DIR + fileName;
+			String backupApkFile = Common.APP_DIR + fileName;
 			copyFile(new File(apkFile), new File(backupApkFile));
 		} catch (Exception e) {
 		}

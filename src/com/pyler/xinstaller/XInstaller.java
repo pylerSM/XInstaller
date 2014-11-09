@@ -172,7 +172,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				showPackageName = prefs.getBoolean(
-						Common.PREF_ENABLE_SHOW_PACKAGE_NAME, true);
+						Common.PREF_ENABLE_SHOW_PACKAGE_NAME, false);
 				PackageInfo pkgInfo = (PackageInfo) param.args[0];
 				TextView appVersion = (TextView) XposedHelpers.getObjectField(
 						param.thisObject, "mAppVersion");
