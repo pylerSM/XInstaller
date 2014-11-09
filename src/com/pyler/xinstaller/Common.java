@@ -18,11 +18,13 @@ public class Common {
 	public static final String ACTION_MOVE_PACKAGE = "xinstaller.intent.action.MOVE_PACKAGE";
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 	public static final String ACTION_REMOVE_TASK = "xinstaller.intent.action.REMOVE_TASK";
+	public static final String ACTION_SET_INSTALL_LOCATION = "xinstaller.intent.action.SET_INSTALL_LOCATION";
 
 	public static final String FILE = "file";
 	public static final String FLAGS = "flags";
 	public static final String PACKAGE = "package";
 	public static final String TASK = "task";
+	public static final String LOCATION = "location";
 
 	// utils
 	public static final String ACTION_BACKUP_APK_FILE = "xinstaller.intent.action.BACKUP_APK_FILE";
@@ -61,6 +63,7 @@ public class Common {
 	public static final String PREF_ENABLE_SHOW_BUTTON = "enable_show_buttons";
 	public static final String PREF_ENABLE_APP_DEBUGGING = "enable_apps_debugging";
 	public static final String PREF_ENABLE_AUTO_BACKUP = "enable_auto_backup";
+	public static final String PREF_ENABLE_SHOW_PACKAGE_NAME = "enable_show_package_name";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()

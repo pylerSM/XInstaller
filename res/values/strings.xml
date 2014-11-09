@@ -38,6 +38,7 @@
     <string name="show_buttons">Showing buttons when obsecured</string>
     <string name="apps_debugging">Debugging apps</string>
     <string name="auto_backup">Auto backing up</string>
+    <string name="show_package_name">Showing package names</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

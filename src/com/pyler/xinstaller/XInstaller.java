@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
@@ -21,6 +22,7 @@ import android.os.Process;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
@@ -55,6 +57,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean showButtons;
 	public boolean appsDebugging;
 	public boolean autoBackup;
+	public boolean showPackageName;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -76,6 +79,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook showButtonsHook;
 	public XC_MethodHook appsDebuggingHook;
 	public XC_MethodHook autoBackupHook;
+	public XC_MethodHook showPackageNameHook;
 	public boolean JB_MR2_NEWER;
 	public boolean JB_MR1_NEWER;
 	public boolean KITKAT_NEWER;
@@ -144,6 +148,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						systemApi.addAction(Common.ACTION_MOVE_PACKAGE);
 						systemApi.addAction(Common.ACTION_RUN_XINSTALLER);
 						systemApi.addAction(Common.ACTION_REMOVE_TASK);
+						systemApi.addAction(Common.ACTION_SET_INSTALL_LOCATION);
 						mContext.registerReceiver(systemAPI, systemApi);
 						APIEnabled = true;
 
@@ -158,6 +163,25 @@ public class XInstaller implements IXposedHookZygoteInit,
 						getXInstallerContext().registerReceiver(utils, tools);
 					}
 				}
+			}
+		};
+
+		showPackageNameHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				showPackageName = prefs.getBoolean(
+						Common.PREF_ENABLE_SHOW_PACKAGE_NAME, true);
+				PackageInfo pkgInfo = (PackageInfo) param.args[0];
+				TextView appVersion = (TextView) XposedHelpers.getObjectField(
+						param.thisObject, "mAppVersion");
+				String version = appVersion.getText().toString();
+				final String packageName = pkgInfo.packageName;
+				if (isModuleEnabled() && showPackageName) {
+					appVersion.setText(packageName + "\n" + version);
+				}
+
 			}
 		};
 
@@ -600,6 +624,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 							removeTask(task);
 						}
 					}
+				} else if (Common.ACTION_SET_INSTALL_LOCATION.equals(action)) {
+					if (hasExtras) {
+						Integer loc = extras.getInt(Common.LOCATION);
+						if (loc != null) {
+							int location = loc;
+							setInstallLocation(location);
+						}
+					}
 				}
 			}
 
@@ -739,6 +771,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 					.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 							lpparam.classLoader, "isThisASystemPackage",
 							systemAppsHook);
+			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+					lpparam.classLoader, "setAppLabelAndIcon",
+					PackageInfo.class, showPackageNameHook);
 		}
 
 		if (Common.FDROID_PKG.equals(lpparam.packageName)) {
@@ -807,6 +842,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 		enableModule(true);
 	}
 
+	public void setInstallLocation(int location) {
+		XposedHelpers.callMethod(packageManagerObj, "setInstallLocation",
+				location);
+
+	}
+
 	public void disableSignatureCheck(boolean disabled) {
 		Intent disableSignatureCheck = new Intent(Common.ACTION_SET_PREFERENCE);
 		disableSignatureCheck.setPackage(Common.PACKAGE_NAME);
@@ -869,4 +910,5 @@ public class XInstaller implements IXposedHookZygoteInit,
 		mContext.sendBroadcast(backupApkFile);
 
 	}
+
 }
