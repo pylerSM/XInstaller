@@ -39,6 +39,7 @@
   <string name="show_buttons">Knoppen tonen wanneer obsecured</string>
   <string name="apps_debugging">Debugging apps</string>
   <string name="auto_backup">Automatisch backup maken</string>
+  <string name="show_package_name">Pakket namen weergegeven</string>
   <string name="about">Over</string>
   <string name="developer">Ontwikkelaar</string>
   <string name="version">Versie</string>

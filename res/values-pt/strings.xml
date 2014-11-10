@@ -39,6 +39,7 @@
   <string name="show_buttons">Apresentar botões quando obscuro</string>
   <string name="apps_debugging">Aplicativos de depuração</string>
   <string name="auto_backup">Cópia de segurança automática</string>
+  <string name="show_package_name">Amostrar \"package names\" de aplicações</string>
   <string name="about">Sobre</string>
   <string name="developer">Desenvolvedor</string>
   <string name="version">Versão</string>

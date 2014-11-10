@@ -39,6 +39,7 @@
   <string name="show_buttons">Zobrazení tlačítek při překrytí</string>
   <string name="apps_debugging">Ladění aplikací</string>
   <string name="auto_backup">Automatické zálohování</string>
+  <string name="show_package_name">Zobrazení názvů balíků</string>
   <string name="about">O aplikaci</string>
   <string name="developer">Vývojář</string>
   <string name="version">Verze</string>

@@ -39,6 +39,7 @@
   <string name="show_buttons">显示被隐藏的按钮</string>
   <string name="apps_debugging">调试应用</string>
   <string name="auto_backup">自动备份</string>
+  <string name="show_package_name">显示包名</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

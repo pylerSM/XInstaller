@@ -39,6 +39,7 @@
   <string name="show_buttons">Affichage des boutons obscurcis</string>
   <string name="apps_debugging">Débogage d\'applis</string>
   <string name="auto_backup">Sauvegarde auto</string>
+  <string name="show_package_name">Afficher le nom des paquets</string>
   <string name="about">À propos</string>
   <string name="developer">Développeur</string>
   <string name="version">Version</string>
