@@ -647,10 +647,21 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		// enablers
 		if (JB_MR1_NEWER) {
-			XposedHelpers.findAndHookMethod(Process.class, "start",
-					String.class, String.class, int.class, int.class,
-					int[].class, int.class, int.class, int.class, String.class,
-					String[].class, appsDebuggingHook);
+			try {
+				XposedHelpers.findAndHookMethod(Process.class, "start",
+						String.class, String.class, int.class, int.class,
+						int[].class, int.class, int.class, int.class,
+						String.class, String[].class, appsDebuggingHook);
+			} catch (NoSuchMethodError nsm) {
+				try {
+					XposedHelpers.findAndHookMethod(Process.class, "start",
+							String.class, String.class, int.class, int.class,
+							int[].class, int.class, int.class, int.class,
+							String.class, boolean.class, String[].class,
+							appsDebuggingHook);
+				} catch (NoSuchMethodError nsm2) {
+				}
+			}
 		}
 
 		XposedHelpers.findAndHookMethod(MessageDigest.class, "isEqual",

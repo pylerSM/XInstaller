@@ -106,8 +106,8 @@ public class Utils extends BroadcastReceiver {
 		try {
 			output = new ObjectOutputStream(new FileOutputStream(
 					Common.PREFERENCES_BACKUP_FILE));
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(ctx);
+			SharedPreferences prefs = ctx.getSharedPreferences(
+				Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
 			output.writeObject(prefs.getAll());
 		} catch (Exception e) {
 		} finally {
@@ -135,8 +135,9 @@ public class Utils extends BroadcastReceiver {
 		try {
 			input = new ObjectInputStream(new FileInputStream(
 					Common.PREFERENCES_BACKUP_FILE));
-			SharedPreferences.Editor prefsEditor = PreferenceManager
-					.getDefaultSharedPreferences(ctx).edit();
+			SharedPreferences prefs = ctx.getSharedPreferences(
+				Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
+			SharedPreferences.Editor prefsEditor = prefs.edit();
 			prefsEditor.clear();
 			@SuppressWarnings("unchecked")
 			Map<String, ?> entries = (Map<String, ?>) input.readObject();
