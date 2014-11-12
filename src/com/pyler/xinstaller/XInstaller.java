@@ -151,16 +151,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						systemApi.addAction(Common.ACTION_SET_INSTALL_LOCATION);
 						mContext.registerReceiver(systemAPI, systemApi);
 						APIEnabled = true;
-
-						// Utils
-						IntentFilter tools = new IntentFilter();
-						tools.addAction(Common.ACTION_BACKUP_APK_FILE);
-						tools.addAction(Common.ACTION_SET_PREFERENCE);
-						tools.addAction(Common.ACTION_BACKUP_PREFERENCES);
-						tools.addAction(Common.ACTION_RESTORE_PREFERENCES);
-						tools.addAction(Common.ACTION_RESET_PREFERENCES);
-						Utils utils = new Utils();
-						getXInstallerContext().registerReceiver(utils, tools);
 					}
 				}
 			}
@@ -690,10 +680,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		XposedBridge.hookAllConstructors(packageManagerClass,
 				packageManagerHook);
-
 		XposedBridge.hookAllConstructors(activityManagerClass,
 				activityManagerHook);
-
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"compareSignatures", Signature[].class, Signature[].class,
 				checkSignaturesHook);
@@ -749,6 +737,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(devicePolicyManagerClass,
 					"packageHasActiveAdmins", String.class, deviceAdminsHook);
 		}
+
 	}
 
 	@Override

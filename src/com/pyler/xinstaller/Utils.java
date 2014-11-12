@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+@SuppressLint("WorldReadableFiles")
 public class Utils extends BroadcastReceiver {
 	public Context ctx;
 	public Resources res;
@@ -94,6 +95,7 @@ public class Utils extends BroadcastReceiver {
 		out.close();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void backupPreferences() {
 		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
 			try {
@@ -107,7 +109,7 @@ public class Utils extends BroadcastReceiver {
 			output = new ObjectOutputStream(new FileOutputStream(
 					Common.PREFERENCES_BACKUP_FILE));
 			SharedPreferences prefs = ctx.getSharedPreferences(
-				Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
+					Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
 			output.writeObject(prefs.getAll());
 		} catch (Exception e) {
 		} finally {
@@ -124,6 +126,7 @@ public class Utils extends BroadcastReceiver {
 				Toast.LENGTH_LONG).show();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void restorePreferences() {
 		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
 			Toast.makeText(ctx, res.getString(R.string.no_backup_file),
