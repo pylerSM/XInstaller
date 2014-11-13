@@ -282,13 +282,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		verifySignatureHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				verifySignature = prefs.getBoolean(
 						Common.PREF_DISABLE_VERIFY_SIGNATURE, false);
 				if (isModuleEnabled() && verifySignature) {
 					param.setResult(true);
+					return;
 				}
 			}
 		};
