@@ -80,10 +80,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook appsDebuggingHook;
 	public XC_MethodHook autoBackupHook;
 	public XC_MethodHook showPackageNameHook;
+	public XC_MethodHook scanPackageHook;
+	public XC_MethodHook verifySignaturesHook;
 	public boolean JB_MR2_NEWER;
 	public boolean JB_MR1_NEWER;
 	public boolean KITKAT_NEWER;
 	public boolean APIEnabled;
+	public boolean signatureCheckOff;
 	public Context mContext;
 	public Object packageManagerObj;
 	public Object activityManagerObj;
@@ -153,6 +156,32 @@ public class XInstaller implements IXposedHookZygoteInit,
 						APIEnabled = true;
 					}
 				}
+			}
+		};
+
+		verifySignaturesHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				signaturesCheck = prefs.getBoolean(
+						Common.PREF_DISABLE_SIGNATURE_CHECK, false);
+				if (isModuleEnabled() && signaturesCheck) {
+					param.setResult(true);
+				}
+			}
+		};
+		scanPackageHook = new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				signatureCheckOff = false;
+			}
+
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				signatureCheckOff = true;
 			}
 		};
 
@@ -297,7 +326,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				signaturesCheck = prefs.getBoolean(
 						Common.PREF_DISABLE_SIGNATURE_CHECK, false);
-				if (isModuleEnabled() && signaturesCheck) {
+				if (isModuleEnabled() && signaturesCheck && signatureCheckOff) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);
 				}
 			}
@@ -636,6 +665,19 @@ public class XInstaller implements IXposedHookZygoteInit,
 		KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true : false;
 
 		// enablers
+		if (KITKAT_NEWER) {
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"scanPackageLI",
+					"android.content.pm.PackageParser$Package", int.class,
+					int.class, long.class, "android.os.UserHandle",
+					scanPackageHook);
+		}
+
+		XposedHelpers.findAndHookMethod(packageManagerClass,
+				"verifySignaturesLP", "com.android.server.pm.PackageSetting",
+				"android.content.pm.PackageParser$Package",
+				verifySignaturesHook);
+
 		if (JB_MR1_NEWER) {
 			try {
 				XposedHelpers.findAndHookMethod(Process.class, "start",
