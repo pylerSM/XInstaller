@@ -7,4 +7,4 @@ Translations:
 
 APIs:
 - use this library in your project:
-- https://github.com/pylerSM/XInstaller/tree/master/releases
+- https://github.com/pylerSM/XInstaller/tree/master/api/XInstallerLib.jar
