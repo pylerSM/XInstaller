@@ -39,6 +39,10 @@
     <string name="apps_debugging">Debugging apps</string>
     <string name="auto_backup">Auto backing up</string>
     <string name="show_package_name">Showing package names</string>
+    <string name="show_version">Showing version info</string>
+    <string name="current_version">Current version</string>
+    <string name="new_version">New version</string>
+    <string name="delete_apk_files_install">Deleting APK files after installing</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-@SuppressLint("WorldReadableFiles")
 public class Utils extends BroadcastReceiver {
 	public Context ctx;
 	public Resources res;
@@ -42,6 +41,11 @@ public class Utils extends BroadcastReceiver {
 			if (hasExtras) {
 				String apkFile = extras.getString(Common.FILE);
 				backupApkFile(apkFile);
+			}
+		} else if (Common.ACTION_DELETE_APK_FILE.equals(action)) {
+			if (hasExtras) {
+				String apkFile = extras.getString(Common.FILE);
+				deleteApkFile(apkFile);
 			}
 		} else if (Common.ACTION_SET_PREFERENCE.equals(action)) {
 			if (hasExtras) {
@@ -74,6 +78,11 @@ public class Utils extends BroadcastReceiver {
 		}
 	}
 
+	public void deleteApkFile(String apkFile) {
+		File apk = new File(apkFile);
+		apk.delete();
+	}
+
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	public void setPreference(String preference, boolean value) {
@@ -95,6 +104,7 @@ public class Utils extends BroadcastReceiver {
 		out.close();
 	}
 
+	@SuppressLint("WorldReadableFiles")
 	@SuppressWarnings("deprecation")
 	public void backupPreferences() {
 		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
@@ -126,6 +136,7 @@ public class Utils extends BroadcastReceiver {
 				Toast.LENGTH_LONG).show();
 	}
 
+	@SuppressLint("WorldReadableFiles")
 	@SuppressWarnings("deprecation")
 	public void restorePreferences() {
 		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
@@ -139,7 +150,7 @@ public class Utils extends BroadcastReceiver {
 			input = new ObjectInputStream(new FileInputStream(
 					Common.PREFERENCES_BACKUP_FILE));
 			SharedPreferences prefs = ctx.getSharedPreferences(
-				Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
+					Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
 			SharedPreferences.Editor prefsEditor = prefs.edit();
 			prefsEditor.clear();
 			@SuppressWarnings("unchecked")

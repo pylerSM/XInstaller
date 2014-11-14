@@ -28,6 +28,7 @@ public class Common {
 
 	// utils
 	public static final String ACTION_BACKUP_APK_FILE = "xinstaller.intent.action.BACKUP_APK_FILE";
+	public static final String ACTION_DELETE_APK_FILE = "xinstaller.intent.action.DELETE_APK_FILE";
 	public static final String ACTION_SET_PREFERENCE = "xinstaller.intent.action.SET_PREFERENCE";
 	public static final String ACTION_BACKUP_PREFERENCES = "xinstaller.intent.action.BACKUP_PREFERENCES";
 	public static final String ACTION_RESTORE_PREFERENCES = "xinstaller.intent.action.RESTORE_PREFERENCES";
@@ -64,6 +65,8 @@ public class Common {
 	public static final String PREF_ENABLE_APP_DEBUGGING = "enable_apps_debugging";
 	public static final String PREF_ENABLE_AUTO_BACKUP = "enable_auto_backup";
 	public static final String PREF_ENABLE_SHOW_PACKAGE_NAME = "enable_show_package_name";
+	public static final String PREF_ENABLE_SHOW_VERSION = "enable_show_version";
+	public static final String PREF_ENABLE_DELETE_APK_FILE_INSTALL = "enable_delete_apk_files_install";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()

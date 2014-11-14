@@ -6,6 +6,7 @@ import java.security.cert.Certificate;
 import java.util.Hashtable;
 
 import android.app.ActivityManager;
+import android.app.AndroidAppHelper;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
@@ -58,6 +61,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean appsDebugging;
 	public boolean autoBackup;
 	public boolean showPackageName;
+	public boolean showVersions;
+	public boolean deleteApkFiles;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -171,6 +176,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 			}
 		};
+
 		scanPackageHook = new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param)
@@ -218,9 +224,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 			}
 		};
+
 		appsDebuggingHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				appsDebugging = prefs.getBoolean(
@@ -282,14 +289,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		verifySignatureHook = new XC_MethodHook() {
 			@Override
-			protected void beforeHookedMethod(MethodHookParam param)
+			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				verifySignature = prefs.getBoolean(
 						Common.PREF_DISABLE_VERIFY_SIGNATURE, false);
 				if (isModuleEnabled() && verifySignature) {
 					param.setResult(true);
-					return;
 				}
 			}
 		};
@@ -366,6 +372,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					flags |= Common.INSTALL_EXTERNAL;
 				}
 				param.args[ID] = flags;
+
 				if (isModuleEnabled() && backupApkFiles) {
 					Uri packageUri = (Uri) param.args[0];
 					String apkFile = packageUri.getPath();
@@ -489,6 +496,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoInstall = prefs.getBoolean(Common.PREF_ENABLE_AUTO_INSTALL,
 						false);
+				showVersions = prefs.getBoolean(
+						Common.PREF_ENABLE_SHOW_VERSION, false);
+				mContext = AndroidAppHelper.currentApplication();
 				Button mOk = (Button) XposedHelpers.getObjectField(
 						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoInstall) {
@@ -496,8 +506,26 @@ public class XInstaller implements IXposedHookZygoteInit,
 							"mOkCanInstall", true);
 					mOk.performClick();
 				}
-			}
+				if (isModuleEnabled() && showVersions) {
+					Resources res = getXInstallerContext().getResources();
+					PackageManager pm = mContext.getPackageManager();
+					PackageInfo mPkgInfo = (PackageInfo) XposedHelpers
+							.getObjectField(param.thisObject, "mPkgInfo");
+					String packageName = mPkgInfo.packageName;
+					String versionInfo = res.getString(R.string.new_version)
+							+ ": " + mPkgInfo.versionName + "\n";
+					try {
+						PackageInfo pi = pm.getPackageInfo(packageName, 0);
+						String currentVersion = pi.versionName;
+						versionInfo += res.getString(R.string.current_version)
+								+ ": " + currentVersion;
 
+					} catch (PackageManager.NameNotFoundException e) {
+					}
+					Toast.makeText(mContext, versionInfo, Toast.LENGTH_LONG)
+							.show();
+				}
+			}
 		};
 
 		autoUninstallHook = new XC_MethodHook() {
@@ -541,6 +569,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_AUTO_CLOSE_INSTALL, false);
 				autoLaunchInstall = prefs.getBoolean(
 						Common.PREF_ENABLE_LAUNCH_INSTALL, false);
+				deleteApkFiles = prefs.getBoolean(
+						Common.PREF_ENABLE_DELETE_APK_FILE_INSTALL, false);
 				Button mDone = (Button) XposedHelpers.getObjectField(
 						XposedHelpers.getSurroundingThis(param.thisObject),
 						"mDoneButton");
@@ -548,11 +578,20 @@ public class XInstaller implements IXposedHookZygoteInit,
 				if (isModuleEnabled() && autoCloseInstall) {
 					mDone.performClick();
 				}
+
 				Button mLaunch = (Button) XposedHelpers.getObjectField(
 						XposedHelpers.getSurroundingThis(param.thisObject),
 						"mLaunchButton");
 				if (isModuleEnabled() && autoLaunchInstall) {
 					mLaunch.performClick();
+				}
+
+				if (isModuleEnabled() && deleteApkFiles) {
+					Uri packageUri = (Uri) XposedHelpers.getObjectField(
+							XposedHelpers.getSurroundingThis(param.thisObject),
+							"mPackageURI");
+					String apkFile = packageUri.getPath();
+					deleteApkFile(apkFile);
 				}
 			}
 
@@ -951,7 +990,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 		backupApkFile.setPackage(Common.PACKAGE_NAME);
 		backupApkFile.putExtra(Common.FILE, apkFile);
 		mContext.sendBroadcast(backupApkFile);
+	}
 
+	public void deleteApkFile(String apkFile) {
+		Intent deleteApkFile = new Intent(Common.ACTION_DELETE_APK_FILE);
+		deleteApkFile.setPackage(Common.PACKAGE_NAME);
+		deleteApkFile.putExtra(Common.FILE, apkFile);
+		mContext.sendBroadcast(deleteApkFile);
 	}
 
 }
