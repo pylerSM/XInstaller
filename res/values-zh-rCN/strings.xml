@@ -32,7 +32,7 @@
   <string name="auto_close_uninstall">卸载后自动关闭</string>
   <string name="auto_launch_install">安装后自动运行</string>
   <string name="permissions_check">检查权限</string>
-  <string name="backup_apk_files">备份APK文件</string>
+  <string name="backup_apk_files">备份 APK 文件</string>
   <string name="install_unsigned_apps">安装未签名应用</string>
   <string name="verify_jar">验证 JAR</string>
   <string name="verify_signatures">验证签名</string>
@@ -40,6 +40,10 @@
   <string name="apps_debugging">调试应用</string>
   <string name="auto_backup">自动备份</string>
   <string name="show_package_name">显示包名</string>
+  <string name="show_version">显示版本信息</string>
+  <string name="current_version">当前版本</string>
+  <string name="new_version">新版本</string>
+  <string name="delete_apk_files_install">安装后删除 APK 文件</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

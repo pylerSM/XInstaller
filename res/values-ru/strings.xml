@@ -40,6 +40,10 @@
   <string name="apps_debugging">Отладка приложений</string>
   <string name="auto_backup">Автоматического резервирования</string>
   <string name="show_package_name">Отображать имена пакетов</string>
+  <string name="show_version">Показать информацию о версии</string>
+  <string name="current_version">Текущая версия</string>
+  <string name="new_version">Новая версия</string>
+  <string name="delete_apk_files_install">Удаление APK файлов после установки</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>

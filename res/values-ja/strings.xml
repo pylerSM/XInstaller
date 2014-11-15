@@ -40,6 +40,10 @@
   <string name="apps_debugging">アプリのデバッグ</string>
   <string name="auto_backup">自動バックアップ</string>
   <string name="show_package_name">パッケージ名の表示</string>
+  <string name="show_version">バージョン情報の表示</string>
+  <string name="current_version">現在のバージョン</string>
+  <string name="new_version">新しいバージョン</string>
+  <string name="delete_apk_files_install">インストールした後にAPKファイルを削除する</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>

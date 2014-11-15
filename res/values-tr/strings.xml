@@ -40,6 +40,10 @@
   <string name="apps_debugging">Uygulamalarda hata ayıklama</string>
   <string name="auto_backup">Otomatik yedekleme</string>
   <string name="show_package_name">Paket adlarını göster</string>
+  <string name="show_version">Versiyon bilgisini göster</string>
+  <string name="current_version">Şimdiki versiyon</string>
+  <string name="new_version">Yeni versiyon</string>
+  <string name="delete_apk_files_install">APK dosyalarını yükledikten sonra silme</string>
   <string name="about">Hakkında</string>
   <string name="developer">Geliştirici</string>
   <string name="version">Versiyon</string>

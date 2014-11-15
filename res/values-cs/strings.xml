@@ -40,6 +40,10 @@
   <string name="apps_debugging">Ladění aplikací</string>
   <string name="auto_backup">Automatické zálohování</string>
   <string name="show_package_name">Zobrazení názvů balíků</string>
+  <string name="show_version">Zobrazení informace o verzích</string>
+  <string name="current_version">Aktuální verze</string>
+  <string name="new_version">Nová verze</string>
+  <string name="delete_apk_files_install">Vymazání APK souborů po nainstalování</string>
   <string name="about">O aplikaci</string>
   <string name="developer">Vývojář</string>
   <string name="version">Verze</string>

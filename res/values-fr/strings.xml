@@ -40,6 +40,10 @@
   <string name="apps_debugging">Débogage d\'applis</string>
   <string name="auto_backup">Sauvegarde auto</string>
   <string name="show_package_name">Afficher le nom des paquets</string>
+  <string name="show_version">Afficher informations de version</string>
+  <string name="current_version">Version actuelle</string>
+  <string name="new_version">Nouvelle version</string>
+  <string name="delete_apk_files_install">Suppression des fichiers APK après installation</string>
   <string name="about">À propos</string>
   <string name="developer">Développeur</string>
   <string name="version">Version</string>
