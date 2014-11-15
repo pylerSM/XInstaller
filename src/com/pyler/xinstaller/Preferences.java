@@ -54,6 +54,7 @@ public class Preferences extends Activity {
 					"enable_expert_mode", false);
 
 			PreferenceCategory installationsEnable = (PreferenceCategory) findPreference("installations_enable");
+			PreferenceCategory installationsDisable = (PreferenceCategory) findPreference("installations_disable");
 			PreferenceCategory miscEnable = (PreferenceCategory) findPreference("misc_enable");
 			PreferenceCategory miscDisable = (PreferenceCategory) findPreference("misc_disable");
 			PreferenceCategory about = (PreferenceCategory) findPreference("about");
@@ -63,6 +64,7 @@ public class Preferences extends Activity {
 			Preference permissionsCheck = (Preference) findPreference("disable_permissions_check");
 			Preference verifyJar = (Preference) findPreference("disable_verify_jar");
 			Preference verifySignature = (Preference) findPreference("disable_verify_signatures");
+			Preference checkFreeStorage = (Preference) findPreference("disable_free_storage_check");
 			Preference appTranslator = (Preference) findPreference("app_translator");
 
 			String translator = res.getString(R.string.app_translator);
@@ -72,6 +74,7 @@ public class Preferences extends Activity {
 
 			if (!isExpertModeEnabled) {
 				installationsEnable.removePreference(installUnsignedApps);
+				installationsDisable.removePreference(checkFreeStorage);
 				miscEnable.removePreference(debuggingApps);
 				miscDisable.removePreference(permissionsCheck);
 				miscDisable.removePreference(verifyJar);
