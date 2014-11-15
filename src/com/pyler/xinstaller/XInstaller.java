@@ -63,7 +63,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean showPackageName;
 	public boolean showVersions;
 	public boolean deleteApkFiles;
-	public boolean checkFreeStorage;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -88,7 +87,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook showPackageNameHook;
 	public XC_MethodHook scanPackageHook;
 	public XC_MethodHook verifySignaturesHook;
-	public XC_MethodHook checkFreeStorageHook;
 	public boolean JB_MR2_NEWER;
 	public boolean JB_MR1_NEWER;
 	public boolean KITKAT_NEWER;
@@ -163,20 +161,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						mContext.registerReceiver(systemAPI, systemApi);
 						APIEnabled = true;
 					}
-				}
-			}
-		};
-
-		checkFreeStorageHook = new XC_MethodHook() {
-			@Override
-			protected void beforeHookedMethod(MethodHookParam param)
-					throws Throwable {
-				prefs.reload();
-				checkFreeStorage = prefs.getBoolean(
-						Common.PREF_DISABLE_FREE_STORAGE_CHECK, false);
-				if (isModuleEnabled() && checkFreeStorage) {
-					param.setResult(true);
-					return;
 				}
 			}
 		};
@@ -733,18 +717,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 		KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true : false;
 
 		// enablers
-		Class<?> fileInstallArgs = XposedHelpers.findClass(
-				Common.PACKAGEMANAGERSERVICE + "$FileInstallArgs", null);
-		XposedHelpers.findAndHookMethod(fileInstallArgs, "checkFreeStorage",
-				"com.android.internal.app.IMediaContainerService",
-				checkFreeStorageHook);
-
-		Class<?> asecInstallArgs = XposedHelpers.findClass(
-				Common.PACKAGEMANAGERSERVICE + "$AsecInstallArgs", null);
-		XposedHelpers.findAndHookMethod(asecInstallArgs, "checkFreeStorage",
-				"com.android.internal.app.IMediaContainerService",
-				checkFreeStorageHook);
-
 		if (KITKAT_NEWER) {
 			try {
 				XposedHelpers.findAndHookMethod(packageManagerClass,

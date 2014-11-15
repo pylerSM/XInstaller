@@ -86,10 +86,6 @@
                     android:defaultValue="false"
                     android:key="disable_verify_apps"
                     android:title="@string/verify_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_free_storage_check"
-                    android:title="@string/free_storage_check" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen

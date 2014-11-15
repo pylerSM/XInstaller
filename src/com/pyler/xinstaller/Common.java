@@ -66,7 +66,6 @@ public class Common {
 	public static final String PREF_ENABLE_SHOW_PACKAGE_NAME = "enable_show_package_name";
 	public static final String PREF_ENABLE_SHOW_VERSION = "enable_show_version";
 	public static final String PREF_ENABLE_DELETE_APK_FILE_INSTALL = "enable_delete_apk_files_install";
-	public static final String PREF_DISABLE_FREE_STORAGE_CHECK = "disable_free_storage_check";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
