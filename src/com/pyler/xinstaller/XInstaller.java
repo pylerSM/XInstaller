@@ -115,6 +115,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
 		APIEnabled = false;
+		signatureCheckOff = true;
 
 		// hooks
 		packageManagerHook = new XC_MethodHook() {
@@ -166,13 +167,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		verifySignaturesHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				signaturesCheck = prefs.getBoolean(
 						Common.PREF_DISABLE_SIGNATURE_CHECK, false);
 				if (isModuleEnabled() && signaturesCheck) {
 					param.setResult(true);
+					return;
 				}
 			}
 		};
@@ -245,13 +247,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		showButtonsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				showButtons = prefs.getBoolean(Common.PREF_ENABLE_SHOW_BUTTON,
 						false);
 				if (isModuleEnabled() && showButtons) {
 					param.setResult(true);
+					return;
 				}
 			}
 		};
@@ -289,52 +292,56 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		verifySignatureHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				verifySignature = prefs.getBoolean(
 						Common.PREF_DISABLE_VERIFY_SIGNATURE, false);
 				if (isModuleEnabled() && verifySignature) {
 					param.setResult(true);
+					return;
 				}
 			}
 		};
 
 		installUnsignedAppsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				installUnsignedApps = prefs.getBoolean(
 						Common.PREF_ENABLE_INSTALL_UNSIGNED_APP, false);
 				if (isModuleEnabled() && installUnsignedApps) {
 					param.setResult(true);
+					return;
 				}
 			}
 		};
 
 		checkPermissionsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				permissionsCheck = prefs.getBoolean(
 						Common.PREF_DISABLE_PERMISSION_CHECK, false);
 				if (isModuleEnabled() && permissionsCheck) {
 					param.setResult(PackageManager.PERMISSION_GRANTED);
+					return;
 				}
 			}
 		};
 
 		checkSignaturesHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				signaturesCheck = prefs.getBoolean(
 						Common.PREF_DISABLE_SIGNATURE_CHECK, false);
 				if (isModuleEnabled() && signaturesCheck && signatureCheckOff) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);
+					return;
 				}
 			}
 		};
@@ -403,13 +410,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		systemAppsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				disableSystemApps = prefs.getBoolean(
-						Common.PREF_DISABLE_SYSTEM_APP, false);
+						Common.PREF_ENABLE_DISABLE_SYSTEM_APP, false);
 				if (isModuleEnabled() && disableSystemApps) {
 					param.setResult(false);
+					return;
 				}
 
 			}
@@ -418,13 +426,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		unknownAppsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				installUnknownApps = prefs.getBoolean(
 						Common.PREF_ENABLE_INSTALL_UNKNOWN_APP, false);
 				if (isModuleEnabled() && installUnknownApps) {
 					param.setResult(true);
+					return;
 				}
 
 			}
@@ -433,13 +442,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		verifyAppsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				verifyApps = prefs.getBoolean(Common.PREF_DISABLE_VERIFY_APP,
 						false);
 				if (isModuleEnabled() && verifyApps) {
 					param.setResult(false);
+					return;
 				}
 
 			}
@@ -448,13 +458,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		deviceAdminsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				deviceAdmins = prefs.getBoolean(
 						Common.PREF_ENABLE_UNINSTALL_DEVICE_ADMIN, false);
 				if (isModuleEnabled() && deviceAdmins) {
 					param.setResult(false);
+					return;
 				}
 
 			}
@@ -706,11 +717,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		// enablers
 		if (KITKAT_NEWER) {
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"scanPackageLI",
-					"android.content.pm.PackageParser$Package", int.class,
-					int.class, long.class, "android.os.UserHandle",
-					scanPackageHook);
+			try {
+				XposedHelpers.findAndHookMethod(packageManagerClass,
+						"scanPackageLI",
+						"android.content.pm.PackageParser$Package", int.class,
+						int.class, long.class, "android.os.UserHandle",
+						scanPackageHook);
+			} catch (NoSuchMethodError nsm) {
+			}
 		}
 
 		XposedHelpers.findAndHookMethod(packageManagerClass,
@@ -725,14 +739,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 						int[].class, int.class, int.class, int.class,
 						String.class, String[].class, appsDebuggingHook);
 			} catch (NoSuchMethodError nsm) {
-				try {
-					XposedHelpers.findAndHookMethod(Process.class, "start",
-							String.class, String.class, int.class, int.class,
-							int[].class, int.class, int.class, int.class,
-							String.class, boolean.class, String[].class,
-							appsDebuggingHook);
-				} catch (NoSuchMethodError nsm2) {
-				}
+				XposedHelpers.findAndHookMethod(Process.class, "start",
+						String.class, String.class, int.class, int.class,
+						int[].class, int.class, int.class, int.class,
+						String.class, boolean.class, String[].class,
+						appsDebuggingHook);
 			}
 		}
 

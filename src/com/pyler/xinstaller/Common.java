@@ -50,7 +50,6 @@ public class Common {
 	public static final String PREF_ENABLE_INSTALL_UNKNOWN_APP = "enable_install_unknown_apps";
 	public static final String PREF_ENABLE_UNINSTALL_DEVICE_ADMIN = "enable_uninstall_device_admins";
 	public static final String PREF_DISABLE_FORWARD_LOCK = "disable_forward_lock";
-	public static final String PREF_DISABLE_SYSTEM_APP = "disable_system_apps";
 	public static final String PREF_ENABLE_DISABLE_SYSTEM_APP = "enable_disable_system_apps";
 	public static final String PREF_ENABLE_AUTO_CLOSE_UNINSTALL = "enable_auto_close_uninstall";
 	public static final String PREF_ENABLE_AUTO_CLOSE_INSTALL = "enable_auto_close_install";
