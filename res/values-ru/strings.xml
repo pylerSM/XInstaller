@@ -38,7 +38,7 @@
   <string name="verify_signatures">Проверка подписей</string>
   <string name="show_buttons">Показывать скрытые кнопки</string>
   <string name="apps_debugging">Отладка приложений</string>
-  <string name="auto_backup">Автоматического резервирования</string>
+  <string name="auto_backup">Автоматическое резервироване</string>
   <string name="show_package_name">Отображать имена пакетов</string>
   <string name="show_version">Показать информацию о версии</string>
   <string name="current_version">Текущая версия</string>

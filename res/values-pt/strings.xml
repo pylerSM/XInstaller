@@ -40,6 +40,10 @@
   <string name="apps_debugging">Aplicativos de depuração</string>
   <string name="auto_backup">Cópia de segurança automática</string>
   <string name="show_package_name">Amostrar \"package names\" de aplicações</string>
+  <string name="show_version">Amostrar informação da versão</string>
+  <string name="current_version">Versão atual</string>
+  <string name="new_version">Nova versão</string>
+  <string name="delete_apk_files_install">Eliminar APK após instalação</string>
   <string name="about">Sobre</string>
   <string name="developer">Desenvolvedor</string>
   <string name="version">Versão</string>

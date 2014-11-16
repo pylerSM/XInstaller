@@ -717,16 +717,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 		KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true : false;
 
 		// enablers
-		if (KITKAT_NEWER) {
-			try {
-				XposedHelpers.findAndHookMethod(packageManagerClass,
-						"scanPackageLI",
+		XposedHelpers
+				.findAndHookMethod(packageManagerClass, "scanPackageLI",
 						"android.content.pm.PackageParser$Package", int.class,
 						int.class, long.class, "android.os.UserHandle",
 						scanPackageHook);
-			} catch (NoSuchMethodError nsm) {
-			}
-		}
 
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"verifySignaturesLP", "com.android.server.pm.PackageSetting",
