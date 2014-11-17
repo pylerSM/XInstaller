@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -63,6 +64,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean showPackageName;
 	public boolean showVersions;
 	public boolean deleteApkFiles;
+	public boolean moveApps;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -87,6 +89,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook showPackageNameHook;
 	public XC_MethodHook scanPackageHook;
 	public XC_MethodHook verifySignaturesHook;
+	public XC_MethodHook moveAppsHook;
 	public boolean JB_MR2_NEWER;
 	public boolean JB_MR1_NEWER;
 	public boolean KITKAT_NEWER;
@@ -161,6 +164,19 @@ public class XInstaller implements IXposedHookZygoteInit,
 						mContext.registerReceiver(systemAPI, systemApi);
 						APIEnabled = true;
 					}
+				}
+			}
+		};
+
+		moveAppsHook = new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				moveApps = prefs.getBoolean(Common.PREF_ENABLE_MOVE_APP, false);
+				if (isModuleEnabled() && moveApps) {
+					param.setResult(true);
+					return;
 				}
 			}
 		};
@@ -863,6 +879,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 					lpparam.classLoader, "setAppLabelAndIcon",
 					PackageInfo.class, showPackageNameHook);
+			XposedHelpers.findAndHookMethod(Common.CANBEONSDCARDCHECKER,
+					lpparam.classLoader, "check", ApplicationInfo.class,
+					moveAppsHook);
 		}
 
 		if (Common.FDROID_PKG.equals(lpparam.packageName)) {

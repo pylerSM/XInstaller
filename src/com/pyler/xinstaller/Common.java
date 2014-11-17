@@ -66,6 +66,7 @@ public class Common {
 	public static final String PREF_ENABLE_SHOW_PACKAGE_NAME = "enable_show_package_name";
 	public static final String PREF_ENABLE_SHOW_VERSION = "enable_show_version";
 	public static final String PREF_ENABLE_DELETE_APK_FILE_INSTALL = "enable_delete_apk_files_install";
+	public static final String PREF_ENABLE_MOVE_APP = "enable_move_apps";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -92,6 +93,7 @@ public class Common {
 	public static final String INSTALLEDAPPDETAILS = "com.android.settings.applications.InstalledAppDetails";
 	public static final String PACKAGEINSTALLERACTIVITY = "com.android.packageinstaller.PackageInstallerActivity";
 	public static final String INSTALLAPPPROGRESS = "com.android.packageinstaller.InstallAppProgress";
+	public static final String CANBEONSDCARDCHECKER = "com.android.settings.applications.CanBeOnSdCardChecker";
 	public static final String UNINSTALLERACTIVITY = "com.android.packageinstaller.UninstallerActivity";
 	public static final String UNINSTALLAPPPROGRESS = "com.android.packageinstaller.UninstallAppProgress";
 	public static final String FDROIDAPPDETAILS = "org.fdroid.fdroid.AppDetails";
