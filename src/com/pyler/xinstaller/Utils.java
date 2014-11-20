@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 public class Utils extends BroadcastReceiver {
 	public Context ctx;
-	public Resources res;
+	public Resources resources;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -33,7 +33,7 @@ public class Utils extends BroadcastReceiver {
 			Common.PACKAGE_DIR.mkdir();
 		}
 		ctx = context;
-		res = ctx.getResources();
+		resources = ctx.getResources();
 		String action = intent.getAction();
 		Bundle extras = intent.getExtras();
 		boolean hasExtras = (extras != null) ? true : false;
@@ -132,7 +132,7 @@ public class Utils extends BroadcastReceiver {
 			}
 		}
 
-		Toast.makeText(ctx, res.getString(R.string.preferences_backed_up),
+		Toast.makeText(ctx, resources.getString(R.string.preferences_backed_up),
 				Toast.LENGTH_LONG).show();
 	}
 
@@ -140,7 +140,7 @@ public class Utils extends BroadcastReceiver {
 	@SuppressWarnings("deprecation")
 	public void restorePreferences() {
 		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
-			Toast.makeText(ctx, res.getString(R.string.no_backup_file),
+			Toast.makeText(ctx, resources.getString(R.string.no_backup_file),
 					Toast.LENGTH_LONG).show();
 			return;
 		}
@@ -174,7 +174,7 @@ public class Utils extends BroadcastReceiver {
 			}
 		}
 
-		Toast.makeText(ctx, res.getString(R.string.preferences_restored),
+		Toast.makeText(ctx, resources.getString(R.string.preferences_restored),
 				Toast.LENGTH_LONG).show();
 	}
 
@@ -184,7 +184,7 @@ public class Utils extends BroadcastReceiver {
 		prefsEditor.clear();
 		prefsEditor.commit();
 
-		Toast.makeText(ctx, res.getString(R.string.preferences_reset),
+		Toast.makeText(ctx, resources.getString(R.string.preferences_reset),
 				Toast.LENGTH_LONG).show();
 	}
 }
