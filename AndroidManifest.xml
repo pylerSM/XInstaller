@@ -4,7 +4,6 @@
     android:versionName="3.89" >
 
     <uses-sdk
-        android:maxSdkVersion="19"
         android:minSdkVersion="15"
         android:targetSdkVersion="19" />
 

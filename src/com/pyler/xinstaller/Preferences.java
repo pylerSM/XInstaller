@@ -18,7 +18,7 @@ import android.preference.PreferenceManager;
 public class Preferences extends Activity {
 	public static Context context;
 	public static Activity activity;
-	public static Resources res;
+	public static Resources resources;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class Preferences extends Activity {
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			activity = getActivity();
-			res = context.getResources();
+			resources = context.getResources();
 			getPreferenceManager().setSharedPreferencesMode(
 					Context.MODE_WORLD_READABLE);
 			addPreferencesFromResource(R.xml.preferences);
@@ -60,14 +60,13 @@ public class Preferences extends Activity {
 
 			Preference installUnsignedApps = (Preference) findPreference("enable_install_unsigned_apps");
 			Preference installOnExternal = (Preference) findPreference("enable_install_external_storage");
-			Preference checkSdkVersion = (Preference) findPreference("disable_sdk_version_check");
 			Preference debuggingApps = (Preference) findPreference("enable_apps_debugging");
 			Preference permissionsCheck = (Preference) findPreference("disable_permissions_check");
 			Preference verifyJar = (Preference) findPreference("disable_verify_jar");
 			Preference verifySignature = (Preference) findPreference("disable_verify_signatures");
 			Preference appTranslator = (Preference) findPreference("app_translator");
 
-			String translator = res.getString(R.string.app_translator);
+			String translator = resources.getString(R.string.app_translator);
 			if (translator.isEmpty()) {
 				about.removePreference(appTranslator);
 			}
@@ -75,7 +74,6 @@ public class Preferences extends Activity {
 			if (!isExpertModeEnabled) {
 				installationsEnable.removePreference(installUnsignedApps);
 				installationsEnable.removePreference(installOnExternal);
-				installationsEnable.removePreference(checkSdkVersion);
 				miscEnable.removePreference(debuggingApps);
 				miscDisable.removePreference(permissionsCheck);
 				miscDisable.removePreference(verifyJar);

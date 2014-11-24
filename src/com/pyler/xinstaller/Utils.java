@@ -20,9 +20,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+@SuppressLint("WorldReadableFiles")
+@SuppressWarnings("deprecation")
 public class Utils extends BroadcastReceiver {
 	public Context ctx;
 	public Resources resources;
@@ -73,18 +74,22 @@ public class Utils extends BroadcastReceiver {
 			String versionName = pi.versionName;
 			String fileName = appName + " " + versionName + ".apk";
 			String backupApkFile = Common.APP_DIR + fileName;
-			copyFile(new File(apkFile), new File(backupApkFile));
+			File src = new File(apkFile);
+			File dst = new File(backupApkFile);
+			if (!dst.exists()) {
+				copyFile(src, dst);
+			}
 		} catch (Exception e) {
 		}
 	}
 
 	public void deleteApkFile(String apkFile) {
 		File apk = new File(apkFile);
-		apk.delete();
+		if (apk.exists()) {
+			apk.delete();
+		}
 	}
 
-	@SuppressWarnings("deprecation")
-	@SuppressLint("WorldReadableFiles")
 	public void setPreference(String preference, boolean value) {
 		SharedPreferences prefs = ctx.getSharedPreferences(
 				Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
@@ -104,8 +109,6 @@ public class Utils extends BroadcastReceiver {
 		out.close();
 	}
 
-	@SuppressLint("WorldReadableFiles")
-	@SuppressWarnings("deprecation")
 	public void backupPreferences() {
 		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
 			try {
@@ -132,12 +135,11 @@ public class Utils extends BroadcastReceiver {
 			}
 		}
 
-		Toast.makeText(ctx, resources.getString(R.string.preferences_backed_up),
+		Toast.makeText(ctx,
+				resources.getString(R.string.preferences_backed_up),
 				Toast.LENGTH_LONG).show();
 	}
 
-	@SuppressLint("WorldReadableFiles")
-	@SuppressWarnings("deprecation")
 	public void restorePreferences() {
 		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
 			Toast.makeText(ctx, resources.getString(R.string.no_backup_file),
@@ -179,8 +181,9 @@ public class Utils extends BroadcastReceiver {
 	}
 
 	public void resetPreferences() {
-		SharedPreferences.Editor prefsEditor = PreferenceManager
-				.getDefaultSharedPreferences(ctx).edit();
+		SharedPreferences prefs = ctx.getSharedPreferences(
+				Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
+		SharedPreferences.Editor prefsEditor = prefs.edit();
 		prefsEditor.clear();
 		prefsEditor.commit();
 
