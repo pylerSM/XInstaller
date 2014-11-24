@@ -19,6 +19,8 @@ public class Common {
 	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
 	public static final String ACTION_REMOVE_TASK = "xinstaller.intent.action.REMOVE_TASK";
 	public static final String ACTION_SET_INSTALL_LOCATION = "xinstaller.intent.action.SET_INSTALL_LOCATION";
+	public static final String ACTION_DISABLE_SDK_VERSION_CHECK = "xinstaller.intent.action.DISABLE_SDK_VERSION_CHECK";
+	public static final String ACTION_ENABLE_SDK_VERSION_CHECK = "xinstaller.intent.action.ENABLE_SDK_VERSION_CHECK";
 
 	public static final String FILE = "file";
 	public static final String FLAGS = "flags";
@@ -67,6 +69,7 @@ public class Common {
 	public static final String PREF_ENABLE_SHOW_VERSION = "enable_show_version";
 	public static final String PREF_ENABLE_DELETE_APK_FILE_INSTALL = "enable_delete_apk_files_install";
 	public static final String PREF_ENABLE_MOVE_APP = "enable_move_apps";
+	public static final String PREF_DISABLE_SDK_VERSION_CHECK = "disable_sdk_version_check";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -82,6 +85,7 @@ public class Common {
 	public static final File PACKAGE_DIR = new File(APP_DIR);
 	public static final File PREFERENCES_BACKUP_FILE = new File(APP_DIR
 			+ File.separator + PACKAGE_TAG + ".backup");
+	public static final int LATEST_ANDROID_RELEASE = 21;
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";

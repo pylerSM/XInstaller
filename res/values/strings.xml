@@ -44,6 +44,7 @@
     <string name="new_version">New version</string>
     <string name="delete_apk_files_install">Deleting APK files after installing</string>
     <string name="move_apps">Moving apps</string>
+    <string name="sdk_version_check">Checking SDK version</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

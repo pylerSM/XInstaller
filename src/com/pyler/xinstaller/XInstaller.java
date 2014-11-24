@@ -8,6 +8,8 @@ import java.util.Hashtable;
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import android.os.Message;
 import android.os.Process;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +69,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean showVersions;
 	public boolean deleteApkFiles;
 	public boolean moveApps;
+	public boolean checkSdkVersion;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -90,8 +95,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook scanPackageHook;
 	public XC_MethodHook verifySignaturesHook;
 	public XC_MethodHook moveAppsHook;
-	public boolean JB_MR2_NEWER;
+	public XC_MethodHook checkSdkVersionHook;
 	public boolean JB_MR1_NEWER;
+	public boolean JB_MR2_NEWER;
 	public boolean KITKAT_NEWER;
 	public boolean APIEnabled;
 	public boolean signatureCheckOff;
@@ -161,9 +167,27 @@ public class XInstaller implements IXposedHookZygoteInit,
 						systemApi.addAction(Common.ACTION_RUN_XINSTALLER);
 						systemApi.addAction(Common.ACTION_REMOVE_TASK);
 						systemApi.addAction(Common.ACTION_SET_INSTALL_LOCATION);
+						systemApi
+								.addAction(Common.ACTION_ENABLE_SDK_VERSION_CHECK);
+						systemApi
+								.addAction(Common.ACTION_DISABLE_SDK_VERSION_CHECK);
 						mContext.registerReceiver(systemAPI, systemApi);
 						APIEnabled = true;
 					}
+				}
+			}
+		};
+
+		checkSdkVersionHook = new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				checkSdkVersion = prefs.getBoolean(
+						Common.PREF_DISABLE_SDK_VERSION_CHECK, false);
+				if (isModuleEnabled() && checkSdkVersion) {
+					XposedHelpers.setObjectField(param.thisObject,
+							"SDK_VERSION", Common.LATEST_ANDROID_RELEASE);
 				}
 			}
 		};
@@ -216,6 +240,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				showPackageName = prefs.getBoolean(
 						Common.PREF_ENABLE_SHOW_PACKAGE_NAME, false);
+				mContext = AndroidAppHelper.currentApplication();
 				PackageInfo pkgInfo = (PackageInfo) param.args[0];
 				TextView appVersion = (TextView) XposedHelpers.getObjectField(
 						param.thisObject, "mAppVersion");
@@ -223,6 +248,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 				final String packageName = pkgInfo.packageName;
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
+					appVersion.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							ClipboardManager clipboard = (ClipboardManager) mContext
+									.getSystemService(Context.CLIPBOARD_SERVICE);
+							ClipData clip = ClipData.newPlainText("text",
+									packageName);
+							clipboard.setPrimaryClip(clip);
+						}
+					});
 				}
 
 			}
@@ -733,11 +768,32 @@ public class XInstaller implements IXposedHookZygoteInit,
 		KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true : false;
 
 		// enablers
-		XposedHelpers
-				.findAndHookMethod(packageManagerClass, "scanPackageLI",
-						"android.content.pm.PackageParser$Package", int.class,
-						int.class, long.class, "android.os.UserHandle",
-						scanPackageHook);
+		try {
+			XposedHelpers.findAndHookMethod(packageParserClass, "parsePackage",
+					Resources.class, XmlResourceParser.class, int.class,
+					String[].class, checkSdkVersionHook);
+		} catch (NoSuchMethodError nsm) {
+			try {
+				XposedHelpers.findAndHookMethod(packageParserClass,
+						"parsePackage", Resources.class,
+						XmlResourceParser.class, int.class, boolean.class,
+						String[].class, checkSdkVersionHook);
+			} catch (NoSuchMethodError nsm2) {
+			}
+		}
+
+		if (JB_MR1_NEWER) {
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"scanPackageLI",
+					"android.content.pm.PackageParser$Package", int.class,
+					int.class, long.class, "android.os.UserHandle",
+					scanPackageHook);
+		} else {
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"scanPackageLI",
+					"android.content.pm.PackageParser$Package", int.class,
+					int.class, long.class, scanPackageHook);
+		}
 
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"verifySignaturesLP", "com.android.server.pm.PackageSetting",
@@ -751,11 +807,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 						int[].class, int.class, int.class, int.class,
 						String.class, String[].class, appsDebuggingHook);
 			} catch (NoSuchMethodError nsm) {
-				XposedHelpers.findAndHookMethod(Process.class, "start",
-						String.class, String.class, int.class, int.class,
-						int[].class, int.class, int.class, int.class,
-						String.class, boolean.class, String[].class,
-						appsDebuggingHook);
+				try {
+					XposedHelpers.findAndHookMethod(Process.class, "start",
+							String.class, String.class, int.class, int.class,
+							int[].class, int.class, int.class, int.class,
+							String.class, boolean.class, String[].class,
+							appsDebuggingHook);
+				} catch (NoSuchMethodError nsm2) {
+				}
 			}
 		}
 
@@ -766,8 +825,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 				"onFilterTouchEventForSecurity", MotionEvent.class,
 				showButtonsHook);
 
-		XposedHelpers.findAndHookMethod(packageManagerClass,
-				"isVerificationEnabled", int.class, verifyAppsHook);
+		if (JB_MR1_NEWER) {
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"isVerificationEnabled", int.class, verifyAppsHook);
+		} else {
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"isVerificationEnabled", verifyAppsHook);
+		}
 
 		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
 				int.class, int.class, verifySignatureHook);

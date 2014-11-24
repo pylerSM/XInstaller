@@ -86,6 +86,10 @@
                     android:defaultValue="false"
                     android:key="disable_verify_apps"
                     android:title="@string/verify_apps" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="disable_sdk_version_check"
+                    android:title="@string/sdk_version_check" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -160,16 +164,22 @@
                     android:title="@string/verify_signatures" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen android:title="@string/backup_and_restore" >
-            <Preference
-                android:key="backup_preferences"
-                android:title="@string/backup" />
-            <Preference
-                android:key="restore_preferences"
-                android:title="@string/restore" />
-            <Preference
-                android:key="reset_preferences"
-                android:title="@string/reset" />
+        <PreferenceScreen
+            android:key="backup_restore_preferences"
+            android:title="@string/backup_and_restore" >
+            <PreferenceCategory
+                android:key="backup_restore"
+                android:title="@string/app" >
+                <Preference
+                    android:key="backup_preferences"
+                    android:title="@string/backup" />
+                <Preference
+                    android:key="restore_preferences"
+                    android:title="@string/restore" />
+                <Preference
+                    android:key="reset_preferences"
+                    android:title="@string/reset" />
+            </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory

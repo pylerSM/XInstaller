@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="385"
-    android:versionName="3.85" >
+    android:versionCode="389"
+    android:versionName="3.89" >
 
     <uses-sdk
+        android:maxSdkVersion="19"
         android:minSdkVersion="15"
         android:targetSdkVersion="19" />
 
