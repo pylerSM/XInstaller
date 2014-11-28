@@ -90,6 +90,10 @@
                     android:defaultValue="false"
                     android:key="disable_sdk_version_check"
                     android:title="@string/sdk_version_check" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="disable_install_background"
+                    android:title="@string/install_background" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -114,6 +118,14 @@
                     android:defaultValue="false"
                     android:key="enable_auto_close_uninstall"
                     android:title="@string/auto_close_uninstall" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:key="uninstallations_disable"
+                android:title="@string/disable" >
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="disable_uninstall_background"
+                    android:title="@string/uninstall_background" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -189,12 +201,12 @@
             android:summary="@string/app_developer"
             android:title="@string/developer" />
         <Preference
-            android:key="app_version"
-            android:title="@string/version" />
-        <Preference
             android:key="app_translator"
             android:summary="@string/app_translator"
             android:title="@string/translator" />
+        <Preference
+            android:key="app_version"
+            android:title="@string/version" />
     </PreferenceCategory>
 
 </PreferenceScreen>

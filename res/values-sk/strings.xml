@@ -44,6 +44,10 @@
   <string name="current_version">Aktuálna verzia</string>
   <string name="new_version">Nová verzia</string>
   <string name="delete_apk_files_install">Vymazanie APK súborov po nainštalovaní</string>
+  <string name="move_apps">Presúvanie aplikácií</string>
+  <string name="sdk_version_check">Kontrolovanie verzie SDK</string>
+  <string name="install_background">Inštalovanie na pozadí</string>
+  <string name="uninstall_background">Odinštalovanie na pozadí</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>

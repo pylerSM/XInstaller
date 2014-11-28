@@ -21,6 +21,7 @@ import android.content.pm.Signature;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -70,6 +71,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean deleteApkFiles;
 	public boolean moveApps;
 	public boolean checkSdkVersion;
+	public boolean installBackground;
+	public boolean uninstallBackground;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -96,6 +99,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook verifySignaturesHook;
 	public XC_MethodHook moveAppsHook;
 	public XC_MethodHook checkSdkVersionHook;
+	public XC_MethodHook installBackgroundHook;
+	public XC_MethodHook uninstallBackgroundHook;
 	public boolean JB_MR1_NEWER;
 	public boolean JB_MR2_NEWER;
 	public boolean KITKAT_NEWER;
@@ -410,6 +415,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_INSTALL_EXTERNAL_STORAGE, false);
 				backupApkFiles = prefs.getBoolean(
 						Common.PREF_ENABLE_BACKUP_APK_FILE, false);
+				installBackground = prefs.getBoolean(
+						Common.PREF_DISABLE_INSTALL_BACKGROUND, false);
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
 				if (isModuleEnabled()
@@ -436,6 +443,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 					String apkFile = packageUri.getPath();
 					backupApkFile(apkFile);
 				}
+
+				if (isModuleEnabled() && installBackground) {
+					if (Binder.getCallingUid() == Common.ROOT_UID) {
+						param.setResult(null);
+					}
+				}
 			}
 
 		};
@@ -447,6 +460,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				keepAppsData = prefs.getBoolean(
 						Common.PREF_ENABLE_KEEP_APP_DATA, false);
+				uninstallBackground = prefs.getBoolean(
+						Common.PREF_DISABLE_UNINSTALL_BACKGROUND, false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[ID];
 				if (isModuleEnabled() && (flags & Common.DELETE_KEEP_DATA) == 0
@@ -455,6 +470,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 					flags |= Common.DELETE_KEEP_DATA;
 				}
 				param.args[ID] = flags;
+
+				if (isModuleEnabled() && uninstallBackground) {
+					if (Binder.getCallingUid() == Common.ROOT_UID) {
+						param.setResult(null);
+					}
+				}
 			}
 
 		};
@@ -962,7 +983,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	// system API
-
 	public void forceStopPackage(String packageName) {
 		XposedHelpers.callMethod(activityManagerObj, "forceStopPackage",
 				packageName);
@@ -1065,12 +1085,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public Context getXInstallerContext() {
-		Context XInstallerContext;
+		Context XInstallerContext = null;
+		;
 		try {
 			XInstallerContext = mContext.createPackageContext(
 					Common.PACKAGE_NAME, 0);
 		} catch (NameNotFoundException e) {
-			XInstallerContext = null;
 		}
 		return XInstallerContext;
 	}

@@ -44,6 +44,10 @@
   <string name="current_version">Şimdiki versiyon</string>
   <string name="new_version">Yeni versiyon</string>
   <string name="delete_apk_files_install">APK dosyalarını yükledikten sonra silme</string>
+  <string name="move_apps">Uygulamaları taşıma</string>
+  <string name="sdk_version_check">SDK versiyonunu kontrol etme</string>
+  <string name="install_background">Arkaplanda yükleme</string>
+  <string name="uninstall_background">Arkaplanda kaldırma</string>
   <string name="about">Hakkında</string>
   <string name="developer">Geliştirici</string>
   <string name="version">Versiyon</string>

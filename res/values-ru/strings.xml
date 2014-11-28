@@ -44,6 +44,10 @@
   <string name="current_version">Текущая версия</string>
   <string name="new_version">Новая версия</string>
   <string name="delete_apk_files_install">Удаление APK файлов после установки</string>
+  <string name="move_apps">Перемещение приложения</string>
+  <string name="sdk_version_check">Проверка версии SDK</string>
+  <string name="install_background">Установка в фоновом режиме</string>
+  <string name="uninstall_background">Удаление в фоновом режиме</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>

@@ -44,6 +44,10 @@
   <string name="current_version">Aktuális verzió</string>
   <string name="new_version">Új verzió</string>
   <string name="delete_apk_files_install">APK fájl törlése telepítés után</string>
+  <string name="move_apps">Mozgó alkalmazások</string>
+  <string name="sdk_version_check">SDK verzió ellenőrzése</string>
+  <string name="install_background">Telepítés a háttérben</string>
+  <string name="uninstall_background">Eltávolítás a háttérben</string>
   <string name="about">Névjegy</string>
   <string name="developer">Fejlesztő</string>
   <string name="version">Verzió</string>

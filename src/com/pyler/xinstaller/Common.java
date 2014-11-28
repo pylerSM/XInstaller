@@ -2,6 +2,7 @@ package com.pyler.xinstaller;
 
 import java.io.File;
 
+import android.os.Build;
 import android.os.Environment;
 
 public class Common {
@@ -70,6 +71,8 @@ public class Common {
 	public static final String PREF_ENABLE_DELETE_APK_FILE_INSTALL = "enable_delete_apk_files_install";
 	public static final String PREF_ENABLE_MOVE_APP = "enable_move_apps";
 	public static final String PREF_DISABLE_SDK_VERSION_CHECK = "disable_sdk_version_check";
+	public static final String PREF_DISABLE_INSTALL_BACKGROUND = "disable_install_background";
+	public static final String PREF_DISABLE_UNINSTALL_BACKGROUND = "disable_uninstall_background";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -85,7 +88,7 @@ public class Common {
 	public static final File PACKAGE_DIR = new File(APP_DIR);
 	public static final File PREFERENCES_BACKUP_FILE = new File(APP_DIR
 			+ File.separator + PACKAGE_TAG + ".backup");
-	public static final int LATEST_ANDROID_RELEASE = 21;
+	public static final int LATEST_ANDROID_RELEASE = Build.VERSION_CODES.LOLLIPOP;
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
@@ -115,4 +118,5 @@ public class Common {
 	public static final int INSTALL_REPLACE_EXISTING = 0x00000002;
 	public static final int REMOVE_TASK_KILL_PROCESS = 0x0001;
 	public static final int DEBUG_ENABLE_DEBUGGER = 0x1;
+	public static final int ROOT_UID = 0;
 }

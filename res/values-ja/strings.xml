@@ -44,6 +44,10 @@
   <string name="current_version">現在のバージョン</string>
   <string name="new_version">新しいバージョン</string>
   <string name="delete_apk_files_install">インストールした後にAPKファイルを削除する</string>
+  <string name="move_apps">アプリの移動</string>
+  <string name="sdk_version_check">SDKバージョンの確認</string>
+  <string name="install_background">バックグラウンドでインストール</string>
+  <string name="uninstall_background">バックグラウンドでアンインストール</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>

@@ -44,6 +44,10 @@
   <string name="current_version">当前版本</string>
   <string name="new_version">新版本</string>
   <string name="delete_apk_files_install">安装后删除 APK 文件</string>
+  <string name="move_apps">移动应用</string>
+  <string name="sdk_version_check">检查 SDK 版本</string>
+  <string name="install_background">后台安装</string>
+  <string name="uninstall_background">后台卸载</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

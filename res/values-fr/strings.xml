@@ -44,6 +44,10 @@
   <string name="current_version">Version actuelle</string>
   <string name="new_version">Nouvelle version</string>
   <string name="delete_apk_files_install">Suppression des fichiers APK après installation</string>
+  <string name="move_apps">Déplacement d\'applis</string>
+  <string name="sdk_version_check">Contrôle de la version du SDK</string>
+  <string name="install_background">Installation en arrière-plan</string>
+  <string name="uninstall_background">Désinstallation en arrière-plan</string>
   <string name="about">À propos</string>
   <string name="developer">Développeur</string>
   <string name="version">Version</string>
