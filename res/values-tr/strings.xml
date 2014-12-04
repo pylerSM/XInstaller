@@ -48,6 +48,7 @@
   <string name="sdk_version_check">SDK versiyonunu kontrol etme</string>
   <string name="install_background">Arkaplanda yükleme</string>
   <string name="uninstall_background">Arkaplanda kaldırma</string>
+  <string name="package_name_copied">Paket ismi panoya kopyalandı</string>
   <string name="about">Hakkında</string>
   <string name="developer">Geliştirici</string>
   <string name="version">Versiyon</string>

@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -64,7 +65,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean verifyJar;
 	public boolean verifySignature;
 	public boolean showButtons;
-	public boolean appsDebugging;
+	public boolean debugApps;
 	public boolean autoBackup;
 	public boolean showPackageName;
 	public boolean showVersions;
@@ -73,6 +74,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean checkSdkVersion;
 	public boolean installBackground;
 	public boolean uninstallBackground;
+	public boolean launchApps;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -92,7 +94,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook verifyJarHook;
 	public XC_MethodHook verifySignatureHook;
 	public XC_MethodHook showButtonsHook;
-	public XC_MethodHook appsDebuggingHook;
+	public XC_MethodHook debugAppsHook;
 	public XC_MethodHook autoBackupHook;
 	public XC_MethodHook showPackageNameHook;
 	public XC_MethodHook scanPackageHook;
@@ -101,9 +103,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook checkSdkVersionHook;
 	public XC_MethodHook installBackgroundHook;
 	public XC_MethodHook uninstallBackgroundHook;
-	public boolean JB_MR1_NEWER;
-	public boolean JB_MR2_NEWER;
-	public boolean KITKAT_NEWER;
+	public boolean JB_MR1_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
+			: false;
+	public boolean JB_MR2_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
+			: false;
+	public boolean KITKAT_NEWER = (Common.SDK >= Build.VERSION_CODES.KITKAT) ? true
+			: false;
+	public boolean LOLLIPOP_NEWER = (Common.SDK >= Build.VERSION_CODES.LOLLIPOP) ? true
+			: false;
 	public boolean APIEnabled;
 	public boolean signatureCheckOff;
 	public Context mContext;
@@ -130,6 +137,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 		prefs.makeWorldReadable();
 		APIEnabled = false;
 		signatureCheckOff = true;
+
+		if (LOLLIPOP_NEWER || !isExpertModeEnabled()) {
+			return;
+		}
 
 		// hooks
 		packageManagerHook = new XC_MethodHook() {
@@ -245,12 +256,24 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				showPackageName = prefs.getBoolean(
 						Common.PREF_ENABLE_SHOW_PACKAGE_NAME, false);
+				launchApps = prefs.getBoolean(Common.PREF_ENABLE_LAUNCH_APP,
+						false);
 				mContext = AndroidAppHelper.currentApplication();
 				PackageInfo pkgInfo = (PackageInfo) param.args[0];
 				TextView appVersion = (TextView) XposedHelpers.getObjectField(
 						param.thisObject, "mAppVersion");
+				View mRootView = (View) XposedHelpers.getObjectField(
+						param.thisObject, "mRootView");
+				Resources mResources = mRootView.getResources();
+				int appSnippetId = mResources.getIdentifier("app_snippet",
+						"id", Common.SETTINGS_PKG);
+				View appSnippet = mRootView.findViewById(appSnippetId);
+				int iconId = mResources.getIdentifier("app_icon", "id",
+						Common.SETTINGS_PKG);
+				ImageView appIcon = (ImageView) appSnippet.findViewById(iconId);
 				String version = appVersion.getText().toString();
 				final String packageName = pkgInfo.packageName;
+
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
 					appVersion.setOnClickListener(new OnClickListener() {
@@ -258,13 +281,35 @@ public class XInstaller implements IXposedHookZygoteInit,
 						public void onClick(View v) {
 							ClipboardManager clipboard = (ClipboardManager) mContext
 									.getSystemService(Context.CLIPBOARD_SERVICE);
+							Resources res = getXInstallerContext()
+									.getResources();
 							ClipData clip = ClipData.newPlainText("text",
 									packageName);
 							clipboard.setPrimaryClip(clip);
+							Toast.makeText(
+									mContext,
+									res.getString(R.string.package_name_copied),
+									Toast.LENGTH_SHORT).show();
+
+						}
+					});
+
+				}
+
+				if (isModuleEnabled() && launchApps) {
+					appIcon.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent launchIntent = mContext.getPackageManager()
+									.getLaunchIntentForPackage(packageName);
+							if (launchIntent != null) {
+								launchIntent
+										.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								mContext.startActivity(launchIntent);
+							}
 						}
 					});
 				}
-
 			}
 		};
 
@@ -283,17 +328,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 			}
 		};
 
-		appsDebuggingHook = new XC_MethodHook() {
+		debugAppsHook = new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				appsDebugging = prefs.getBoolean(
-						Common.PREF_ENABLE_APP_DEBUGGING, false);
+				debugApps = prefs.getBoolean(Common.PREF_ENABLE_DEBUG_APP,
+						false);
 				int flags = (Integer) param.args[5];
-				if (isModuleEnabled()
+				if (isModuleEnabled() && isExpertModeEnabled()
 						&& (flags & Common.DEBUG_ENABLE_DEBUGGER) == 0
-						&& appsDebugging) {
+						&& debugApps) {
 					// we dont have this flag, add it
 					flags |= Common.DEBUG_ENABLE_DEBUGGER;
 				}
@@ -323,7 +368,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				verifyJar = prefs.getBoolean(Common.PREF_DISABLE_VERIFY_JAR,
 						false);
-				if (isModuleEnabled() && verifyJar) {
+				if (isModuleEnabled() && isExpertModeEnabled() && verifyJar) {
 					String name = (String) XposedHelpers.getObjectField(
 							param.thisObject, "name");
 					Certificate[] certificates = (Certificate[]) XposedHelpers
@@ -353,7 +398,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				verifySignature = prefs.getBoolean(
 						Common.PREF_DISABLE_VERIFY_SIGNATURE, false);
-				if (isModuleEnabled() && verifySignature) {
+				if (isModuleEnabled() && isExpertModeEnabled()
+						&& verifySignature) {
 					param.setResult(true);
 					return;
 				}
@@ -367,7 +413,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				installUnsignedApps = prefs.getBoolean(
 						Common.PREF_ENABLE_INSTALL_UNSIGNED_APP, false);
-				if (isModuleEnabled() && installUnsignedApps) {
+				if (isModuleEnabled() && isExpertModeEnabled()
+						&& installUnsignedApps) {
 					param.setResult(true);
 					return;
 				}
@@ -381,7 +428,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				permissionsCheck = prefs.getBoolean(
 						Common.PREF_DISABLE_PERMISSION_CHECK, false);
-				if (isModuleEnabled() && permissionsCheck) {
+				if (isModuleEnabled() && isExpertModeEnabled()
+						&& permissionsCheck) {
 					param.setResult(PackageManager.PERMISSION_GRANTED);
 					return;
 				}
@@ -431,7 +479,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 					// we have this flag, remove it
 					flags &= ~Common.INSTALL_FORWARD_LOCK;
 				}
-				if (isModuleEnabled() && (flags & Common.INSTALL_EXTERNAL) == 0
+				if (isModuleEnabled() && isExpertModeEnabled()
+						&& (flags & Common.INSTALL_EXTERNAL) == 0
 						&& installAppsOnExternal) {
 					// we dont have this flag, add it
 					flags |= Common.INSTALL_EXTERNAL;
@@ -585,6 +634,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				Button mOk = (Button) XposedHelpers.getObjectField(
 						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoInstall) {
+					XposedHelpers.setObjectField(param.thisObject,
+							"mScrollView", null);
 					XposedHelpers.setBooleanField(param.thisObject,
 							"mOkCanInstall", true);
 					mOk.performClick();
@@ -635,10 +686,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_CLOSE_UNINSTALL, false);
-				Button mOk = (Button) XposedHelpers.getObjectField(
-						param.thisObject, "mOkButton");
 				if (isModuleEnabled() && autoCloseUninstall) {
-					mOk.performClick();
+					if (LOLLIPOP_NEWER) {
+						XposedHelpers.callMethod(param.thisObject,
+								"startUninstallProgress");
+					} else {
+						Button mOk = (Button) XposedHelpers.getObjectField(
+								param.thisObject, "mOkButton");
+						mOk.performClick();
+					}
 				}
 			}
 
@@ -659,15 +715,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 						XposedHelpers.getSurroundingThis(param.thisObject),
 						"mDoneButton");
 
-				if (isModuleEnabled() && autoCloseInstall) {
-					mDone.performClick();
-				}
-
 				Button mLaunch = (Button) XposedHelpers.getObjectField(
 						XposedHelpers.getSurroundingThis(param.thisObject),
 						"mLaunchButton");
+
 				if (isModuleEnabled() && autoLaunchInstall) {
 					mLaunch.performClick();
+				}
+
+				if (isModuleEnabled() && autoCloseInstall) {
+					mDone.performClick();
 				}
 
 				if (isModuleEnabled() && deleteApkFiles) {
@@ -780,26 +837,25 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
-		// checks
-		int SDK = Build.VERSION.SDK_INT;
-		JB_MR1_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
-				: false;
-		JB_MR2_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
-				: false;
-		KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true : false;
-
 		// enablers
-		try {
-			XposedHelpers.findAndHookMethod(packageParserClass, "parsePackage",
+		if (LOLLIPOP_NEWER) {
+			XposedHelpers.findAndHookMethod(packageParserClass, "parseBaseApk",
 					Resources.class, XmlResourceParser.class, int.class,
 					String[].class, checkSdkVersionHook);
-		} catch (NoSuchMethodError nsm) {
+		} else {
 			try {
 				XposedHelpers.findAndHookMethod(packageParserClass,
 						"parsePackage", Resources.class,
-						XmlResourceParser.class, int.class, boolean.class,
-						String[].class, checkSdkVersionHook);
-			} catch (NoSuchMethodError nsm2) {
+						XmlResourceParser.class, int.class, String[].class,
+						checkSdkVersionHook);
+			} catch (NoSuchMethodError nsm) {
+				try {
+					XposedHelpers.findAndHookMethod(packageParserClass,
+							"parsePackage", Resources.class,
+							XmlResourceParser.class, int.class, boolean.class,
+							String[].class, checkSdkVersionHook);
+				} catch (NoSuchMethodError nsm2) {
+				}
 			}
 		}
 
@@ -826,14 +882,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 				XposedHelpers.findAndHookMethod(Process.class, "start",
 						String.class, String.class, int.class, int.class,
 						int[].class, int.class, int.class, int.class,
-						String.class, String[].class, appsDebuggingHook);
+						String.class, String[].class, debugAppsHook);
 			} catch (NoSuchMethodError nsm) {
 				try {
 					XposedHelpers.findAndHookMethod(Process.class, "start",
 							String.class, String.class, int.class, int.class,
 							int[].class, int.class, int.class, int.class,
 							String.class, boolean.class, String[].class,
-							appsDebuggingHook);
+							debugAppsHook);
 				} catch (NoSuchMethodError nsm2) {
 				}
 			}
@@ -847,8 +903,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 				showButtonsHook);
 
 		if (JB_MR1_NEWER) {
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"isVerificationEnabled", int.class, verifyAppsHook);
+			try {
+				XposedHelpers.findAndHookMethod(packageManagerClass,
+						"isVerificationEnabled", int.class, verifyAppsHook);
+			} catch (NoSuchMethodError nsm) {
+			}
 		} else {
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"isVerificationEnabled", verifyAppsHook);
@@ -933,10 +992,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
+		if (LOLLIPOP_NEWER || !isExpertModeEnabled()) {
+			return;
+		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			XposedHelpers.findAndHookMethod(Common.PACKAGEINSTALLERACTIVITY,
 					lpparam.classLoader, "isInstallingUnknownAppsAllowed",
 					unknownAppsHook);
+			if (LOLLIPOP_NEWER) {
+				XposedHelpers.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
+						lpparam.classLoader, "showConfirmationDialog",
+						autoCloseUninstallHook);
+			}
 			if (KITKAT_NEWER) {
 				XposedHelpers.findAndHookMethod(
 						Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
@@ -954,6 +1021,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS + "$1",
 					lpparam.classLoader, "handleMessage", Message.class,
 					autoCloseInstallHook);
+
 		}
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
@@ -1075,6 +1143,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 		return enabled;
 	}
 
+	public boolean isExpertModeEnabled() {
+		prefs.reload();
+		boolean enabled = prefs.getBoolean(Common.PREF_ENABLE_EXPERT_MODE,
+				false);
+		return enabled;
+	}
+
 	public void enableModule(boolean enabled) {
 		Intent enableModule = new Intent(Common.ACTION_SET_PREFERENCE);
 		enableModule.setPackage(Common.PACKAGE_NAME);
@@ -1085,14 +1160,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public Context getXInstallerContext() {
-		Context XInstallerContext = null;
-		;
+		Context context = null;
 		try {
-			XInstallerContext = mContext.createPackageContext(
-					Common.PACKAGE_NAME, 0);
+			context = mContext.createPackageContext(Common.PACKAGE_NAME, 0);
 		} catch (NameNotFoundException e) {
 		}
-		return XInstallerContext;
+		return context;
 	}
 
 	public void backupApkFile(String apkFile) {

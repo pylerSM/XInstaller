@@ -48,6 +48,8 @@
   <string name="sdk_version_check">Contrôle de la version du SDK</string>
   <string name="install_background">Installation en arrière-plan</string>
   <string name="uninstall_background">Désinstallation en arrière-plan</string>
+  <string name="package_name_copied">Nom du paquet copié dans le presse-papiers</string>
+  <string name="launch_apps">Lancement des applis</string>
   <string name="about">À propos</string>
   <string name="developer">Développeur</string>
   <string name="version">Version</string>

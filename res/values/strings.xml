@@ -1,6 +1,10 @@
 <resources>
 
     <string name="app_description">Various tweaks for Package Installer</string>
+    <string name="app_name" translatable="false">XInstaller</string>
+    <string name="app_developer" translatable="false">pyler</string>
+    <string name="app_translator"></string>
+    <string name="app_translator_url"></string>
     <string name="app">App</string>
     <string name="module">Module</string>
     <string name="app_icon">Launcher icon</string>
@@ -47,6 +51,8 @@
     <string name="sdk_version_check">Checking SDK version</string>
     <string name="install_background">Installing in background</string>
     <string name="uninstall_background">Uninstalling in background</string>
+    <string name="package_name_copied">Package name was copied to clipboard</string>
+    <string name="launch_apps">Launching apps</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

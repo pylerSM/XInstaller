@@ -48,6 +48,8 @@
   <string name="sdk_version_check">SDKバージョンの確認</string>
   <string name="install_background">バックグラウンドでインストール</string>
   <string name="uninstall_background">バックグラウンドでアンインストール</string>
+  <string name="package_name_copied">パッケージ名がクリップボードにコピーされました</string>
+  <string name="launch_apps">アプリの起動</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>

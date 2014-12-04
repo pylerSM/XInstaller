@@ -48,6 +48,8 @@
   <string name="sdk_version_check">检查 SDK 版本</string>
   <string name="install_background">后台安装</string>
   <string name="uninstall_background">后台卸载</string>
+  <string name="package_name_copied">已复制包名到剪贴板</string>
+  <string name="launch_apps">运行应用</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

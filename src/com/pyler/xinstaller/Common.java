@@ -42,6 +42,7 @@ public class Common {
 
 	// prefs
 	public static final String PREF_ENABLE_MODULE = "enable_module";
+	public static final String PREF_ENABLE_EXPERT_MODE = "enable_expert_mode";
 	public static final String PREF_DISABLE_SIGNATURE_CHECK = "disable_signatures_check";
 	public static final String PREF_DISABLE_PERMISSION_CHECK = "disable_permissions_check";
 	public static final String PREF_ENABLED_DOWNGRADE_APP = "enable_downgrade_apps";
@@ -64,7 +65,7 @@ public class Common {
 	public static final String PREF_DISABLE_VERIFY_JAR = "disable_verify_jar";
 	public static final String PREF_DISABLE_VERIFY_SIGNATURE = "disable_verify_signatures";
 	public static final String PREF_ENABLE_SHOW_BUTTON = "enable_show_buttons";
-	public static final String PREF_ENABLE_APP_DEBUGGING = "enable_apps_debugging";
+	public static final String PREF_ENABLE_DEBUG_APP = "enable_debug_apps";
 	public static final String PREF_ENABLE_AUTO_BACKUP = "enable_auto_backup";
 	public static final String PREF_ENABLE_SHOW_PACKAGE_NAME = "enable_show_package_name";
 	public static final String PREF_ENABLE_SHOW_VERSION = "enable_show_version";
@@ -73,6 +74,7 @@ public class Common {
 	public static final String PREF_DISABLE_SDK_VERSION_CHECK = "disable_sdk_version_check";
 	public static final String PREF_DISABLE_INSTALL_BACKGROUND = "disable_install_background";
 	public static final String PREF_DISABLE_UNINSTALL_BACKGROUND = "disable_uninstall_background";
+	public static final String PREF_ENABLE_LAUNCH_APP = "enable_launch_apps";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -88,6 +90,7 @@ public class Common {
 	public static final File PACKAGE_DIR = new File(APP_DIR);
 	public static final File PREFERENCES_BACKUP_FILE = new File(APP_DIR
 			+ File.separator + PACKAGE_TAG + ".backup");
+	public static final int SDK = Build.VERSION.SDK_INT;
 	public static final int LATEST_ANDROID_RELEASE = Build.VERSION_CODES.LOLLIPOP;
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";

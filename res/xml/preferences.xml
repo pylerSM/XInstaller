@@ -156,6 +156,10 @@
                     android:title="@string/show_package_name" />
                 <CheckBoxPreference
                     android:defaultValue="false"
+                    android:key="enable_launch_apps"
+                    android:title="@string/launch_apps" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
                     android:key="enable_move_apps"
                     android:title="@string/move_apps" />
             </PreferenceCategory>
@@ -181,7 +185,7 @@
             android:title="@string/backup_and_restore" >
             <PreferenceCategory
                 android:key="backup_restore"
-                android:title="@string/app" >
+                android:title="@string/app_settings" >
                 <Preference
                     android:key="backup_preferences"
                     android:title="@string/backup" />

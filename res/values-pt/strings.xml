@@ -46,8 +46,10 @@
   <string name="delete_apk_files_install">Eliminar APK após instalação</string>
   <string name="move_apps">Mover aplicações</string>
   <string name="sdk_version_check">A verificar a versão do SDK</string>
-  <string name="install_background">A instalar em segundo plano</string>
-  <string name="uninstall_background">A desinstalar em segundo plano</string>
+  <string name="install_background">Instalar em segundo plano</string>
+  <string name="uninstall_background">Desinstalar em segundo plano</string>
+  <string name="package_name_copied">O \"Package Name\" foi copiado para a área de transferência</string>
+  <string name="launch_apps">Abrir aplicações</string>
   <string name="about">Sobre</string>
   <string name="developer">Desenvolvedor</string>
   <string name="version">Versão</string>

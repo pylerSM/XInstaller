@@ -48,6 +48,8 @@
   <string name="sdk_version_check">Kontrolovanie verzie SDK</string>
   <string name="install_background">Inštalovanie na pozadí</string>
   <string name="uninstall_background">Odinštalovanie na pozadí</string>
+  <string name="package_name_copied">Názov balíka bola skopírovaný do schránky</string>
+  <string name="launch_apps">Spustenie aplikácií</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>

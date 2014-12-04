@@ -48,10 +48,12 @@
   <string name="sdk_version_check">Проверка версии SDK</string>
   <string name="install_background">Установка в фоновом режиме</string>
   <string name="uninstall_background">Удаление в фоновом режиме</string>
+  <string name="package_name_copied">Имя пакета было скопировано в буфер обмена</string>
+  <string name="launch_apps">Запуск приложения</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>
-  <string name="translator">Переводчик</string>
+  <string name="translator">Связь с переводчиком 4pda</string>
   <string name="no_backup_file">Нет файла резервной копии</string>
   <string name="preferences_backed_up">Успешное резервное копирование</string>
   <string name="preferences_restored">Успешное восстановление</string>

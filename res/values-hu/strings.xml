@@ -48,6 +48,8 @@
   <string name="sdk_version_check">SDK verzió ellenőrzése</string>
   <string name="install_background">Telepítés a háttérben</string>
   <string name="uninstall_background">Eltávolítás a háttérben</string>
+  <string name="package_name_copied">Csomag név másolása vágólapra</string>
+  <string name="launch_apps">Alkalmazások indítása</string>
   <string name="about">Névjegy</string>
   <string name="developer">Fejlesztő</string>
   <string name="version">Verzió</string>

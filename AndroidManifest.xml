@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="390"
-    android:versionName="3.9" >
+    android:versionCode="391"
+    android:versionName="3.9.1" >
 
     <uses-sdk
         android:minSdkVersion="15"

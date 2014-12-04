@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -138,6 +139,20 @@ public class Preferences extends Activity {
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
 							activity.recreate();
+							return true;
+						}
+					});
+			appTranslator
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+						public boolean onPreferenceClick(Preference preference) {
+							String translatorUrl = resources
+									.getString(R.string.app_translator_url);
+							if (!translatorUrl.isEmpty()) {
+								Intent openUrl = new Intent(Intent.ACTION_VIEW);
+								openUrl.setData(Uri.parse(translatorUrl));
+								openUrl.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								startActivity(openUrl);
+							}
 							return true;
 						}
 					});
