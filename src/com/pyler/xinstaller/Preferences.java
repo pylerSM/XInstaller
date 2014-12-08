@@ -132,16 +132,6 @@ public class Preferences extends Activity {
 							return true;
 						}
 					});
-			Preference enableExpertMode = (Preference) findPreference("enable_expert_mode");
-			enableExpertMode
-					.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							activity.recreate();
-							return true;
-						}
-					});
 			appTranslator
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						public boolean onPreferenceClick(Preference preference) {

@@ -138,7 +138,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		APIEnabled = false;
 		signatureCheckOff = true;
 
-		if (LOLLIPOP_NEWER || !isExpertModeEnabled()) {
+		if (LOLLIPOP_NEWER && !isExpertModeEnabled()) {
 			return;
 		}
 
@@ -273,7 +273,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				ImageView appIcon = (ImageView) appSnippet.findViewById(iconId);
 				String version = appVersion.getText().toString();
 				final String packageName = pkgInfo.packageName;
-
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
 					appVersion.setOnClickListener(new OnClickListener() {
@@ -673,7 +672,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				Button mOk = (Button) XposedHelpers.getObjectField(
 						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoUninstall) {
-					mOk.performClick();
+					if (mOk != null) {
+						mOk.performClick();
+					}
 				}
 			}
 
@@ -992,7 +993,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
-		if (LOLLIPOP_NEWER || !isExpertModeEnabled()) {
+		if (LOLLIPOP_NEWER && !isExpertModeEnabled()) {
 			return;
 		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
