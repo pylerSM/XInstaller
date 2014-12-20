@@ -59,13 +59,13 @@ public class Preferences extends Activity {
 			PreferenceCategory miscDisable = (PreferenceCategory) findPreference("misc_disable");
 			PreferenceCategory about = (PreferenceCategory) findPreference("about");
 
-			Preference installUnsignedApps = (Preference) findPreference("enable_install_unsigned_apps");
-			Preference installOnExternal = (Preference) findPreference("enable_install_external_storage");
-			Preference debuggingApps = (Preference) findPreference("enable_apps_debugging");
-			Preference permissionsCheck = (Preference) findPreference("disable_permissions_check");
-			Preference verifyJar = (Preference) findPreference("disable_verify_jar");
-			Preference verifySignature = (Preference) findPreference("disable_verify_signatures");
-			Preference appTranslator = (Preference) findPreference("app_translator");
+			Preference installUnsignedApps = findPreference("enable_install_unsigned_apps");
+			Preference installOnExternal = findPreference("enable_install_external_storage");
+			Preference debuggingApps = findPreference("enable_apps_debugging");
+			Preference permissionsCheck = findPreference("disable_permissions_check");
+			Preference verifyJar = findPreference("disable_verify_jar");
+			Preference verifySignature = findPreference("disable_verify_signatures");
+			Preference appTranslator = findPreference("app_translator");
 
 			String translator = resources.getString(R.string.app_translator);
 			if (translator.isEmpty()) {
@@ -81,7 +81,7 @@ public class Preferences extends Activity {
 				miscDisable.removePreference(verifySignature);
 			}
 
-			Preference enableAppIcon = (Preference) findPreference("enable_app_icon");
+			Preference enableAppIcon = findPreference("enable_app_icon");
 			enableAppIcon
 					.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 						@Override
@@ -99,9 +99,10 @@ public class Preferences extends Activity {
 							return true;
 						}
 					});
-			Preference backupPreferences = (Preference) findPreference("backup_preferences");
+			Preference backupPreferences = findPreference("backup_preferences");
 			backupPreferences
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+						@Override
 						public boolean onPreferenceClick(Preference preference) {
 							Intent backupPrefs = new Intent(
 									Common.ACTION_BACKUP_PREFERENCES);
@@ -110,9 +111,10 @@ public class Preferences extends Activity {
 							return true;
 						}
 					});
-			Preference restorePreferences = (Preference) findPreference("restore_preferences");
+			Preference restorePreferences = findPreference("restore_preferences");
 			restorePreferences
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+						@Override
 						public boolean onPreferenceClick(Preference preference) {
 							Intent restorePrefs = new Intent(
 									Common.ACTION_RESTORE_PREFERENCES);
@@ -121,9 +123,10 @@ public class Preferences extends Activity {
 							return true;
 						}
 					});
-			Preference resetPreferences = (Preference) findPreference("reset_preferences");
+			Preference resetPreferences = findPreference("reset_preferences");
 			resetPreferences
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+						@Override
 						public boolean onPreferenceClick(Preference preference) {
 							Intent resetPrefs = new Intent(
 									Common.ACTION_RESET_PREFERENCES);
@@ -134,6 +137,7 @@ public class Preferences extends Activity {
 					});
 			appTranslator
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+						@Override
 						public boolean onPreferenceClick(Preference preference) {
 							String translatorUrl = resources
 									.getString(R.string.app_translator_url);

@@ -24,7 +24,7 @@
   <string name="verify_apps">Uygulamaları denetleme</string>
   <string name="install_external_storage">Harici hafızaya uygulama yükleme</string>
   <string name="disable_system_apps">Sistem uygulamalarını devre dışı bırakma</string>
-  <string name="uninstall_device_admins">Cihaz yöneticilerinden kaldırma</string>
+  <string name="uninstall_device_admins">Cihaz yöneticilerini kaldırma</string>
   <string name="signatures_check_fdroid">İmza kontrolü (F-Droid)</string>
   <string name="auto_install">Otomatik yükleme</string>
   <string name="auto_uninstall">Otomatik kaldırma</string>

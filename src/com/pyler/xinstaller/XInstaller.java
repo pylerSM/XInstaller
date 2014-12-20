@@ -103,6 +103,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook checkSdkVersionHook;
 	public XC_MethodHook installBackgroundHook;
 	public XC_MethodHook uninstallBackgroundHook;
+	public boolean JB_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
+			: false;
 	public boolean JB_MR1_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
 			: false;
 	public boolean JB_MR2_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
@@ -840,16 +842,19 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		// enablers
 		if (LOLLIPOP_NEWER) {
+			// 5.0 and newer
 			XposedHelpers.findAndHookMethod(packageParserClass, "parseBaseApk",
 					Resources.class, XmlResourceParser.class, int.class,
 					String[].class, checkSdkVersionHook);
 		} else {
+			// 4.0 - 4.4
 			try {
 				XposedHelpers.findAndHookMethod(packageParserClass,
 						"parsePackage", Resources.class,
 						XmlResourceParser.class, int.class, String[].class,
 						checkSdkVersionHook);
 			} catch (NoSuchMethodError nsm) {
+				// CM 11
 				try {
 					XposedHelpers.findAndHookMethod(packageParserClass,
 							"parsePackage", Resources.class,
@@ -861,96 +866,135 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (JB_MR1_NEWER) {
+			// 4.2 and newer
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"scanPackageLI",
 					"android.content.pm.PackageParser$Package", int.class,
 					int.class, long.class, "android.os.UserHandle",
 					scanPackageHook);
 		} else {
+			// 4.0 - 4.1
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"scanPackageLI",
 					"android.content.pm.PackageParser$Package", int.class,
 					int.class, long.class, scanPackageHook);
 		}
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"verifySignaturesLP", "com.android.server.pm.PackageSetting",
 				"android.content.pm.PackageParser$Package",
 				verifySignaturesHook);
 
 		if (JB_MR1_NEWER) {
-			try {
+
+			if (LOLLIPOP_NEWER) {
+				// 5.0 and newer
 				XposedHelpers.findAndHookMethod(Process.class, "start",
 						String.class, String.class, int.class, int.class,
 						int[].class, int.class, int.class, int.class,
-						String.class, String[].class, debugAppsHook);
-			} catch (NoSuchMethodError nsm) {
+						String.class, String.class, String.class, String.class,
+						String[].class, debugAppsHook);
+			} else {
+				// 4.2 - 4.4
 				try {
 					XposedHelpers.findAndHookMethod(Process.class, "start",
 							String.class, String.class, int.class, int.class,
 							int[].class, int.class, int.class, int.class,
-							String.class, boolean.class, String[].class,
-							debugAppsHook);
-				} catch (NoSuchMethodError nsm2) {
+							String.class, String[].class, debugAppsHook);
+				} catch (NoSuchMethodError nsm) {
+					// CM 11
+					try {
+						XposedHelpers.findAndHookMethod(Process.class, "start",
+								String.class, String.class, int.class,
+								int.class, int[].class, int.class, int.class,
+								int.class, String.class, boolean.class,
+								String[].class, debugAppsHook);
+					} catch (NoSuchMethodError nsm2) {
+					}
 				}
 			}
+		} else {
+			// 4.0 - 4.1
+			XposedHelpers.findAndHookMethod(Process.class, "start",
+					String.class, String.class, int.class, int.class,
+					int[].class, int.class, int.class, int.class,
+					String[].class, debugAppsHook);
 		}
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(MessageDigest.class, "isEqual",
 				byte[].class, byte[].class, verifySignatureHook);
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(View.class,
 				"onFilterTouchEventForSecurity", MotionEvent.class,
 				showButtonsHook);
 
 		if (JB_MR1_NEWER) {
+			// 4.2 and newer
 			try {
 				XposedHelpers.findAndHookMethod(packageManagerClass,
 						"isVerificationEnabled", int.class, verifyAppsHook);
 			} catch (NoSuchMethodError nsm) {
 			}
 		} else {
+			// 4.0 - 4.1
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"isVerificationEnabled", verifyAppsHook);
 		}
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
 				int.class, int.class, verifySignatureHook);
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
 				verifySignatureHook);
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(jarVerifierClass, "verify",
 				verifyJarHook);
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(packageParserClass,
 				"collectCertificates",
 				"android.content.pm.PackageParser$Package", int.class,
 				installUnsignedAppsHook);
 
+		// 4.0 and newer
 		XposedBridge.hookAllConstructors(packageManagerClass,
 				packageManagerHook);
+
+		// 4.0 and newer
 		XposedBridge.hookAllConstructors(activityManagerClass,
 				activityManagerHook);
+
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"compareSignatures", Signature[].class, Signature[].class,
 				checkSignaturesHook);
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(packageManagerClass, "checkSignatures",
 				String.class, String.class, checkSignaturesHook);
 
+		// 4.0 and newer
 		XposedHelpers
 				.findAndHookMethod(packageManagerClass, "checkUidSignatures",
 						int.class, int.class, checkSignaturesHook);
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(packageManagerClass, "checkPermission",
 				String.class, String.class, checkPermissionsHook);
 
+		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(packageManagerClass,
 				"checkUidPermission", String.class, int.class,
 				checkPermissionsHook);
 
 		if (JB_MR1_NEWER) {
+			// 4.2 and newer
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"installPackageWithVerificationAndEncryption", Uri.class,
 					"android.content.pm.IPackageInstallObserver", int.class,
@@ -958,21 +1002,37 @@ public class XInstaller implements IXposedHookZygoteInit,
 					"android.content.pm.ContainerEncryptionParams",
 					installPackageHook);
 		} else {
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"installPackageWithVerification", Uri.class,
-					"android.content.pm.IPackageInstallObserver", int.class,
-					String.class, Uri.class,
-					"android.content.pm.ManifestDigest",
-					"android.content.pm.ContainerEncryptionParams",
-					installPackageHook);
+			if (JB_NEWER) {
+				// 4.1
+				XposedHelpers.findAndHookMethod(packageManagerClass,
+						"installPackageWithVerification", Uri.class,
+						"android.content.pm.IPackageInstallObserver",
+						int.class, String.class, Uri.class,
+						"android.content.pm.ManifestDigest",
+						"android.content.pm.ContainerEncryptionParams",
+						installPackageHook);
+
+			} else {
+				// 4.0
+				XposedHelpers
+						.findAndHookMethod(packageManagerClass,
+								"installPackageWithVerification", Uri.class,
+								"android.content.pm.IPackageInstallObserver",
+								int.class, String.class, Uri.class,
+								"android.content.pm.ManifestDigest",
+								installPackageHook);
+
+			}
 		}
 
 		if (JB_MR2_NEWER) {
+			// 4.3 and newer
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"deletePackageAsUser", String.class,
 					"android.content.pm.IPackageDeleteObserver", int.class,
 					int.class, deletePackageHook);
 		} else {
+			// 4.0 - 4.2
 			XposedHelpers.findAndHookMethod(packageManagerClass,
 					"deletePackage", String.class,
 					"android.content.pm.IPackageDeleteObserver", int.class,
@@ -980,10 +1040,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (JB_MR1_NEWER) {
+			// 4.2 and newer
 			XposedHelpers.findAndHookMethod(devicePolicyManagerClass,
 					"packageHasActiveAdmins", String.class, int.class,
 					deviceAdminsHook);
 		} else {
+			// 4.0 - 4.1
 			XposedHelpers.findAndHookMethod(devicePolicyManagerClass,
 					"packageHasActiveAdmins", String.class, deviceAdminsHook);
 		}
@@ -997,28 +1059,39 @@ public class XInstaller implements IXposedHookZygoteInit,
 			return;
 		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.PACKAGEINSTALLERACTIVITY,
 					lpparam.classLoader, "isInstallingUnknownAppsAllowed",
 					unknownAppsHook);
 			if (LOLLIPOP_NEWER) {
+				// 5.0 and newer
 				XposedHelpers.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
 						lpparam.classLoader, "showConfirmationDialog",
 						autoCloseUninstallHook);
 			}
 			if (KITKAT_NEWER) {
+				// 4.4 and newer
 				XposedHelpers.findAndHookMethod(
 						Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
 						"isVerifyAppsEnabled", verifyAppsHook);
 			}
+
+			// 4.0 and newer
 			XposedHelpers
 					.findAndHookMethod(Common.PACKAGEINSTALLERACTIVITY,
 							lpparam.classLoader, "startInstallConfirm",
 							autoInstallHook);
+
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
 					lpparam.classLoader, "onCreate", Bundle.class,
 					autoUninstallHook);
+
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
 					lpparam.classLoader, "initView", autoCloseUninstallHook);
+
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS + "$1",
 					lpparam.classLoader, "handleMessage", Message.class,
 					autoCloseInstallHook);
@@ -1026,25 +1099,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
-			XposedHelpers
-					.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
-							lpparam.classLoader, "isThisASystemPackage",
-							systemAppsHook);
+			if (JB_NEWER) {
+				// 4.1 and newer
+				XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+						lpparam.classLoader, "isThisASystemPackage",
+						systemAppsHook);
+			}
+
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 					lpparam.classLoader, "setAppLabelAndIcon",
 					PackageInfo.class, showPackageNameHook);
+
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.CANBEONSDCARDCHECKER,
 					lpparam.classLoader, "check", ApplicationInfo.class,
 					moveAppsHook);
 		}
 
 		if (Common.FDROID_PKG.equals(lpparam.packageName)) {
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.FDROIDAPPDETAILS,
 					lpparam.classLoader, "install",
 					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
 		}
 
 		if (Common.BACKUPCONFIRM_PKG.equals(lpparam.packageName)) {
+			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.BACKUPRESTORECONFIRMATION,
 					lpparam.classLoader, "onCreate", Bundle.class,
 					autoBackupHook);
