@@ -59,12 +59,12 @@ public class Preferences extends Activity {
 			PreferenceCategory miscDisable = (PreferenceCategory) findPreference("misc_disable");
 			PreferenceCategory about = (PreferenceCategory) findPreference("about");
 
-			Preference installUnsignedApps = findPreference("enable_install_unsigned_apps");
-			Preference installOnExternal = findPreference("enable_install_external_storage");
-			Preference debuggingApps = findPreference("enable_apps_debugging");
-			Preference permissionsCheck = findPreference("disable_permissions_check");
-			Preference verifyJar = findPreference("disable_verify_jar");
-			Preference verifySignature = findPreference("disable_verify_signatures");
+			Preference installUnsignedApps = findPreference(Common.PREF_ENABLE_INSTALL_UNSIGNED_APP);
+			Preference installOnExternal = findPreference(Common.PREF_ENABLE_INSTALL_EXTERNAL_STORAGE);
+			Preference debugApps = findPreference(Common.PREF_ENABLE_DEBUG_APP);
+			Preference checkPermissions = findPreference(Common.PREF_DISABLE_CHECK_PERMISSION);
+			Preference verifyJar = findPreference(Common.PREF_DISABLE_VERIFY_JAR);
+			Preference verifySignature = findPreference(Common.PREF_DISABLE_VERIFY_SIGNATURE);
 			Preference appTranslator = findPreference("app_translator");
 
 			String translator = resources.getString(R.string.app_translator);
@@ -75,8 +75,8 @@ public class Preferences extends Activity {
 			if (!isExpertModeEnabled) {
 				installationsEnable.removePreference(installUnsignedApps);
 				installationsEnable.removePreference(installOnExternal);
-				miscEnable.removePreference(debuggingApps);
-				miscDisable.removePreference(permissionsCheck);
+				miscEnable.removePreference(debugApps);
+				miscDisable.removePreference(checkPermissions);
 				miscDisable.removePreference(verifyJar);
 				miscDisable.removePreference(verifySignature);
 			}

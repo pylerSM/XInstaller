@@ -1,18 +1,15 @@
 package com.pyler.xinstaller;
 
-import java.io.File;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
 
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -37,15 +34,14 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
 	public XSharedPreferences prefs;
-	public boolean signaturesCheck;
-	public boolean signaturesCheckFDroid;
+	public boolean checkSignatures;
+	public boolean checkSignaturesFDroid;
 	public boolean keepAppsData;
 	public boolean downgradeApps;
 	public boolean forwardLock;
@@ -59,7 +55,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean autoCloseUninstall;
 	public boolean autoCloseInstall;
 	public boolean autoLaunchInstall;
-	public boolean permissionsCheck;
+	public boolean checkPermissions;
 	public boolean backupApkFiles;
 	public boolean installUnsignedApps;
 	public boolean verifyJar;
@@ -75,6 +71,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean installBackground;
 	public boolean uninstallBackground;
 	public boolean launchApps;
+	public boolean checkDuplicatedPermissions;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -87,9 +84,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook autoUninstallHook;
 	public XC_MethodHook autoCloseUninstallHook;
 	public XC_MethodHook autoCloseInstallHook;
-	public XC_MethodHook packageManagerHook;
 	public XC_MethodHook checkPermissionsHook;
-	public XC_MethodHook activityManagerHook;
 	public XC_MethodHook installUnsignedAppsHook;
 	public XC_MethodHook verifyJarHook;
 	public XC_MethodHook verifySignatureHook;
@@ -103,6 +98,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook checkSdkVersionHook;
 	public XC_MethodHook installBackgroundHook;
 	public XC_MethodHook uninstallBackgroundHook;
+	public XC_MethodHook checkDuplicatedPermissionsHook;
 	public boolean JB_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
 			: false;
 	public boolean JB_MR1_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
@@ -113,12 +109,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 			: false;
 	public boolean LOLLIPOP_NEWER = (Common.SDK >= Build.VERSION_CODES.LOLLIPOP) ? true
 			: false;
-	public boolean APIEnabled;
 	public boolean signatureCheckOff;
 	public Context mContext;
-	public Object packageManagerObj;
-	public Object activityManagerObj;
-	public BroadcastReceiver systemAPI;
 
 	// classes
 	public Class<?> packageManagerClass = XposedHelpers.findClass(
@@ -137,7 +129,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
-		APIEnabled = false;
 		signatureCheckOff = true;
 
 		if (LOLLIPOP_NEWER && !isExpertModeEnabled()) {
@@ -145,53 +136,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		// hooks
-		packageManagerHook = new XC_MethodHook() {
+		checkDuplicatedPermissionsHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(final MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
-				packageManagerObj = param.thisObject;
-			}
-		};
-
-		activityManagerHook = new XC_MethodHook() {
-			@Override
-			protected void afterHookedMethod(final MethodHookParam param)
-					throws Throwable {
-				activityManagerObj = param.thisObject;
-				Context context = (Context) XposedHelpers.getObjectField(
-						param.thisObject, "mContext");
-				if (context == null && param.args.length != 0) {
-					context = (Context) param.args[0];
-				}
-				if (context != null) {
-					if (isModuleEnabled() && !APIEnabled
-							&& Common.ANDROID.equals(context.getPackageName())) {
-						mContext = context;
-						IntentFilter systemApi = new IntentFilter();
-						systemApi
-								.addAction(Common.ACTION_DISABLE_SIGNATURE_CHECK);
-						systemApi
-								.addAction(Common.ACTION_ENABLE_SIGNATURE_CHECK);
-						systemApi
-								.addAction(Common.ACTION_DISABLE_PERMISSION_CHECK);
-						systemApi
-								.addAction(Common.ACTION_ENABLE_PERMISSION_CHECK);
-						systemApi.addAction(Common.ACTION_INSTALL_PACKAGE);
-						systemApi.addAction(Common.ACTION_CLEAR_APP_DATA);
-						systemApi.addAction(Common.ACTION_FORCE_STOP_PACKAGE);
-						systemApi.addAction(Common.ACTION_DELETE_PACKAGE);
-						systemApi.addAction(Common.ACTION_CLEAR_APP_CACHE);
-						systemApi.addAction(Common.ACTION_MOVE_PACKAGE);
-						systemApi.addAction(Common.ACTION_RUN_XINSTALLER);
-						systemApi.addAction(Common.ACTION_REMOVE_TASK);
-						systemApi.addAction(Common.ACTION_SET_INSTALL_LOCATION);
-						systemApi
-								.addAction(Common.ACTION_ENABLE_SDK_VERSION_CHECK);
-						systemApi
-								.addAction(Common.ACTION_DISABLE_SDK_VERSION_CHECK);
-						mContext.registerReceiver(systemAPI, systemApi);
-						APIEnabled = true;
-					}
+				prefs.reload();
+				checkDuplicatedPermissions = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_DUPLICATED_PERMISSION, false);
+				if (isModuleEnabled() && checkDuplicatedPermissions) {
+					param.setResult(true);
+					return;
 				}
 			}
 		};
@@ -202,7 +156,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					throws Throwable {
 				prefs.reload();
 				checkSdkVersion = prefs.getBoolean(
-						Common.PREF_DISABLE_SDK_VERSION_CHECK, false);
+						Common.PREF_DISABLE_CHECK_SDK_VERSION, false);
 				if (isModuleEnabled() && checkSdkVersion) {
 					XposedHelpers.setObjectField(param.thisObject,
 							"SDK_VERSION", Common.LATEST_ANDROID_RELEASE);
@@ -228,9 +182,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				signaturesCheck = prefs.getBoolean(
-						Common.PREF_DISABLE_SIGNATURE_CHECK, false);
-				if (isModuleEnabled() && signaturesCheck) {
+				checkSignatures = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_SIGNATURE, false);
+				if (isModuleEnabled() && checkSignatures) {
 					param.setResult(true);
 					return;
 				}
@@ -427,10 +381,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				permissionsCheck = prefs.getBoolean(
-						Common.PREF_DISABLE_PERMISSION_CHECK, false);
+				checkPermissions = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_PERMISSION, false);
 				if (isModuleEnabled() && isExpertModeEnabled()
-						&& permissionsCheck) {
+						&& checkPermissions) {
 					param.setResult(PackageManager.PERMISSION_GRANTED);
 					return;
 				}
@@ -442,9 +396,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				signaturesCheck = prefs.getBoolean(
-						Common.PREF_DISABLE_SIGNATURE_CHECK, false);
-				if (isModuleEnabled() && signaturesCheck && signatureCheckOff) {
+				checkSignatures = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_SIGNATURE, false);
+				if (isModuleEnabled() && checkSignatures && signatureCheckOff) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);
 					return;
 				}
@@ -601,11 +555,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				signaturesCheckFDroid = prefs.getBoolean(
-						Common.PREF_DISABLE_SIGNATURE_CHECK_FDROID, false);
+				checkSignaturesFDroid = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_SIGNATURE_FDROID, false);
 				mInstalledSigID = (String) XposedHelpers.getObjectField(
 						param.thisObject, "mInstalledSigID");
-				if (isModuleEnabled() && signaturesCheckFDroid) {
+				if (isModuleEnabled() && checkSignaturesFDroid) {
 					XposedHelpers.setObjectField(param.thisObject,
 							"mInstalledSigID", null);
 				}
@@ -614,7 +568,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
-				if (isModuleEnabled() && signaturesCheckFDroid) {
+				if (isModuleEnabled() && checkSignaturesFDroid) {
 					XposedHelpers.setObjectField(param.thisObject,
 							"mInstalledSigID", mInstalledSigID);
 				}
@@ -741,106 +695,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
-		// system API
-		systemAPI = new BroadcastReceiver() {
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-
-				String action = intent.getAction();
-				Bundle extras = intent.getExtras();
-				boolean hasExtras = (extras != null) ? true : false;
-				if (Common.ACTION_DISABLE_SIGNATURE_CHECK.equals(action)) {
-					disableSignatureCheck(true);
-				} else if (Common.ACTION_ENABLE_SIGNATURE_CHECK.equals(action)) {
-					disableSignatureCheck(false);
-				} else if (Common.ACTION_DISABLE_PERMISSION_CHECK
-						.equals(action)) {
-					disablePermissionCheck(true);
-				} else if (Common.ACTION_ENABLE_PERMISSION_CHECK.equals(action)) {
-					disablePermissionCheck(false);
-				} else if (Common.ACTION_INSTALL_PACKAGE.equals(action)) {
-					if (hasExtras) {
-						String apkFile = extras.getString(Common.FILE);
-						Integer flag = extras.getInt(Common.FLAGS);
-						if (apkFile != null) {
-							if (flag != null) {
-								int flags = flag;
-								installPackage(apkFile, flags);
-							} else {
-								installPackage(apkFile, 0);
-							}
-						}
-					}
-				} else if (Common.ACTION_CLEAR_APP_DATA.equals(action)) {
-					if (hasExtras) {
-						String packageName = extras.getString(Common.PACKAGE);
-						if (packageName != null) {
-							clearAppData(packageName);
-						}
-					}
-				} else if (Common.ACTION_FORCE_STOP_PACKAGE.equals(action)) {
-					if (hasExtras) {
-						String packageName = extras.getString(Common.PACKAGE);
-						if (packageName != null) {
-							forceStopPackage(packageName);
-						}
-					}
-				} else if (Common.ACTION_DELETE_PACKAGE.equals(action)) {
-					if (hasExtras) {
-						String packageName = extras.getString(Common.PACKAGE);
-						Integer flag = extras.getInt(Common.FLAGS);
-						if (packageName != null) {
-							if (flag != null) {
-								int flags = flag;
-								deletePackage(packageName, flags);
-							} else {
-								deletePackage(packageName, 0);
-							}
-						}
-					}
-				} else if (Common.ACTION_CLEAR_APP_CACHE.equals(action)) {
-					if (hasExtras) {
-						String packageName = extras.getString(Common.PACKAGE);
-						if (packageName != null) {
-							clearAppCache(packageName);
-						}
-					}
-				} else if (Common.ACTION_MOVE_PACKAGE.equals(action)) {
-					if (hasExtras) {
-						String packageName = extras.getString(Common.PACKAGE);
-						Integer flag = extras.getInt(Common.FLAGS);
-						if (packageName != null) {
-							if (flag != null) {
-								int flags = flag;
-								movePackage(packageName, flags);
-							}
-						}
-					}
-				} else if (Common.ACTION_RUN_XINSTALLER.equals(action)) {
-					runXInstaller();
-				} else if (Common.ACTION_REMOVE_TASK.equals(action)) {
-					if (hasExtras) {
-						Integer taskId = extras.getInt(Common.TASK);
-						if (taskId != null) {
-							int task = taskId;
-							removeTask(task);
-						}
-					}
-				} else if (Common.ACTION_SET_INSTALL_LOCATION.equals(action)) {
-					if (hasExtras) {
-						Integer loc = extras.getInt(Common.LOCATION);
-						if (loc != null) {
-							int location = loc;
-							setInstallLocation(location);
-						}
-					}
-				}
-			}
-
-		};
-
 		// enablers
+		if (LOLLIPOP_NEWER) {
+			// 5.0 and newer
+			XposedHelpers.findAndHookMethod(packageManagerClass,
+					"verifySignaturesLP",
+					"com.android.server.pm.PackageSetting",
+					"android.content.pm.PackageParser$Package",
+					checkDuplicatedPermissions);
+		}
+
 		if (LOLLIPOP_NEWER) {
 			// 5.0 and newer
 			XposedHelpers.findAndHookMethod(packageParserClass, "parseBaseApk",
@@ -961,14 +825,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				"collectCertificates",
 				"android.content.pm.PackageParser$Package", int.class,
 				installUnsignedAppsHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllConstructors(packageManagerClass,
-				packageManagerHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllConstructors(activityManagerClass,
-				activityManagerHook);
 
 		// 4.0 and newer
 		XposedHelpers.findAndHookMethod(packageManagerClass,
@@ -1132,93 +988,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 	}
 
-	// system API
-	public void forceStopPackage(String packageName) {
-		XposedHelpers.callMethod(activityManagerObj, "forceStopPackage",
-				packageName);
-	}
-
-	public void clearAppData(String packageName) {
-		XposedHelpers.callMethod(activityManagerObj,
-				"clearApplicationUserData", packageName, null);
-	}
-
-	public void removeTask(int taskId) {
-		XposedHelpers.callMethod(activityManagerObj, "removeTask", taskId,
-				Common.REMOVE_TASK_KILL_PROCESS);
-	}
-
-	public void clearAppCache(String packageName) {
-		XposedHelpers.callMethod(packageManagerObj,
-				"deleteApplicationCacheFiles", packageName, null);
-	}
-
-	public void movePackage(String packageName, int flags) {
-		XposedHelpers.callMethod(packageManagerObj, "movePackage", packageName,
-				null, flags);
-	}
-
-	public void installPackage(String apkFile, int flags) {
-		Uri apk = Uri.fromFile(new File(apkFile));
-		enableModule(false);
-		if ((flags & Common.INSTALL_REPLACE_EXISTING) == 0) {
-			flags |= Common.INSTALL_REPLACE_EXISTING;
-		}
-		XposedHelpers.callMethod(packageManagerObj, "installPackage", apk,
-				null, flags);
-		enableModule(true);
-
-	}
-
-	public void deletePackage(String packageName, int flags) {
-		enableModule(false);
-		if (JB_MR2_NEWER) {
-			int userId = (Integer) XposedHelpers.callStaticMethod(
-					ActivityManager.class, "getCurrentUser");
-			XposedHelpers.callMethod(packageManagerObj, "deletePackageAsUser",
-					packageName, null, userId, flags);
-		} else {
-			XposedHelpers.callMethod(packageManagerObj, "deletePackage",
-					packageName, null, flags);
-		}
-		enableModule(true);
-	}
-
-	public void setInstallLocation(int location) {
-		XposedHelpers.callMethod(packageManagerObj, "setInstallLocation",
-				location);
-
-	}
-
-	public void disableSignatureCheck(boolean disabled) {
-		Intent disableSignatureCheck = new Intent(Common.ACTION_SET_PREFERENCE);
-		disableSignatureCheck.setPackage(Common.PACKAGE_NAME);
-		disableSignatureCheck.putExtra(Common.PREFERENCE,
-				Common.PREF_DISABLE_SIGNATURE_CHECK);
-		disableSignatureCheck.putExtra(Common.VALUE, disabled);
-		mContext.sendBroadcast(disableSignatureCheck);
-
-	}
-
-	public void disablePermissionCheck(boolean disabled) {
-		Intent disablePermissionCheck = new Intent(Common.ACTION_SET_PREFERENCE);
-		disablePermissionCheck.setPackage(Common.PACKAGE_NAME);
-		disablePermissionCheck.putExtra(Common.PREFERENCE,
-				Common.PREF_DISABLE_PERMISSION_CHECK);
-		disablePermissionCheck.putExtra(Common.VALUE, disabled);
-		mContext.sendBroadcast(disablePermissionCheck);
-
-	}
-
-	public void runXInstaller() {
-		Intent launchIntent = mContext.getPackageManager()
-				.getLaunchIntentForPackage(Common.PACKAGE_NAME);
-		if (launchIntent != null) {
-			launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			mContext.startActivity(launchIntent);
-		}
-	}
-
 	public boolean isModuleEnabled() {
 		prefs.reload();
 		boolean enabled = prefs.getBoolean(Common.PREF_ENABLE_MODULE, true);
@@ -1230,15 +999,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 		boolean enabled = prefs.getBoolean(Common.PREF_ENABLE_EXPERT_MODE,
 				false);
 		return enabled;
-	}
-
-	public void enableModule(boolean enabled) {
-		Intent enableModule = new Intent(Common.ACTION_SET_PREFERENCE);
-		enableModule.setPackage(Common.PACKAGE_NAME);
-		enableModule.putExtra(Common.PREFERENCE, Common.PREF_ENABLE_MODULE);
-		enableModule.putExtra(Common.VALUE, enabled);
-		mContext.sendBroadcast(enableModule);
-
 	}
 
 	public Context getXInstallerContext() {

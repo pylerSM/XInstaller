@@ -26,43 +26,43 @@
             <PreferenceCategory
                 android:key="installations_enable"
                 android:title="@string/enable" >
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_downgrade_apps"
                     android:title="@string/downgrade_apps" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_install_unknown_apps"
                     android:title="@string/install_unknown_apps" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_install_external_storage"
                     android:title="@string/install_external_storage" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_auto_install"
                     android:title="@string/auto_install" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_auto_close_install"
                     android:title="@string/auto_close_install" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_auto_launch_install"
                     android:title="@string/auto_launch_install" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_backup_apk_files"
                     android:title="@string/backup_apk_files" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_install_unsigned_apps"
                     android:title="@string/install_unsigned_apps" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_show_version"
                     android:title="@string/show_version" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_delete_apk_files_install"
                     android:title="@string/delete_apk_files_install" />
@@ -70,30 +70,34 @@
             <PreferenceCategory
                 android:key="installations_disable"
                 android:title="@string/disable" >
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
-                    android:key="disable_signatures_check"
-                    android:title="@string/signatures_check" />
-                <CheckBoxPreference
+                    android:key="disable_check_signatures"
+                    android:title="@string/check_signatures" />
+                <SwitchPreference
                     android:defaultValue="false"
-                    android:key="disable_signatures_check_fdroid"
-                    android:title="@string/signatures_check_fdroid" />
-                <CheckBoxPreference
+                    android:key="disable_check_signatures_fdroid"
+                    android:title="@string/check_signatures_fdroid" />
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="disable_forward_lock"
                     android:title="@string/forward_lock" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="disable_verify_apps"
                     android:title="@string/verify_apps" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
-                    android:key="disable_sdk_version_check"
-                    android:title="@string/sdk_version_check" />
-                <CheckBoxPreference
+                    android:key="disable_check_sdk_version"
+                    android:title="@string/check_sdk_version" />
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="disable_install_background"
                     android:title="@string/install_background" />
+				<SwitchPreference
+                    android:defaultValue="false"
+                    android:key="disable_check_duplicated_permissions"
+                    android:title="@string/check_duplicated_permissions" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -102,19 +106,19 @@
             <PreferenceCategory
                 android:key="uninstallations_enable"
                 android:title="@string/enable" >
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_keep_apps_data"
                     android:title="@string/keep_apps_data" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_uninstall_device_admins"
                     android:title="@string/uninstall_device_admins" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_auto_uninstall"
                     android:title="@string/auto_uninstall" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_auto_close_uninstall"
                     android:title="@string/auto_close_uninstall" />
@@ -122,7 +126,7 @@
             <PreferenceCategory
                 android:key="uninstallations_disable"
                 android:title="@string/disable" >
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="disable_uninstall_background"
                     android:title="@string/uninstall_background" />
@@ -134,31 +138,31 @@
             <PreferenceCategory
                 android:key="misc_enable"
                 android:title="@string/enable" >
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_disable_system_apps"
                     android:title="@string/disable_system_apps" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_show_buttons"
                     android:title="@string/show_buttons" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
-                    android:key="enable_apps_debugging"
-                    android:title="@string/apps_debugging" />
-                <CheckBoxPreference
+                    android:key="enable_debug_apps"
+                    android:title="@string/debug_apps" />
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_auto_backup"
                     android:title="@string/auto_backup" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_show_package_name"
                     android:title="@string/show_package_name" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_launch_apps"
                     android:title="@string/launch_apps" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="enable_move_apps"
                     android:title="@string/move_apps" />
@@ -166,15 +170,15 @@
             <PreferenceCategory
                 android:key="misc_disable"
                 android:title="@string/disable" >
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
-                    android:key="disable_permissions_check"
-                    android:title="@string/permissions_check" />
-                <CheckBoxPreference
+                    android:key="disable_check_permissions"
+                    android:title="@string/check_permissions" />
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="disable_verify_jar"
                     android:title="@string/verify_jar" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="disable_verify_signatures"
                     android:title="@string/verify_signatures" />

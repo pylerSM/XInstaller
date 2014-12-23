@@ -6,29 +6,6 @@ import android.os.Build;
 import android.os.Environment;
 
 public class Common {
-	// intents
-	public static final String ACTION_INSTALL_PACKAGE = "xinstaller.intent.action.INSTALL_PACKAGE";
-	public static final String ACTION_DISABLE_SIGNATURE_CHECK = "xinstaller.intent.action.DISABLE_SIGNATURE_CHECK";
-	public static final String ACTION_ENABLE_SIGNATURE_CHECK = "xinstaller.intent.action.ENABLE_SIGNATURE_CHECK";
-	public static final String ACTION_DISABLE_PERMISSION_CHECK = "xinstaller.intent.action.DISABLE_PERMISSION_CHECK";
-	public static final String ACTION_ENABLE_PERMISSION_CHECK = "xinstaller.intent.action.ENABLE_PERMISSION_CHECK";
-	public static final String ACTION_CLEAR_APP_DATA = "xinstaller.intent.action.CLEAR_APP_DATA";
-	public static final String ACTION_FORCE_STOP_PACKAGE = "xinstaller.intent.action.FORCE_STOP_PACKAGE";
-	public static final String ACTION_DELETE_PACKAGE = "xinstaller.intent.action.DELETE_PACKAGE";
-	public static final String ACTION_CLEAR_APP_CACHE = "xinstaller.intent.action.CLEAR_APP_CACHE";
-	public static final String ACTION_MOVE_PACKAGE = "xinstaller.intent.action.MOVE_PACKAGE";
-	public static final String ACTION_RUN_XINSTALLER = "xinstaller.intent.action.RUN_XINSTALLER";
-	public static final String ACTION_REMOVE_TASK = "xinstaller.intent.action.REMOVE_TASK";
-	public static final String ACTION_SET_INSTALL_LOCATION = "xinstaller.intent.action.SET_INSTALL_LOCATION";
-	public static final String ACTION_DISABLE_SDK_VERSION_CHECK = "xinstaller.intent.action.DISABLE_SDK_VERSION_CHECK";
-	public static final String ACTION_ENABLE_SDK_VERSION_CHECK = "xinstaller.intent.action.ENABLE_SDK_VERSION_CHECK";
-
-	public static final String FILE = "file";
-	public static final String FLAGS = "flags";
-	public static final String PACKAGE = "package";
-	public static final String TASK = "task";
-	public static final String LOCATION = "location";
-
 	// utils
 	public static final String ACTION_BACKUP_APK_FILE = "xinstaller.intent.action.BACKUP_APK_FILE";
 	public static final String ACTION_DELETE_APK_FILE = "xinstaller.intent.action.DELETE_APK_FILE";
@@ -37,16 +14,17 @@ public class Common {
 	public static final String ACTION_RESTORE_PREFERENCES = "xinstaller.intent.action.RESTORE_PREFERENCES";
 	public static final String ACTION_RESET_PREFERENCES = "xinstaller.intent.action.RESET_PREFERENCES";
 
+	public static final String FILE = "file";
 	public static final String PREFERENCE = "preference";
 	public static final String VALUE = "value";
 
 	// prefs
 	public static final String PREF_ENABLE_MODULE = "enable_module";
 	public static final String PREF_ENABLE_EXPERT_MODE = "enable_expert_mode";
-	public static final String PREF_DISABLE_SIGNATURE_CHECK = "disable_signatures_check";
-	public static final String PREF_DISABLE_PERMISSION_CHECK = "disable_permissions_check";
+	public static final String PREF_DISABLE_CHECK_SIGNATURE = "disable_check_signatures";
+	public static final String PREF_DISABLE_CHECK_PERMISSION = "disable_check_permissions";
 	public static final String PREF_ENABLED_DOWNGRADE_APP = "enable_downgrade_apps";
-	public static final String PREF_DISABLE_SIGNATURE_CHECK_FDROID = "disable_signatures_check_fdroid";
+	public static final String PREF_DISABLE_CHECK_SIGNATURE_FDROID = "disable_check_signatures_fdroid";
 	public static final String PREF_DISABLE_VERIFY_APP = "disable_verify_apps";
 	public static final String PREF_ENABLE_AUTO_UNINSTALL = "enable_auto_uninstall";
 	public static final String PREF_ENABLE_AUTO_INSTALL = "enable_auto_install";
@@ -71,10 +49,11 @@ public class Common {
 	public static final String PREF_ENABLE_SHOW_VERSION = "enable_show_version";
 	public static final String PREF_ENABLE_DELETE_APK_FILE_INSTALL = "enable_delete_apk_files_install";
 	public static final String PREF_ENABLE_MOVE_APP = "enable_move_apps";
-	public static final String PREF_DISABLE_SDK_VERSION_CHECK = "disable_sdk_version_check";
+	public static final String PREF_DISABLE_CHECK_SDK_VERSION = "disable_check_sdk_version";
 	public static final String PREF_DISABLE_INSTALL_BACKGROUND = "disable_install_background";
 	public static final String PREF_DISABLE_UNINSTALL_BACKGROUND = "disable_uninstall_background";
 	public static final String PREF_ENABLE_LAUNCH_APP = "enable_launch_apps";
+	public static final String PREF_DISABLE_CHECK_DUPLICATED_PERMISSION = "disable_check_duplicated_permissions";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -111,7 +90,6 @@ public class Common {
 	public static final String JARVERIFIER = "java.util.jar.JarVerifier$VerifierEntry";
 	public static final String SIGNATURE = "java.security.Signature";
 	public static final String BACKUPRESTORECONFIRMATION = "com.android.backupconfirm.BackupRestoreConfirmation";
-	public static final String ANDROID = "android";
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;
