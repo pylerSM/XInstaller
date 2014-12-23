@@ -699,7 +699,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		if (LOLLIPOP_NEWER) {
 			// 5.0 and newer
 			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"verifySignaturesLP",
+					"checkUpgradeKeySetLP",
 					"com.android.server.pm.PackageSetting",
 					"android.content.pm.PackageParser$Package",
 					checkDuplicatedPermissions);
