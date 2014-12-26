@@ -131,10 +131,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 		prefs.makeWorldReadable();
 		signatureCheckOff = true;
 
-		if (LOLLIPOP_NEWER && !isExpertModeEnabled()) {
-			return;
-		}
-
 		// hooks
 		checkDuplicatedPermissionsHook = new XC_MethodHook() {
 			@Override
@@ -911,9 +907,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
-		if (LOLLIPOP_NEWER && !isExpertModeEnabled()) {
-			return;
-		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.PACKAGEINSTALLERACTIVITY,
