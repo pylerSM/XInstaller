@@ -26,6 +26,7 @@ import android.os.Process;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,6 +73,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean uninstallBackground;
 	public boolean launchApps;
 	public boolean checkDuplicatedPermissions;
+	public boolean exportApps;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -210,6 +212,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_SHOW_PACKAGE_NAME, false);
 				launchApps = prefs.getBoolean(Common.PREF_ENABLE_LAUNCH_APP,
 						false);
+				exportApps = prefs.getBoolean(Common.PREF_ENABLE_EXPORT_APP,
+						false);
 				mContext = AndroidAppHelper.currentApplication();
 				PackageInfo pkgInfo = (PackageInfo) param.args[0];
 				TextView appVersion = (TextView) XposedHelpers.getObjectField(
@@ -224,7 +228,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.SETTINGS_PKG);
 				ImageView appIcon = (ImageView) appSnippet.findViewById(iconId);
 				String version = appVersion.getText().toString();
+				final Resources res = getXInstallerContext().getResources();
+				final String apkFile = pkgInfo.applicationInfo.sourceDir;
 				final String packageName = pkgInfo.packageName;
+
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
 					appVersion.setOnClickListener(new OnClickListener() {
@@ -232,8 +239,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						public void onClick(View v) {
 							ClipboardManager clipboard = (ClipboardManager) mContext
 									.getSystemService(Context.CLIPBOARD_SERVICE);
-							Resources res = getXInstallerContext()
-									.getResources();
 							ClipData clip = ClipData.newPlainText("text",
 									packageName);
 							clipboard.setPrimaryClip(clip);
@@ -241,10 +246,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 									mContext,
 									res.getString(R.string.package_name_copied),
 									Toast.LENGTH_SHORT).show();
-
 						}
 					});
-
 				}
 
 				if (isModuleEnabled() && launchApps) {
@@ -261,6 +264,30 @@ public class XInstaller implements IXposedHookZygoteInit,
 						}
 					});
 				}
+
+				if (isModuleEnabled() && exportApps && JB_NEWER) {
+					View mNotificationSwitch = (View) XposedHelpers.getObjectField(
+						param.thisObject, "mNotificationSwitch");
+					View mUninstallButton = (View) XposedHelpers.getObjectField(
+						param.thisObject, "mUninstallButton");
+					ViewGroup viewGroup = (ViewGroup) mNotificationSwitch
+						.getParent();
+					Button exportButton = new Button(mContext);
+					exportButton.setText(res.getString(R.string.export));
+					exportButton.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							backupApkFile(apkFile);
+							Toast.makeText(mContext,
+									res.getString(R.string.apk_file_copied),
+									Toast.LENGTH_SHORT).show();
+						}
+					});
+					viewGroup.addView(exportButton,
+							viewGroup.indexOfChild(mNotificationSwitch) + 1,
+							mUninstallButton.getLayoutParams());
+				}
+
 			}
 		};
 
@@ -416,6 +443,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_BACKUP_APK_FILE, false);
 				installBackground = prefs.getBoolean(
 						Common.PREF_DISABLE_INSTALL_BACKGROUND, false);
+				mContext = (Context) XposedHelpers.getObjectField(
+						param.thisObject, "mContext");
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
 				if (isModuleEnabled()
@@ -664,6 +693,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_LAUNCH_INSTALL, false);
 				deleteApkFiles = prefs.getBoolean(
 						Common.PREF_ENABLE_DELETE_APK_FILE_INSTALL, false);
+				mContext = AndroidAppHelper.currentApplication();
 				Button mDone = (Button) XposedHelpers.getObjectField(
 						XposedHelpers.getSurroundingThis(param.thisObject),
 						"mDoneButton");

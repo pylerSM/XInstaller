@@ -166,6 +166,10 @@
                     android:defaultValue="false"
                     android:key="enable_move_apps"
                     android:title="@string/move_apps" />
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_export_apps"
+                    android:title="@string/export_apps" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="misc_disable"
