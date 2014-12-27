@@ -65,13 +65,12 @@ public class Preferences extends Activity {
 			Preference checkPermissions = findPreference(Common.PREF_DISABLE_CHECK_PERMISSION);
 			Preference verifyJar = findPreference(Common.PREF_DISABLE_VERIFY_JAR);
 			Preference verifySignature = findPreference(Common.PREF_DISABLE_VERIFY_SIGNATURE);
-			Preference appTranslator = findPreference("app_translator");
 
+			Preference appTranslator = findPreference("app_translator");
 			String translator = resources.getString(R.string.app_translator);
 			if (translator.isEmpty()) {
 				about.removePreference(appTranslator);
 			}
-
 			if (!isExpertModeEnabled) {
 				installationsEnable.removePreference(installUnsignedApps);
 				installationsEnable.removePreference(installOnExternal);
@@ -147,6 +146,16 @@ public class Preferences extends Activity {
 								openUrl.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 								startActivity(openUrl);
 							}
+							return true;
+						}
+					});
+			Preference enableExpertMode = findPreference("enable_expert_mode");
+			enableExpertMode
+					.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+						@Override
+						public boolean onPreferenceChange(
+								Preference preference, Object newValue) {
+							activity.recreate();
 							return true;
 						}
 					});
