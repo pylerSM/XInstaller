@@ -54,9 +54,6 @@
     <string name="package_name_copied">Package name was copied to clipboard</string>
     <string name="launch_apps">Launching apps</string>
     <string name="check_duplicated_permissions">Checking duplicated permissions</string>
-    <string name="export_apps">Exporting apps</string>
-    <string name="export">Export</string>
-    <string name="apk_file_copied">APK file was exported</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

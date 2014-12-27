@@ -94,7 +94,7 @@
                     android:defaultValue="false"
                     android:key="disable_install_background"
                     android:title="@string/install_background" />
-				<SwitchPreference
+                <SwitchPreference
                     android:defaultValue="false"
                     android:key="disable_check_duplicated_permissions"
                     android:title="@string/check_duplicated_permissions" />
@@ -166,10 +166,6 @@
                     android:defaultValue="false"
                     android:key="enable_move_apps"
                     android:title="@string/move_apps" />
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="enable_export_apps"
-                    android:title="@string/export_apps" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="misc_disable"

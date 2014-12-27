@@ -54,7 +54,6 @@ public class Common {
 	public static final String PREF_DISABLE_UNINSTALL_BACKGROUND = "disable_uninstall_background";
 	public static final String PREF_ENABLE_LAUNCH_APP = "enable_launch_apps";
 	public static final String PREF_DISABLE_CHECK_DUPLICATED_PERMISSION = "disable_check_duplicated_permissions";
-	public static final String PREF_ENABLE_EXPORT_APP = "enable_export_apps";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
