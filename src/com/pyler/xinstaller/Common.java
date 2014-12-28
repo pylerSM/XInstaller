@@ -54,6 +54,8 @@ public class Common {
 	public static final String PREF_DISABLE_UNINSTALL_BACKGROUND = "disable_uninstall_background";
 	public static final String PREF_ENABLE_LAUNCH_APP = "enable_launch_apps";
 	public static final String PREF_DISABLE_CHECK_DUPLICATED_PERMISSION = "disable_check_duplicated_permissions";
+	public static final String PREF_ENABLE_EXPORT_APP = "enable_export_apps";
+	public static final String PREF_ENABLE_OPEN_APP_GOOGLE_PLAY = "enable_open_apps_google_play";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -75,6 +77,7 @@ public class Common {
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
 	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
+	public static final String GOOGLEPLAY_PKG = "com.android.vending";
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";

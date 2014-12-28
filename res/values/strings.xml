@@ -13,6 +13,7 @@
     <string name="installations">Installations</string>
     <string name="uninstallations">Uninstallations</string>
     <string name="misc">Misc</string>
+    <string name="apps_info">Apps info</string>
     <string name="backup_and_restore">Backup and restore</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>
@@ -54,6 +55,10 @@
     <string name="package_name_copied">Package name was copied to clipboard</string>
     <string name="launch_apps">Launching apps</string>
     <string name="check_duplicated_permissions">Checking duplicated permissions</string>
+    <string name="export_apps">Exporting apps</string>
+    <string name="apk_file_exported">APK file was exported</string>
+    <string name="open_apps_google_play">Opening apps in Google Play</string>
+    <string name="app_name_copied">App name was copied to clipboard</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

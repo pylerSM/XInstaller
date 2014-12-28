@@ -34,6 +34,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -72,6 +73,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean uninstallBackground;
 	public boolean launchApps;
 	public boolean checkDuplicatedPermissions;
+	public boolean exportApps;
+	public boolean openAppsGooglePlay;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -210,7 +213,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_SHOW_PACKAGE_NAME, false);
 				launchApps = prefs.getBoolean(Common.PREF_ENABLE_LAUNCH_APP,
 						false);
+				exportApps = prefs.getBoolean(Common.PREF_ENABLE_EXPORT_APP,
+						false);
+				openAppsGooglePlay = prefs.getBoolean(
+						Common.PREF_ENABLE_OPEN_APP_GOOGLE_PLAY, false);
 				mContext = AndroidAppHelper.currentApplication();
+				PackageManager pm = (PackageManager) XposedHelpers
+						.getObjectField(param.thisObject, "mPm");
 				PackageInfo pkgInfo = (PackageInfo) param.args[0];
 				TextView appVersion = (TextView) XposedHelpers.getObjectField(
 						param.thisObject, "mAppVersion");
@@ -222,10 +231,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 				View appSnippet = mRootView.findViewById(appSnippetId);
 				int iconId = mResources.getIdentifier("app_icon", "id",
 						Common.SETTINGS_PKG);
+				int labelId = mResources.getIdentifier("app_name", "id",
+						Common.SETTINGS_PKG);
 				ImageView appIcon = (ImageView) appSnippet.findViewById(iconId);
+				TextView appLabel = (TextView) appSnippet.findViewById(labelId);
 				String version = appVersion.getText().toString();
 				final Resources res = getXInstallerContext().getResources();
+				final String apkFile = pkgInfo.applicationInfo.sourceDir;
 				final String packageName = pkgInfo.packageName;
+				final String appName = appLabel.getText().toString();
+				final String installerPackageName = pm
+						.getInstallerPackageName(packageName);
+
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
 					appVersion.setOnClickListener(new OnClickListener() {
@@ -258,6 +275,55 @@ public class XInstaller implements IXposedHookZygoteInit,
 						}
 					});
 				}
+
+				if (isModuleEnabled() && exportApps) {
+					appLabel.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							backupApkFile(apkFile);
+							Toast.makeText(mContext,
+									res.getString(R.string.apk_file_exported),
+									Toast.LENGTH_SHORT).show();
+						}
+					});
+					appLabel.setOnLongClickListener(new View.OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+							ClipboardManager clipboard = (ClipboardManager) mContext
+									.getSystemService(Context.CLIPBOARD_SERVICE);
+							ClipData clip = ClipData.newPlainText("text",
+									appName);
+							clipboard.setPrimaryClip(clip);
+							Toast.makeText(mContext,
+									res.getString(R.string.app_name_copied),
+									Toast.LENGTH_SHORT).show();
+							return true;
+						}
+					});
+				}
+
+				if (isModuleEnabled() && openAppsGooglePlay) {
+					XposedBridge.log("InOpen apps1");
+					if (installerPackageName != null
+							&& installerPackageName
+									.equals(Common.GOOGLEPLAY_PKG)) {
+						XposedBridge.log("InOpen apps");
+						appIcon.setOnLongClickListener(new View.OnLongClickListener() {
+							@Override
+							public boolean onLongClick(View v) {
+								String uri = "market://details?id="
+										+ packageName;
+								Intent openGooglePlay = new Intent(
+										Intent.ACTION_VIEW, Uri.parse(uri));
+								openGooglePlay
+										.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								mContext.startActivity(openGooglePlay);
+								return true;
+							}
+						});
+					}
+				}
+
 			}
 		};
 

@@ -140,10 +140,6 @@
                 android:title="@string/enable" >
                 <SwitchPreference
                     android:defaultValue="false"
-                    android:key="enable_disable_system_apps"
-                    android:title="@string/disable_system_apps" />
-                <SwitchPreference
-                    android:defaultValue="false"
                     android:key="enable_show_buttons"
                     android:title="@string/show_buttons" />
                 <SwitchPreference
@@ -154,18 +150,6 @@
                     android:defaultValue="false"
                     android:key="enable_auto_backup"
                     android:title="@string/auto_backup" />
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="enable_show_package_name"
-                    android:title="@string/show_package_name" />
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="enable_launch_apps"
-                    android:title="@string/launch_apps" />
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="enable_move_apps"
-                    android:title="@string/move_apps" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="misc_disable"
@@ -182,6 +166,42 @@
                     android:defaultValue="false"
                     android:key="disable_verify_signatures"
                     android:title="@string/verify_signatures" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="apps_info"
+            android:title="@string/apps_info" >
+            <PreferenceCategory
+                android:key="apps_info_enable"
+                android:title="@string/enable" >
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_disable_system_apps"
+                    android:title="@string/disable_system_apps" />
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_show_package_name"
+                    android:title="@string/show_package_name" />
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_launch_apps"
+                    android:title="@string/launch_apps" />
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_move_apps"
+                    android:title="@string/move_apps" />
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_move_apps"
+                    android:title="@string/move_apps" />
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_export_apps"
+                    android:title="@string/export_apps" />
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="enable_open_apps_google_play"
+                    android:title="@string/open_apps_google_play" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
