@@ -203,6 +203,10 @@
                     android:key="enable_open_apps_google_play"
                     android:title="@string/open_apps_google_play" />
             </PreferenceCategory>
+            <PreferenceCategory
+                android:key="apps_info_disable"
+                android:title="@string/disable" >
+            </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
             android:key="backup_restore_preferences"

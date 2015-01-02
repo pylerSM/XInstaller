@@ -8,7 +8,7 @@
   <string name="misc">Διάφορα</string>
   <string name="enable">Ενεργοποίηση</string>
   <string name="disable">Απενεργοποίηση</string>
-  <string name="signatures_check">Έλεγχος υπογραφών</string>
+  <string name="check_signatures">Έλεγχος υπογραφών</string>
   <string name="keep_apps_data">Διατήρηση δεδομένων εφαρμογών</string>
   <string name="downgrade_apps">Υποβάθμιση εφαρμογών</string>
   <string name="forward_lock">Σήμανση FORWAD_LOCK</string>
@@ -17,7 +17,7 @@
   <string name="install_external_storage">Εγκατάσταση εφαρμογών στον εξωτερικό αποθηκευτικό χώρο</string>
   <string name="disable_system_apps">Απενεργοποίηση εφαρμογών συστήματος</string>
   <string name="uninstall_device_admins">Απεγκατάσταση διαχειριστών συσκευής</string>
-  <string name="signatures_check_fdroid">Έλεγχος υπογραφών (F-Droid)</string>
+  <string name="check_signatures_fdroid">Έλεγχος υπογραφών (F-Droid)</string>
   <string name="auto_install">Αυτόματη εγκατάσταση</string>
   <string name="auto_uninstall">Αυτόματη απεγκατάσταση</string>
   <string name="auto_close_install">Αυτόματο κλείσιμο μετά την εγκατάσταση</string>

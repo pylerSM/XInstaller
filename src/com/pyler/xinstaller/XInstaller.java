@@ -34,7 +34,6 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -303,11 +302,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 				if (isModuleEnabled() && openAppsGooglePlay) {
-					XposedBridge.log("InOpen apps1");
 					if (installerPackageName != null
 							&& installerPackageName
 									.equals(Common.GOOGLEPLAY_PKG)) {
-						XposedBridge.log("InOpen apps");
 						appIcon.setOnLongClickListener(new View.OnLongClickListener() {
 							@Override
 							public boolean onLongClick(View v) {
