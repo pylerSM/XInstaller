@@ -35,7 +35,6 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -281,7 +280,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				} catch (Exception e) {
 				}
 				final String installerPackageName = installer;
-
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
 					appVersion.setOnClickListener(new OnClickListener() {
@@ -366,23 +364,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 						@Override
 						public boolean onLongClick(View v) {
 							String removeAPK = "rm " + apkFile;
+							boolean installedInSystem = apkFile
+									.startsWith("/system/app");
 							String removeData = "pm clear " + packageName;
+							String remountRW = "mount -o remount,rw /system";
+							String remountRO = "mount -o remount,ro /system";
 							try {
 								Process process = Runtime.getRuntime().exec(
 										"su");
-								// TODO: remount as RW
 								DataOutputStream os = new DataOutputStream(
 										process.getOutputStream());
-								os.writeBytes(removeAPK + "\n");
+								if (installedInSystem) {
+									os.writeBytes(remountRW + "\n");
+									os.writeBytes(removeAPK + "\n");
+									os.writeBytes(remountRO + "\n");
+								} else {
+									os.writeBytes(removeAPK + "\n");
+								}
 								os.writeBytes(removeData + "\n");
+								os.writeBytes(removeAPK + "\n");
 								os.writeBytes("exit\n");
 								os.flush();
+								Toast.makeText(
+										mContext,
+										res.getString(R.string.app_uninstalled),
+										Toast.LENGTH_LONG).show();
 							} catch (Exception e) {
 							}
-							Toast.makeText(mContext,
-									res.getString(R.string.app_uninstalled),
-									Toast.LENGTH_LONG).show();
-
 							return true;
 						}
 					};
