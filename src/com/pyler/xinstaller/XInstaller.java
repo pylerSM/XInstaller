@@ -1,5 +1,6 @@
 package com.pyler.xinstaller;
 
+import java.io.DataOutputStream;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
@@ -22,10 +23,10 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.os.Process;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,8 +35,11 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
+
+//import android.os.Process;
 
 public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
@@ -74,6 +78,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean checkDuplicatedPermissions;
 	public boolean exportApps;
 	public boolean openAppsGooglePlay;
+	public boolean uninstallSystemApps;
+	public boolean autoEnableClearButtons;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -101,6 +107,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook installBackgroundHook;
 	public XC_MethodHook uninstallBackgroundHook;
 	public XC_MethodHook checkDuplicatedPermissionsHook;
+	public XC_MethodHook autoEnableClearButtonsHook;
 	public boolean JB_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
 			: false;
 	public boolean JB_MR1_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
@@ -126,6 +133,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 			Common.JARVERIFIER, null);
 	public Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
 			null);
+	public Class<?> processClass = XposedHelpers
+			.findClass(Common.PROCESS, null);
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
@@ -134,6 +143,31 @@ public class XInstaller implements IXposedHookZygoteInit,
 		signatureCheckOff = true;
 
 		// hooks
+
+		autoEnableClearButtonsHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				autoEnableClearButtons = prefs.getBoolean(
+						Common.PREF_ENABLE_AUTO_ENABLE_CLEAR_BUTTON, false);
+				if (isModuleEnabled() && uninstallSystemApps) {
+					Button mClearDataButton = (Button) XposedHelpers
+							.getObjectField(param.thisObject,
+									"mClearDataButton");
+					Button mClearCacheButton = (Button) XposedHelpers
+							.getObjectField(param.thisObject,
+									"mClearCacheButton");
+					mClearDataButton.setEnabled(true);
+					mClearCacheButton.setEnabled(true);
+					mClearDataButton
+							.setOnClickListener((OnClickListener) param.thisObject);
+					mClearCacheButton
+							.setOnClickListener((OnClickListener) param.thisObject);
+				}
+			}
+		};
+
 		checkDuplicatedPermissionsHook = new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param)
@@ -216,6 +250,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				openAppsGooglePlay = prefs.getBoolean(
 						Common.PREF_ENABLE_OPEN_APP_GOOGLE_PLAY, false);
+				uninstallSystemApps = prefs.getBoolean(
+						Common.PREF_ENABLE_UNINSTALL_SYSTEM_APP, false);
 				mContext = AndroidAppHelper.currentApplication();
 				PackageManager pm = (PackageManager) XposedHelpers
 						.getObjectField(param.thisObject, "mPm");
@@ -239,8 +275,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 				final String apkFile = pkgInfo.applicationInfo.sourceDir;
 				final String packageName = pkgInfo.packageName;
 				final String appName = appLabel.getText().toString();
-				final String installerPackageName = pm
-						.getInstallerPackageName(packageName);
+				String installer = null;
+				try {
+					installer = pm.getInstallerPackageName(packageName);
+				} catch (Exception e) {
+				}
+				final String installerPackageName = installer;
 
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
@@ -319,6 +359,42 @@ public class XInstaller implements IXposedHookZygoteInit,
 							}
 						});
 					}
+				}
+
+				if (isModuleEnabled() && uninstallSystemApps) {
+					OnLongClickListener uninstallSystemApp = new View.OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+							String removeAPK = "rm " + apkFile;
+							String removeData = "pm clear " + packageName;
+							try {
+								Process process = Runtime.getRuntime().exec(
+										"su");
+								// TODO: remount as RW
+								DataOutputStream os = new DataOutputStream(
+										process.getOutputStream());
+								os.writeBytes(removeAPK + "\n");
+								os.writeBytes(removeData + "\n");
+								os.writeBytes("exit\n");
+								os.flush();
+							} catch (Exception e) {
+							}
+							Toast.makeText(mContext,
+									res.getString(R.string.app_uninstalled),
+									Toast.LENGTH_LONG).show();
+
+							return true;
+						}
+					};
+					Button mUninstallButton = (Button) XposedHelpers
+							.getObjectField(param.thisObject,
+									"mUninstallButton");
+					Button mSpecialDisableButton = (Button) XposedHelpers
+							.getObjectField(param.thisObject,
+									"mSpecialDisableButton");
+					mUninstallButton.setOnLongClickListener(uninstallSystemApp);
+					mSpecialDisableButton
+							.setOnLongClickListener(uninstallSystemApp);
 				}
 
 			}
@@ -813,7 +889,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 			if (LOLLIPOP_NEWER) {
 				// 5.0 and newer
-				XposedHelpers.findAndHookMethod(Process.class, "start",
+				XposedHelpers.findAndHookMethod(processClass, "start",
 						String.class, String.class, int.class, int.class,
 						int[].class, int.class, int.class, int.class,
 						String.class, String.class, String.class, String.class,
@@ -821,14 +897,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 			} else {
 				// 4.2 - 4.4
 				try {
-					XposedHelpers.findAndHookMethod(Process.class, "start",
+					XposedHelpers.findAndHookMethod(processClass, "start",
 							String.class, String.class, int.class, int.class,
 							int[].class, int.class, int.class, int.class,
 							String.class, String[].class, debugAppsHook);
 				} catch (NoSuchMethodError nsm) {
 					// CM 11
 					try {
-						XposedHelpers.findAndHookMethod(Process.class, "start",
+						XposedHelpers.findAndHookMethod(processClass, "start",
 								String.class, String.class, int.class,
 								int.class, int[].class, int.class, int.class,
 								int.class, String.class, boolean.class,
@@ -839,7 +915,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			}
 		} else {
 			// 4.0 - 4.1
-			XposedHelpers.findAndHookMethod(Process.class, "start",
+			XposedHelpers.findAndHookMethod(processClass, "start",
 					String.class, String.class, int.class, int.class,
 					int[].class, int.class, int.class, int.class,
 					String[].class, debugAppsHook);
@@ -1027,6 +1103,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.CANBEONSDCARDCHECKER,
 					lpparam.classLoader, "check", ApplicationInfo.class,
 					moveAppsHook);
+
+			// 4.0 and newer
+			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+					lpparam.classLoader, "refreshSizeInfo",
+					autoEnableClearButtonsHook);
 		}
 
 		if (Common.FDROID_PKG.equals(lpparam.packageName)) {

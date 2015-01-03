@@ -59,6 +59,9 @@
     <string name="apk_file_exported">APK file was exported</string>
     <string name="open_apps_google_play">Opening apps in Google Play</string>
     <string name="app_name_copied">App name was copied to clipboard</string>
+    <string name="uninstall_system_apps">Uninstalling system apps</string>
+    <string name="app_uninstalled">App was uninstalled</string>
+    <string name="auto_enable_clear_buttons">Auto enabling clear buttons</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

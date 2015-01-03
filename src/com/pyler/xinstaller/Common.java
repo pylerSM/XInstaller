@@ -56,6 +56,8 @@ public class Common {
 	public static final String PREF_DISABLE_CHECK_DUPLICATED_PERMISSION = "disable_check_duplicated_permissions";
 	public static final String PREF_ENABLE_EXPORT_APP = "enable_export_apps";
 	public static final String PREF_ENABLE_OPEN_APP_GOOGLE_PLAY = "enable_open_apps_google_play";
+	public static final String PREF_ENABLE_UNINSTALL_SYSTEM_APP = "enable_uninstall_system_apps";
+	public static final String PREF_ENABLE_AUTO_ENABLE_CLEAR_BUTTON = "enable_auto_enable_clear_buttons";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -92,6 +94,7 @@ public class Common {
 	public static final String PACKAGEPARSER = "android.content.pm.PackageParser";
 	public static final String JARVERIFIER = "java.util.jar.JarVerifier$VerifierEntry";
 	public static final String SIGNATURE = "java.security.Signature";
+	public static final String PROCESS = "android.os.Process";
 	public static final String BACKUPRESTORECONFIRMATION = "com.android.backupconfirm.BackupRestoreConfirmation";
 
 	// flags
