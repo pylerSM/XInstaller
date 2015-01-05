@@ -56,6 +56,9 @@
   <string name="apk_file_exported">APK檔已匯出</string>
   <string name="open_apps_google_play">前往Play商店查看</string>
   <string name="app_name_copied">安裝包名已複製到剪貼板</string>
+  <string name="uninstall_system_apps">解除安裝系統應用</string>
+  <string name="app_uninstalled">應用已解除安裝</string>
+  <string name="auto_enable_clear_buttons">自動啟用清除按鈕</string>
   <string name="about">關於</string>
   <string name="developer">開發人員</string>
   <string name="version">版本</string>

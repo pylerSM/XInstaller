@@ -56,6 +56,9 @@
   <string name="apk_file_exported">APKファイルをエクスポートしました</string>
   <string name="open_apps_google_play">Google Playでアプリを開く</string>
   <string name="app_name_copied">アプリ名をクリップボードにコピーしました</string>
+  <string name="uninstall_system_apps">システムアプリのアンインストール</string>
+  <string name="app_uninstalled">アプリをアンインストールしました</string>
+  <string name="auto_enable_clear_buttons">消去ボタンを自動で有効化</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>

@@ -1,5 +1,6 @@
 package com.pyler.xinstaller;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -48,11 +50,10 @@ public class Utils extends BroadcastReceiver {
 				String apkFile = extras.getString(Common.FILE);
 				deleteApkFile(apkFile);
 			}
-		} else if (Common.ACTION_SET_PREFERENCE.equals(action)) {
+		} else if (Common.ACTION_UNINSTALL_SYSTEM_APP.equals(action)) {
 			if (hasExtras) {
-				String preference = extras.getString(Common.PREFERENCE);
-				boolean value = extras.getBoolean(Common.VALUE);
-				setPreference(preference, value);
+				String packageName = extras.getString(Common.PACKAGE);
+				uninstallSystemApp(packageName);
 			}
 		} else if (Common.ACTION_BACKUP_PREFERENCES.equals(action)) {
 			backupPreferences();
@@ -90,10 +91,44 @@ public class Utils extends BroadcastReceiver {
 		}
 	}
 
-	public void setPreference(String preference, boolean value) {
-		SharedPreferences prefs = ctx.getSharedPreferences(
-				Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
-		prefs.edit().putBoolean(preference, value).apply();
+	public void uninstallSystemApp(String packageName) {
+		PackageManager pm = ctx.getPackageManager();
+		PackageInfo pkgInfo;
+		try {
+			pkgInfo = pm.getPackageInfo(packageName, 0);
+		} catch (NameNotFoundException e) {
+			return;
+		}
+		final String apkFile = pkgInfo.applicationInfo.sourceDir;
+		boolean installedInSystem = apkFile.startsWith("/system");
+		boolean isSystemApp = (pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+		if (!isSystemApp) {
+			return;
+		}
+		String removeAPK = "rm " + apkFile;
+		String removeData = "pm clear " + packageName;
+		String remountRW = "mount -o remount,rw /system";
+		String remountRO = "mount -o remount,ro /system";
+
+		try {
+			Process process = Runtime.getRuntime().exec("su");
+			DataOutputStream os = new DataOutputStream(
+					process.getOutputStream());
+			if (installedInSystem) {
+				os.writeBytes(remountRW + "\n");
+				os.writeBytes(removeAPK + "\n");
+				os.writeBytes(remountRO + "\n");
+			} else {
+				os.writeBytes(removeAPK + "\n");
+			}
+			os.writeBytes(removeData + "\n");
+			os.writeBytes("exit\n");
+			os.flush();
+			os.close();
+			Toast.makeText(ctx, resources.getString(R.string.app_uninstalled),
+					Toast.LENGTH_LONG).show();
+		} catch (Exception e) {
+		}
 	}
 
 	public void copyFile(File src, File dst) throws IOException {

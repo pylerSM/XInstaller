@@ -1,6 +1,5 @@
 package com.pyler.xinstaller;
 
-import java.io.DataOutputStream;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
@@ -23,6 +22,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.os.Process;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,8 +37,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
-
-//import android.os.Process;
 
 public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
@@ -120,7 +118,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean signatureCheckOff;
 	public Context mContext;
 
-	// classes
 	public Class<?> packageManagerClass = XposedHelpers.findClass(
 			Common.PACKAGEMANAGERSERVICE, null);
 	public Class<?> activityManagerClass = ActivityManager.class;
@@ -132,16 +129,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 			Common.JARVERIFIER, null);
 	public Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
 			null);
-	public Class<?> processClass = XposedHelpers
-			.findClass(Common.PROCESS, null);
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
 		signatureCheckOff = true;
-
-		// hooks
 
 		autoEnableClearButtonsHook = new XC_MethodHook() {
 			@Override
@@ -363,34 +356,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					OnLongClickListener uninstallSystemApp = new View.OnLongClickListener() {
 						@Override
 						public boolean onLongClick(View v) {
-							String removeAPK = "rm " + apkFile;
-							boolean installedInSystem = apkFile
-									.startsWith("/system/app");
-							String removeData = "pm clear " + packageName;
-							String remountRW = "mount -o remount,rw /system";
-							String remountRO = "mount -o remount,ro /system";
-							try {
-								Process process = Runtime.getRuntime().exec(
-										"su");
-								DataOutputStream os = new DataOutputStream(
-										process.getOutputStream());
-								if (installedInSystem) {
-									os.writeBytes(remountRW + "\n");
-									os.writeBytes(removeAPK + "\n");
-									os.writeBytes(remountRO + "\n");
-								} else {
-									os.writeBytes(removeAPK + "\n");
-								}
-								os.writeBytes(removeData + "\n");
-								os.writeBytes(removeAPK + "\n");
-								os.writeBytes("exit\n");
-								os.flush();
-								Toast.makeText(
-										mContext,
-										res.getString(R.string.app_uninstalled),
-										Toast.LENGTH_LONG).show();
-							} catch (Exception e) {
-							}
+							uninstallSystemApp(packageName);
 							return true;
 						}
 					};
@@ -432,10 +398,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				int flags = (Integer) param.args[5];
 				if (isModuleEnabled() && isExpertModeEnabled()
-						&& (flags & Common.DEBUG_ENABLE_DEBUGGER) == 0
-						&& debugApps) {
-					// we dont have this flag, add it
-					flags |= Common.DEBUG_ENABLE_DEBUGGER;
+
+				&& debugApps) {
+					if ((flags & Common.DEBUG_ENABLE_DEBUGGER) == 0) {
+						// we dont have this flag, add it
+						flags |= Common.DEBUG_ENABLE_DEBUGGER;
+					}
 				}
 				param.args[5] = flags;
 			}
@@ -564,23 +532,27 @@ public class XInstaller implements IXposedHookZygoteInit,
 						param.thisObject, "mContext");
 				int ID = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[ID];
-				if (isModuleEnabled()
-						&& (flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0
-						&& downgradeApps) {
-					// we dont have this flag, add it
-					flags |= Common.INSTALL_ALLOW_DOWNGRADE;
+				if (isModuleEnabled() && downgradeApps) {
+					if ((flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
+						// we dont have this flag, add it
+						flags |= Common.INSTALL_ALLOW_DOWNGRADE;
+					}
 				}
 				if (isModuleEnabled()
-						&& (flags & Common.INSTALL_FORWARD_LOCK) != 0
-						&& forwardLock) {
-					// we have this flag, remove it
-					flags &= ~Common.INSTALL_FORWARD_LOCK;
+
+				&& forwardLock) {
+					if ((flags & Common.INSTALL_FORWARD_LOCK) != 0) {
+						// we have this flag, remove it
+						flags &= ~Common.INSTALL_FORWARD_LOCK;
+					}
 				}
 				if (isModuleEnabled() && isExpertModeEnabled()
-						&& (flags & Common.INSTALL_EXTERNAL) == 0
-						&& installAppsOnExternal) {
-					// we dont have this flag, add it
-					flags |= Common.INSTALL_EXTERNAL;
+
+				&& installAppsOnExternal) {
+					if ((flags & Common.INSTALL_EXTERNAL) == 0) {
+						// we dont have this flag, add it
+						flags |= Common.INSTALL_EXTERNAL;
+					}
 				}
 				param.args[ID] = flags;
 
@@ -610,10 +582,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_DISABLE_UNINSTALL_BACKGROUND, false);
 				int ID = JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[ID];
-				if (isModuleEnabled() && (flags & Common.DELETE_KEEP_DATA) == 0
-						&& keepAppsData) {
-					// we dont have this flag, add it
-					flags |= Common.DELETE_KEEP_DATA;
+				if (isModuleEnabled() && keepAppsData) {
+					if ((flags & Common.DELETE_KEEP_DATA) == 0) {
+						// we dont have this flag, add it
+						flags |= Common.DELETE_KEEP_DATA;
+					}
 				}
 				param.args[ID] = flags;
 
@@ -838,7 +811,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
-		// enablers
 		if (LOLLIPOP_NEWER) {
 			// 5.0 and newer
 			XposedHelpers.findAndHookMethod(packageManagerClass,
@@ -897,7 +869,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 			if (LOLLIPOP_NEWER) {
 				// 5.0 and newer
-				XposedHelpers.findAndHookMethod(processClass, "start",
+				XposedHelpers.findAndHookMethod(Process.class, "start",
 						String.class, String.class, int.class, int.class,
 						int[].class, int.class, int.class, int.class,
 						String.class, String.class, String.class, String.class,
@@ -905,14 +877,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 			} else {
 				// 4.2 - 4.4
 				try {
-					XposedHelpers.findAndHookMethod(processClass, "start",
+					XposedHelpers.findAndHookMethod(Process.class, "start",
 							String.class, String.class, int.class, int.class,
 							int[].class, int.class, int.class, int.class,
 							String.class, String[].class, debugAppsHook);
 				} catch (NoSuchMethodError nsm) {
 					// CM 11
 					try {
-						XposedHelpers.findAndHookMethod(processClass, "start",
+						XposedHelpers.findAndHookMethod(Process.class, "start",
 								String.class, String.class, int.class,
 								int.class, int[].class, int.class, int.class,
 								int.class, String.class, boolean.class,
@@ -923,7 +895,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			}
 		} else {
 			// 4.0 - 4.1
-			XposedHelpers.findAndHookMethod(processClass, "start",
+			XposedHelpers.findAndHookMethod(Process.class, "start",
 					String.class, String.class, int.class, int.class,
 					int[].class, int.class, int.class, int.class,
 					String[].class, debugAppsHook);
@@ -1159,14 +1131,22 @@ public class XInstaller implements IXposedHookZygoteInit,
 		Intent backupApkFile = new Intent(Common.ACTION_BACKUP_APK_FILE);
 		backupApkFile.setPackage(Common.PACKAGE_NAME);
 		backupApkFile.putExtra(Common.FILE, apkFile);
-		mContext.sendBroadcast(backupApkFile);
+		getXInstallerContext().sendBroadcast(backupApkFile);
 	}
 
 	public void deleteApkFile(String apkFile) {
 		Intent deleteApkFile = new Intent(Common.ACTION_DELETE_APK_FILE);
 		deleteApkFile.setPackage(Common.PACKAGE_NAME);
 		deleteApkFile.putExtra(Common.FILE, apkFile);
-		mContext.sendBroadcast(deleteApkFile);
+		getXInstallerContext().sendBroadcast(deleteApkFile);
+	}
+
+	public void uninstallSystemApp(String packageName) {
+		Intent uninstallSystemApp = new Intent(
+				Common.ACTION_UNINSTALL_SYSTEM_APP);
+		uninstallSystemApp.setPackage(Common.PACKAGE_NAME);
+		uninstallSystemApp.putExtra(Common.PACKAGE, packageName);
+		getXInstallerContext().sendBroadcast(uninstallSystemApp);
 	}
 
 }

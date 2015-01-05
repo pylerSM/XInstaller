@@ -53,9 +53,12 @@
   <string name="launch_apps">Uygulamaları açma</string>
   <string name="check_duplicated_permissions">Yinelenen izinleri kontrol etme</string>
   <string name="export_apps">Uygulamaları dışa aktar</string>
-  <string name="apk_file_exported">APK dosyası dışarıya aktarılmıştı</string>
+  <string name="apk_file_exported">APK dosyası dışarıya aktarıldı</string>
   <string name="open_apps_google_play">Uygulamaları Google Play/\'de açma</string>
   <string name="app_name_copied">Uygulama ismi panoya kopyalandı</string>
+  <string name="uninstall_system_apps">Sİstem uygulamalarını kaldırma</string>
+  <string name="app_uninstalled">Uygulama kaldırıldı</string>
+  <string name="auto_enable_clear_buttons">Temizleme butonlarını otomatik etkinleştirme</string>
   <string name="about">Hakkında</string>
   <string name="developer">Geliştirici</string>
   <string name="version">Versiyon</string>

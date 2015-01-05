@@ -164,19 +164,19 @@
                     android:title="@string/open_apps_google_play" />
                 <CheckBoxPreference
                     android:defaultValue="false"
-                    android:key="enable_uninstall_system_apps"
-                    android:title="@string/uninstall_system_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
                     android:key="enable_auto_enable_clear_buttons"
                     android:title="@string/auto_enable_clear_buttons" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_uninstall_system_apps"
+                    android:title="@string/uninstall_system_apps" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="apps_info_disable"
                 android:title="@string/disable" >
             </PreferenceCategory>
         </PreferenceScreen>
-		<PreferenceScreen
+        <PreferenceScreen
             android:key="misc"
             android:title="@string/misc" >
             <PreferenceCategory

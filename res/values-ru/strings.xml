@@ -56,6 +56,9 @@
   <string name="apk_file_exported">APK-файл был экспортирован</string>
   <string name="open_apps_google_play">Открытие приложения в Google Play</string>
   <string name="app_name_copied">Название приложения было скопировано в буфер обмена</string>
+  <string name="uninstall_system_apps">Удаление системы приложений</string>
+  <string name="app_uninstalled">Приложение было удалено</string>
+  <string name="auto_enable_clear_buttons">Автоматическое скрытие кнопок</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>

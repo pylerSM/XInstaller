@@ -56,6 +56,9 @@
   <string name="apk_file_exported">APK fájl exportálva</string>
   <string name="open_apps_google_play">Alkalmazás megnyitás Google Play Áruházban</string>
   <string name="app_name_copied">Alkalmazás nevének másolása a vágólapra</string>
+  <string name="uninstall_system_apps">Rendszer alkalmazások eltávolítása</string>
+  <string name="app_uninstalled">Eltávolított alkalmazások</string>
+  <string name="auto_enable_clear_buttons">Tisztítás gombok automatikus engedélyezése</string>
   <string name="about">Névjegy</string>
   <string name="developer">Fejlesztő</string>
   <string name="version">Verzió</string>

@@ -9,7 +9,7 @@ public class Common {
 	// utils
 	public static final String ACTION_BACKUP_APK_FILE = "xinstaller.intent.action.BACKUP_APK_FILE";
 	public static final String ACTION_DELETE_APK_FILE = "xinstaller.intent.action.DELETE_APK_FILE";
-	public static final String ACTION_SET_PREFERENCE = "xinstaller.intent.action.SET_PREFERENCE";
+	public static final String ACTION_UNINSTALL_SYSTEM_APP = "xinstaller.intent.action.UNINSTALL_SYSTEM_APP";
 	public static final String ACTION_BACKUP_PREFERENCES = "xinstaller.intent.action.BACKUP_PREFERENCES";
 	public static final String ACTION_RESTORE_PREFERENCES = "xinstaller.intent.action.RESTORE_PREFERENCES";
 	public static final String ACTION_RESET_PREFERENCES = "xinstaller.intent.action.RESET_PREFERENCES";
@@ -17,6 +17,7 @@ public class Common {
 	public static final String FILE = "file";
 	public static final String PREFERENCE = "preference";
 	public static final String VALUE = "value";
+	public static final String PACKAGE = "package";
 
 	// prefs
 	public static final String PREF_ENABLE_MODULE = "enable_module";
@@ -94,7 +95,6 @@ public class Common {
 	public static final String PACKAGEPARSER = "android.content.pm.PackageParser";
 	public static final String JARVERIFIER = "java.util.jar.JarVerifier$VerifierEntry";
 	public static final String SIGNATURE = "java.security.Signature";
-	public static final String PROCESS = "android.os.Process";
 	public static final String BACKUPRESTORECONFIRMATION = "com.android.backupconfirm.BackupRestoreConfirmation";
 
 	// flags
@@ -102,8 +102,6 @@ public class Common {
 	public static final int INSTALL_ALLOW_DOWNGRADE = 0x00000080;
 	public static final int INSTALL_FORWARD_LOCK = 0x00000001;
 	public static final int INSTALL_EXTERNAL = 0x00000008;
-	public static final int INSTALL_REPLACE_EXISTING = 0x00000002;
-	public static final int REMOVE_TASK_KILL_PROCESS = 0x0001;
 	public static final int DEBUG_ENABLE_DEBUGGER = 0x1;
 	public static final int ROOT_UID = 0;
 }

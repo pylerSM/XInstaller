@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="405"
-    android:versionName="4.0.5" >
+    android:versionCode="410"
+    android:versionName="4.1" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -45,13 +45,11 @@
             </intent-filter>
         </activity-alias>
 
-        <receiver
-            android:name=".Utils"
-            android:exported="true" >
+        <receiver android:name=".Utils" >
             <intent-filter>
                 <action android:name="xinstaller.intent.action.BACKUP_APK_FILE" />
                 <action android:name="xinstaller.intent.action.DELETE_APK_FILE" />
-                <action android:name="xinstaller.intent.action.SET_PREFERENCE" />
+                <action android:name="xinstaller.intent.action.UNINSTALL_SYSTEM_APP" />
                 <action android:name="xinstaller.intent.action.BACKUP_PREFERENCES" />
                 <action android:name="xinstaller.intent.action.RESTORE_PREFERENCES" />
                 <action android:name="xinstaller.intent.action.RESET_PREFERENCES" />

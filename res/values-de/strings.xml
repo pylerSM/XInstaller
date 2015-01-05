@@ -56,6 +56,9 @@
   <string name="apk_file_exported">APK-Datei wurde exportiert</string>
   <string name="open_apps_google_play">Öffne Apps in Google Play</string>
   <string name="app_name_copied">Name der App wurde in die Zwischenablage kopiert</string>
+  <string name="uninstall_system_apps">System-Apps deinstallieren</string>
+  <string name="app_uninstalled">App wurde deinstalliert</string>
+  <string name="auto_enable_clear_buttons">\"Daten/Cache löschen\" automatisch aktiv</string>
   <string name="about">Über</string>
   <string name="developer">Entwickler</string>
   <string name="version">Version</string>

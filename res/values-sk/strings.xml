@@ -56,6 +56,9 @@
   <string name="apk_file_exported">APK súbor bol exportovaný</string>
   <string name="open_apps_google_play">Otváranie aplikácií v Obchode Play</string>
   <string name="app_name_copied">Názov aplikácie bol skopírovaný do schránky</string>
+  <string name="uninstall_system_apps">Odinštalovanie systémových aplikácií</string>
+  <string name="app_uninstalled">Aplikácia bola odinštalovaná</string>
+  <string name="auto_enable_clear_buttons">Automatické povolenie tlačidiel vymazania</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>
