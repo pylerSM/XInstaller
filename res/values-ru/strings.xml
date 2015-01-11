@@ -20,7 +20,7 @@
   <string name="check_signatures">Проверка подписи</string>
   <string name="keep_apps_data">Сохранение данных приложений</string>
   <string name="downgrade_apps">Понижение версии приложений</string>
-  <string name="forward_lock">Блокировка повторной установки</string>
+  <string name="forward_lock">Разблокировать покупки</string>
   <string name="install_unknown_apps">Установка неизвестных приложений</string>
   <string name="verify_apps">Верификация приложений</string>
   <string name="install_external_storage">Установка на внешнюю память</string>
@@ -58,7 +58,7 @@
   <string name="app_name_copied">Название приложения было скопировано в буфер обмена</string>
   <string name="uninstall_system_apps">Удаление системы приложений</string>
   <string name="app_uninstalled">Приложение было удалено</string>
-  <string name="auto_enable_clear_buttons">Автоматическое скрытие кнопок</string>
+  <string name="auto_enable_clear_buttons">Отображать кнопки очистки</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>

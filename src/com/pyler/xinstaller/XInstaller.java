@@ -245,8 +245,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				uninstallSystemApps = prefs.getBoolean(
 						Common.PREF_ENABLE_UNINSTALL_SYSTEM_APP, false);
 				mContext = AndroidAppHelper.currentApplication();
-				PackageManager pm = (PackageManager) XposedHelpers
-						.getObjectField(param.thisObject, "mPm");
 				PackageInfo pkgInfo = (PackageInfo) param.args[0];
 				TextView appVersion = (TextView) XposedHelpers.getObjectField(
 						param.thisObject, "mAppVersion");
@@ -267,12 +265,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				final String apkFile = pkgInfo.applicationInfo.sourceDir;
 				final String packageName = pkgInfo.packageName;
 				final String appName = appLabel.getText().toString();
-				String installer = null;
-				try {
-					installer = pm.getInstallerPackageName(packageName);
-				} catch (Exception e) {
-				}
-				final String installerPackageName = installer;
 				if (isModuleEnabled() && showPackageName) {
 					appVersion.setText(packageName + "\n" + version);
 					appVersion.setOnClickListener(new OnClickListener() {
@@ -333,23 +325,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 				if (isModuleEnabled() && openAppsGooglePlay) {
-					if (installerPackageName != null
-							&& installerPackageName
-									.equals(Common.GOOGLEPLAY_PKG)) {
-						appIcon.setOnLongClickListener(new View.OnLongClickListener() {
-							@Override
-							public boolean onLongClick(View v) {
-								String uri = "market://details?id="
-										+ packageName;
-								Intent openGooglePlay = new Intent(
-										Intent.ACTION_VIEW, Uri.parse(uri));
-								openGooglePlay
-										.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-								mContext.startActivity(openGooglePlay);
-								return true;
-							}
-						});
-					}
+					appIcon.setOnLongClickListener(new View.OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+							String uri = "market://details?id=" + packageName;
+							Intent openGooglePlay = new Intent(
+									Intent.ACTION_VIEW, Uri.parse(uri));
+							openGooglePlay
+									.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							mContext.startActivity(openGooglePlay);
+							return true;
+						}
+					});
 				}
 
 				if (isModuleEnabled() && uninstallSystemApps) {
