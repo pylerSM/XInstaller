@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.content.ClipData;
@@ -77,6 +78,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean openAppsGooglePlay;
 	public boolean uninstallSystemApps;
 	public boolean autoEnableClearButtons;
+	public boolean autoHideInstall;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -105,6 +107,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook uninstallBackgroundHook;
 	public XC_MethodHook checkDuplicatedPermissionsHook;
 	public XC_MethodHook autoEnableClearButtonsHook;
+	public XC_MethodHook autoHideInstallHook;
 	public boolean JB_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
 			: false;
 	public boolean JB_MR1_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
@@ -136,6 +139,23 @@ public class XInstaller implements IXposedHookZygoteInit,
 		prefs.makeWorldReadable();
 		signatureCheckOff = true;
 
+		autoHideInstallHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				autoHideInstall = prefs.getBoolean(
+						Common.PREF_ENABLE_AUTO_HIDE_INSTALL, false);
+				Activity packageInstaller = (Activity) param.thisObject;
+				if (isModuleEnabled() && autoHideInstall) {
+					if (packageInstaller != null) {
+						packageInstaller.onBackPressed();
+					}
+				}
+
+			}
+		};
+
 		autoEnableClearButtonsHook = new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
@@ -143,7 +163,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoEnableClearButtons = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_ENABLE_CLEAR_BUTTON, false);
-				if (isModuleEnabled() && uninstallSystemApps) {
+				if (isModuleEnabled() && autoEnableClearButtons) {
 					Button mClearDataButton = (Button) XposedHelpers
 							.getObjectField(param.thisObject,
 									"mClearDataButton");
@@ -525,9 +545,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						flags |= Common.INSTALL_ALLOW_DOWNGRADE;
 					}
 				}
-				if (isModuleEnabled()
-
-				&& forwardLock) {
+				if (isModuleEnabled() && forwardLock) {
 					if ((flags & Common.INSTALL_FORWARD_LOCK) != 0) {
 						// we have this flag, remove it
 						flags &= ~Common.INSTALL_FORWARD_LOCK;
@@ -697,6 +715,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 							"mOkCanInstall", true);
 					mOk.performClick();
 				}
+
 				if (isModuleEnabled() && showVersions) {
 					Resources res = getXInstallerContext().getResources();
 					PackageManager pm = mContext.getPackageManager();
@@ -779,12 +798,22 @@ public class XInstaller implements IXposedHookZygoteInit,
 						XposedHelpers.getSurroundingThis(param.thisObject),
 						"mLaunchButton");
 
+				Message msg = (Message) param.args[0];
+				boolean installedApp = false;
+				if (msg != null) {
+					installedApp = (msg.arg1 == Common.INSTALL_SUCCEEDED);
+				}
+
 				if (isModuleEnabled() && autoLaunchInstall) {
-					mLaunch.performClick();
+					if (installedApp) {
+						mLaunch.performClick();
+					}
 				}
 
 				if (isModuleEnabled() && autoCloseInstall) {
-					mDone.performClick();
+					if (installedApp) {
+						mDone.performClick();
+					}
 				}
 
 				if (isModuleEnabled() && deleteApkFiles) {
@@ -1050,6 +1079,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS + "$1",
 					lpparam.classLoader, "handleMessage", Message.class,
 					autoCloseInstallHook);
+			// 4.0 and newer
+			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS,
+					lpparam.classLoader, "initView", autoHideInstallHook);
 
 		}
 

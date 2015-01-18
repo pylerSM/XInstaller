@@ -11,6 +11,7 @@
   <string name="uninstallations">Odinstalace</string>
   <string name="misc">Různé</string>
   <string name="apps_info">Informace o aplikacích</string>
+  <string name="help">Nápověda</string>
   <string name="backup_and_restore">Záloha a obnova</string>
   <string name="backup">Zálohovat</string>
   <string name="restore">Obnovit</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">Odinstalování systémových aplikací</string>
   <string name="app_uninstalled">Aplikace byla odinstalována</string>
   <string name="auto_enable_clear_buttons">Automatické povolení tlačítek vymazání</string>
+  <string name="auto_hide_install">Automatické skrývání při instalaci</string>
   <string name="about">O aplikaci</string>
   <string name="developer">Vývojář</string>
   <string name="version">Verze</string>

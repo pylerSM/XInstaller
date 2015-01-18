@@ -14,6 +14,7 @@
     <string name="uninstallations">Uninstallations</string>
     <string name="misc">Misc</string>
     <string name="apps_info">Apps info</string>
+    <string name="help">Help</string>
     <string name="backup_and_restore">Backup and restore</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>
@@ -62,6 +63,7 @@
     <string name="uninstall_system_apps">Uninstalling system apps</string>
     <string name="app_uninstalled">App was uninstalled</string>
     <string name="auto_enable_clear_buttons">Auto enabling clear buttons</string>
+    <string name="auto_hide_install">Auto hiding when installing</string>
     <string name="about">About</string>
     <string name="developer">Developer</string>
     <string name="version">Version</string>

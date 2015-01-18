@@ -11,6 +11,7 @@
   <string name="uninstallations">Odstranjevanje</string>
   <string name="misc">Razno</string>
   <string name="apps_info">Informacije aplikacij</string>
+  <string name="help">Pomoč</string>
   <string name="backup_and_restore">Varnostna kopija in obnovitev</string>
   <string name="backup">Varnostna kopija</string>
   <string name="restore">Obnovitev</string>
@@ -58,7 +59,8 @@
   <string name="app_name_copied">Ime aplikacije je bilo kopirano v odložišče</string>
   <string name="uninstall_system_apps">Odstranjevanje sistemskih aplikacij</string>
   <string name="app_uninstalled">Aplikacija je bila odstranjena</string>
-  <string name="auto_enable_clear_buttons">Samodejno omogočanje očisti gumbov</string>
+  <string name="auto_enable_clear_buttons">Samodejno omogoči \"počisti\" gumbe</string>
+  <string name="auto_hide_install">Samodejno skrij pri namestitvi</string>
   <string name="about">O aplikaciji</string>
   <string name="developer">Razvijalec</string>
   <string name="version">Različica</string>

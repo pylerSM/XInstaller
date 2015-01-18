@@ -11,6 +11,7 @@
   <string name="uninstallations">アンインストール</string>
   <string name="misc">その他</string>
   <string name="apps_info">アプリ情報</string>
+  <string name="help">ヘルプ</string>
   <string name="backup_and_restore">バックアップとリストア</string>
   <string name="backup">バックアップ</string>
   <string name="restore">リストア</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">システムアプリのアンインストール</string>
   <string name="app_uninstalled">アプリをアンインストールしました</string>
   <string name="auto_enable_clear_buttons">消去ボタンを自動で有効化</string>
+  <string name="auto_hide_install">インストール時に自動で隠す</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>

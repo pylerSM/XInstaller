@@ -11,6 +11,7 @@
   <string name="uninstallations">Eltávolítások</string>
   <string name="misc">Egyéb</string>
   <string name="apps_info">Alkalmazás információ</string>
+  <string name="help">Súgó</string>
   <string name="backup_and_restore">Biztonsági mentés és visszaállítás</string>
   <string name="backup">Biztonsági mentés</string>
   <string name="restore">Visszaállítás</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">Rendszer alkalmazások eltávolítása</string>
   <string name="app_uninstalled">Eltávolított alkalmazások</string>
   <string name="auto_enable_clear_buttons">Tisztítás gombok automatikus engedélyezése</string>
+  <string name="auto_hide_install">Automatikus elrejtés telepítéskor</string>
   <string name="about">Névjegy</string>
   <string name="developer">Fejlesztő</string>
   <string name="version">Verzió</string>

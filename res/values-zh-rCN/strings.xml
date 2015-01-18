@@ -11,6 +11,7 @@
   <string name="uninstallations">卸载设置</string>
   <string name="misc">其他设置</string>
   <string name="apps_info">应用信息</string>
+  <string name="help">帮助</string>
   <string name="backup_and_restore">备份与恢复</string>
   <string name="backup">备份</string>
   <string name="restore">恢复</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">卸载系统应用</string>
   <string name="app_uninstalled">应用已卸载</string>
   <string name="auto_enable_clear_buttons">自动启用清除按钮</string>
+  <string name="auto_hide_install">安装时自动隐藏</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

@@ -11,6 +11,7 @@
   <string name="uninstallations">Kaldırmalar</string>
   <string name="misc">Çeşitli</string>
   <string name="apps_info">Uygulama bilgisi</string>
+  <string name="help">Yardım</string>
   <string name="backup_and_restore">Yedekleme ve geri yükleme</string>
   <string name="backup">Yedekle</string>
   <string name="restore">Geri yükle</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">Sİstem uygulamalarını kaldırma</string>
   <string name="app_uninstalled">Uygulama kaldırıldı</string>
   <string name="auto_enable_clear_buttons">Temizleme butonlarını otomatik etkinleştirme</string>
+  <string name="auto_hide_install">Yüklerken oto. gizleme</string>
   <string name="about">Hakkında</string>
   <string name="developer">Geliştirici</string>
   <string name="version">Versiyon</string>

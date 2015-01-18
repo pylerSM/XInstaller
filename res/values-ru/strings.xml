@@ -11,6 +11,7 @@
   <string name="uninstallations">Деинсталляция</string>
   <string name="misc">Разное</string>
   <string name="apps_info">Информация о приложении</string>
+  <string name="help">Помощь</string>
   <string name="backup_and_restore">Рез. копирование и восстановление</string>
   <string name="backup">Резервное копирование</string>
   <string name="restore">Восстановление</string>
@@ -34,12 +35,12 @@
   <string name="auto_launch_install">Авто запуск после установки</string>
   <string name="check_permissions">Проверка разрешений</string>
   <string name="backup_apk_files">Резервное копирование APK файлов</string>
-  <string name="install_unsigned_apps">Установка неподписанных приложений</string>
+  <string name="install_unsigned_apps">Установка не подписанных приложений</string>
   <string name="verify_jar">Проверка JAR</string>
   <string name="verify_signatures">Проверка подписей</string>
   <string name="show_buttons">Показывать скрытые кнопки</string>
   <string name="debug_apps">Отладка приложений</string>
-  <string name="auto_backup">Автоматическое резервироване</string>
+  <string name="auto_backup">Авто резервироване</string>
   <string name="show_package_name">Отображать имена пакетов</string>
   <string name="show_version">Показать информацию о версии</string>
   <string name="current_version">Текущая версия</string>
@@ -56,9 +57,10 @@
   <string name="apk_file_exported">APK-файл был экспортирован</string>
   <string name="open_apps_google_play">Открытие приложения в Google Play</string>
   <string name="app_name_copied">Название приложения было скопировано в буфер обмена</string>
-  <string name="uninstall_system_apps">Удаление системы приложений</string>
+  <string name="uninstall_system_apps">Удаление системных приложений</string>
   <string name="app_uninstalled">Приложение было удалено</string>
   <string name="auto_enable_clear_buttons">Отображать кнопки очистки</string>
+  <string name="auto_hide_install">Автоматическое скрытие при установке</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>

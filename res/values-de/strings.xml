@@ -11,6 +11,7 @@
   <string name="uninstallations">Deinstallationen</string>
   <string name="misc">Sonstige</string>
   <string name="apps_info">Apps Info</string>
+  <string name="help">Hilfe</string>
   <string name="backup_and_restore">Sichern und Wiederherstellen</string>
   <string name="backup">Sichern</string>
   <string name="restore">Wiederherstellen</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">System-Apps deinstallieren</string>
   <string name="app_uninstalled">App wurde deinstalliert</string>
   <string name="auto_enable_clear_buttons">\"Daten/Cache löschen\" automatisch aktiv</string>
+  <string name="auto_hide_install">Beim Installieren automatisch verstecken</string>
   <string name="about">Über</string>
   <string name="developer">Entwickler</string>
   <string name="version">Version</string>

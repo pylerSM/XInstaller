@@ -44,6 +44,10 @@
                     android:title="@string/auto_install" />
                 <CheckBoxPreference
                     android:defaultValue="false"
+                    android:key="enable_auto_hide_install"
+                    android:title="@string/auto_hide_install" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
                     android:key="enable_auto_close_install"
                     android:title="@string/auto_close_install" />
                 <CheckBoxPreference
@@ -229,6 +233,13 @@
                     android:title="@string/reset" />
             </PreferenceCategory>
         </PreferenceScreen>
+    </PreferenceCategory>
+	<PreferenceCategory
+        android:key="help"
+        android:title="@string/help" >
+        <Preference
+            android:key="app_help"
+            android:title="@string/help" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="about"

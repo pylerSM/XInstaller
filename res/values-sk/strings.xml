@@ -11,6 +11,7 @@
   <string name="uninstallations">Odinštalácie</string>
   <string name="misc">Rôzne</string>
   <string name="apps_info">Informácie o aplikáciách</string>
+  <string name="help">Pomocník</string>
   <string name="backup_and_restore">Záloha a obnova</string>
   <string name="backup">Zálohovať</string>
   <string name="restore">Obnoviť</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">Odinštalovanie systémových aplikácií</string>
   <string name="app_uninstalled">Aplikácia bola odinštalovaná</string>
   <string name="auto_enable_clear_buttons">Automatické povolenie tlačidiel vymazania</string>
+  <string name="auto_hide_install">Automatické skrývanie pri inštalácii</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>

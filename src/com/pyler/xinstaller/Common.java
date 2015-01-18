@@ -59,6 +59,7 @@ public class Common {
 	public static final String PREF_ENABLE_OPEN_APP_GOOGLE_PLAY = "enable_open_apps_google_play";
 	public static final String PREF_ENABLE_UNINSTALL_SYSTEM_APP = "enable_uninstall_system_apps";
 	public static final String PREF_ENABLE_AUTO_ENABLE_CLEAR_BUTTON = "enable_auto_enable_clear_buttons";
+	public static final String PREF_ENABLE_AUTO_HIDE_INSTALL = "enable_auto_hide_install";
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -80,7 +81,6 @@ public class Common {
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
 	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
-	public static final String GOOGLEPLAY_PKG = "com.android.vending";
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
@@ -104,4 +104,5 @@ public class Common {
 	public static final int INSTALL_EXTERNAL = 0x00000008;
 	public static final int DEBUG_ENABLE_DEBUGGER = 0x1;
 	public static final int ROOT_UID = 0;
+	public static final int INSTALL_SUCCEEDED = 1;
 }

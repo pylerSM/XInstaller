@@ -11,6 +11,7 @@
   <string name="uninstallations">Desinstalações</string>
   <string name="misc">Diversos</string>
   <string name="apps_info">Informação de aplicações</string>
+  <string name="help">Ajuda</string>
   <string name="backup_and_restore">Cópia de segurança e restauro</string>
   <string name="backup">Cópia de segurança</string>
   <string name="restore">Restaurar</string>
@@ -56,6 +57,10 @@
   <string name="apk_file_exported">O APK foi exportado</string>
   <string name="open_apps_google_play">A abrir aplicação no Google Play</string>
   <string name="app_name_copied">O nome da aplicação foi copiado</string>
+  <string name="uninstall_system_apps">Desinstalar aplicações de sistema</string>
+  <string name="app_uninstalled">A aplicação foi desinstalada</string>
+  <string name="auto_enable_clear_buttons">Ativar botões de limpeza</string>
+  <string name="auto_hide_install">Esconder automaticamente na instalação</string>
   <string name="about">Sobre</string>
   <string name="developer">Desenvolvedor</string>
   <string name="version">Versão</string>

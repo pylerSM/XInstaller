@@ -159,6 +159,18 @@ public class Preferences extends Activity {
 							return true;
 						}
 					});
+			Preference appHelp = findPreference("app_help");
+			appHelp.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					String helpUrl = "http://pyler.wen.ru/XInstaller/Help.html";
+					Intent openUrl = new Intent(Intent.ACTION_VIEW);
+					openUrl.setData(Uri.parse(helpUrl));
+					openUrl.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(openUrl);
+					return true;
+				}
+			});
 		}
 	}
 
