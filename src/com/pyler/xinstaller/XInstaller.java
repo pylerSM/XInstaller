@@ -15,16 +15,13 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
 import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Process;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -36,6 +33,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -86,7 +84,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook unknownAppsHook;
 	public XC_MethodHook verifyAppsHook;
 	public XC_MethodHook deviceAdminsHook;
-	public XC_MethodHook fDroidInstallHook;
+	public XC_MethodHook checkSignaturesFDroidHook;
 	public XC_MethodHook autoInstallHook;
 	public XC_MethodHook autoUninstallHook;
 	public XC_MethodHook autoCloseUninstallHook;
@@ -118,7 +116,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			: false;
 	public boolean LOLLIPOP_NEWER = (Common.SDK >= Build.VERSION_CODES.LOLLIPOP) ? true
 			: false;
-	public boolean signatureCheckOff;
+	public boolean disableCheckSignatures;
 	public Context mContext;
 
 	public Class<?> packageManagerClass = XposedHelpers.findClass(
@@ -137,7 +135,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
-		signatureCheckOff = true;
+		disableCheckSignatures = true;
 
 		autoHideInstallHook = new XC_MethodHook() {
 			@Override
@@ -148,9 +146,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_AUTO_HIDE_INSTALL, false);
 				Activity packageInstaller = (Activity) param.thisObject;
 				if (isModuleEnabled() && autoHideInstall) {
-					if (packageInstaller != null) {
-						packageInstaller.onBackPressed();
-					}
+					packageInstaller.onBackPressed();
 				}
 
 			}
@@ -239,13 +235,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
-				signatureCheckOff = false;
+				disableCheckSignatures = false;
 			}
 
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
-				signatureCheckOff = true;
+				disableCheckSignatures = true;
 			}
 		};
 
@@ -403,16 +399,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				debugApps = prefs.getBoolean(Common.PREF_ENABLE_DEBUG_APP,
 						false);
-				int flags = (Integer) param.args[5];
+				int id = 5;
+				int flags = (Integer) param.args[id];
 				if (isModuleEnabled() && isExpertModeEnabled()
 
 				&& debugApps) {
 					if ((flags & Common.DEBUG_ENABLE_DEBUGGER) == 0) {
-						// we dont have this flag, add it
 						flags |= Common.DEBUG_ENABLE_DEBUGGER;
 					}
 				}
-				param.args[5] = flags;
+				if (isModuleEnabled()) {
+					param.args[id] = flags;
+				}
 			}
 		};
 
@@ -513,7 +511,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				checkSignatures = prefs.getBoolean(
 						Common.PREF_DISABLE_CHECK_SIGNATURE, false);
-				if (isModuleEnabled() && checkSignatures && signatureCheckOff) {
+				if (isModuleEnabled() && checkSignatures
+						&& disableCheckSignatures) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);
 					return;
 				}
@@ -537,17 +536,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_DISABLE_INSTALL_BACKGROUND, false);
 				mContext = (Context) XposedHelpers.getObjectField(
 						param.thisObject, "mContext");
-				int ID = JB_MR1_NEWER ? 2 : 1;
-				int flags = (Integer) param.args[ID];
+				int id = JB_MR1_NEWER ? 2 : 1;
+				int flags = (Integer) param.args[id];
 				if (isModuleEnabled() && downgradeApps) {
 					if ((flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
-						// we dont have this flag, add it
 						flags |= Common.INSTALL_ALLOW_DOWNGRADE;
 					}
 				}
 				if (isModuleEnabled() && forwardLock) {
 					if ((flags & Common.INSTALL_FORWARD_LOCK) != 0) {
-						// we have this flag, remove it
 						flags &= ~Common.INSTALL_FORWARD_LOCK;
 					}
 				}
@@ -555,11 +552,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 				&& installAppsOnExternal) {
 					if ((flags & Common.INSTALL_EXTERNAL) == 0) {
-						// we dont have this flag, add it
 						flags |= Common.INSTALL_EXTERNAL;
 					}
 				}
-				param.args[ID] = flags;
+
+				if (isModuleEnabled()) {
+					param.args[id] = flags;
+				}
 
 				if (isModuleEnabled() && backupApkFiles) {
 					Uri packageUri = (Uri) param.args[0];
@@ -573,7 +572,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 					}
 				}
 			}
-
 		};
 
 		deletePackageHook = new XC_MethodHook() {
@@ -585,15 +583,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_KEEP_APP_DATA, false);
 				uninstallBackground = prefs.getBoolean(
 						Common.PREF_DISABLE_UNINSTALL_BACKGROUND, false);
-				int ID = JB_MR2_NEWER ? 3 : 2;
-				int flags = (Integer) param.args[ID];
+				int id = JB_MR2_NEWER ? 3 : 2;
+				int flags = (Integer) param.args[id];
 				if (isModuleEnabled() && keepAppsData) {
 					if ((flags & Common.DELETE_KEEP_DATA) == 0) {
-						// we dont have this flag, add it
+						XposedBridge.log("Added flag");
 						flags |= Common.DELETE_KEEP_DATA;
 					}
 				}
-				param.args[ID] = flags;
+
+				if (isModuleEnabled()) {
+					param.args[id] = flags;
+				}
 
 				if (isModuleEnabled() && uninstallBackground) {
 					if (Binder.getCallingUid() == Common.ROOT_UID) {
@@ -601,7 +602,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 					}
 				}
 			}
-
 		};
 
 		systemAppsHook = new XC_MethodHook() {
@@ -668,7 +668,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
-		fDroidInstallHook = new XC_MethodHook() {
+		checkSignaturesFDroidHook = new XC_MethodHook() {
 			String mInstalledSigID = null;
 
 			@Override
@@ -731,7 +731,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 								+ res.getString(R.string.current_version)
 								+ ": " + currentVersion;
 
-					} catch (PackageManager.NameNotFoundException e) {
+					} catch (NameNotFoundException e) {
 					}
 					Toast.makeText(mContext, versionInfo, Toast.LENGTH_LONG)
 							.show();
@@ -829,213 +829,99 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		if (LOLLIPOP_NEWER) {
 			// 5.0 and newer
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"checkUpgradeKeySetLP",
-					"com.android.server.pm.PackageSetting",
-					"android.content.pm.PackageParser$Package",
-					checkDuplicatedPermissions);
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"checkUpgradeKeySetLP", checkDuplicatedPermissionsHook);
 		}
 
 		if (LOLLIPOP_NEWER) {
 			// 5.0 and newer
-			XposedHelpers.findAndHookMethod(packageParserClass, "parseBaseApk",
-					Resources.class, XmlResourceParser.class, int.class,
-					String[].class, checkSdkVersionHook);
+			XposedBridge.hookAllMethods(packageParserClass, "parseBaseApk",
+					checkSdkVersionHook);
 		} else {
 			// 4.0 - 4.4
-			try {
-				XposedHelpers.findAndHookMethod(packageParserClass,
-						"parsePackage", Resources.class,
-						XmlResourceParser.class, int.class, String[].class,
-						checkSdkVersionHook);
-			} catch (NoSuchMethodError nsm) {
-				// CM 11
-				try {
-					XposedHelpers.findAndHookMethod(packageParserClass,
-							"parsePackage", Resources.class,
-							XmlResourceParser.class, int.class, boolean.class,
-							String[].class, checkSdkVersionHook);
-				} catch (NoSuchMethodError nsm2) {
-				}
-			}
-		}
-
-		if (JB_MR1_NEWER) {
-			// 4.2 and newer
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"scanPackageLI",
-					"android.content.pm.PackageParser$Package", int.class,
-					int.class, long.class, "android.os.UserHandle",
-					scanPackageHook);
-		} else {
-			// 4.0 - 4.1
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"scanPackageLI",
-					"android.content.pm.PackageParser$Package", int.class,
-					int.class, long.class, scanPackageHook);
+			XposedBridge.hookAllMethods(packageParserClass, "parsePackage",
+					checkSdkVersionHook);
 		}
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(packageManagerClass,
-				"verifySignaturesLP", "com.android.server.pm.PackageSetting",
-				"android.content.pm.PackageParser$Package",
+		XposedBridge.hookAllMethods(packageManagerClass, "scanPackageLI",
+				scanPackageHook);
+
+		// 4.0 and newer
+		XposedBridge.hookAllMethods(packageManagerClass, "verifySignaturesLP",
 				verifySignaturesHook);
 
-		if (JB_MR1_NEWER) {
-
-			if (LOLLIPOP_NEWER) {
-				// 5.0 and newer
-				XposedHelpers.findAndHookMethod(Process.class, "start",
-						String.class, String.class, int.class, int.class,
-						int[].class, int.class, int.class, int.class,
-						String.class, String.class, String.class, String.class,
-						String[].class, debugAppsHook);
-			} else {
-				// 4.2 - 4.4
-				try {
-					XposedHelpers.findAndHookMethod(Process.class, "start",
-							String.class, String.class, int.class, int.class,
-							int[].class, int.class, int.class, int.class,
-							String.class, String[].class, debugAppsHook);
-				} catch (NoSuchMethodError nsm) {
-					// CM 11
-					try {
-						XposedHelpers.findAndHookMethod(Process.class, "start",
-								String.class, String.class, int.class,
-								int.class, int[].class, int.class, int.class,
-								int.class, String.class, boolean.class,
-								String[].class, debugAppsHook);
-					} catch (NoSuchMethodError nsm2) {
-					}
-				}
-			}
-		} else {
-			// 4.0 - 4.1
-			XposedHelpers.findAndHookMethod(Process.class, "start",
-					String.class, String.class, int.class, int.class,
-					int[].class, int.class, int.class, int.class,
-					String[].class, debugAppsHook);
-		}
+		// 4.0 and newer
+		XposedBridge.hookAllMethods(Process.class, "start", debugAppsHook);
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(MessageDigest.class, "isEqual",
-				byte[].class, byte[].class, verifySignatureHook);
-
-		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(View.class,
-				"onFilterTouchEventForSecurity", MotionEvent.class,
-				showButtonsHook);
-
-		if (JB_MR1_NEWER) {
-			// 4.2 and newer
-			try {
-				XposedHelpers.findAndHookMethod(packageManagerClass,
-						"isVerificationEnabled", int.class, verifyAppsHook);
-			} catch (NoSuchMethodError nsm) {
-			}
-		} else {
-			// 4.0 - 4.1
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"isVerificationEnabled", verifyAppsHook);
-		}
-
-		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
-				int.class, int.class, verifySignatureHook);
-
-		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(signatureClass, "verify", byte[].class,
+		XposedBridge.hookAllMethods(MessageDigest.class, "isEqual",
 				verifySignatureHook);
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(jarVerifierClass, "verify",
-				verifyJarHook);
+		XposedBridge.hookAllMethods(View.class,
+				"onFilterTouchEventForSecurity", showButtonsHook);
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(packageParserClass,
-				"collectCertificates",
-				"android.content.pm.PackageParser$Package", int.class,
+		XposedBridge.hookAllMethods(packageManagerClass,
+				"isVerificationEnabled", verifyAppsHook);
+
+		// 4.0 and newer
+		XposedBridge.hookAllMethods(signatureClass, "verify",
+				verifySignatureHook);
+
+		// 4.0 and newer
+		XposedBridge.hookAllMethods(jarVerifierClass, "verify", verifyJarHook);
+
+		// 4.0 and newer
+		XposedBridge.hookAllMethods(packageParserClass, "collectCertificates",
 				installUnsignedAppsHook);
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(packageManagerClass,
-				"compareSignatures", Signature[].class, Signature[].class,
+		XposedBridge.hookAllMethods(packageManagerClass, "compareSignatures",
 				checkSignaturesHook);
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(packageManagerClass, "checkSignatures",
-				String.class, String.class, checkSignaturesHook);
+		XposedBridge.hookAllMethods(packageManagerClass, "checkSignatures",
+				checkSignaturesHook);
 
 		// 4.0 and newer
-		XposedHelpers
-				.findAndHookMethod(packageManagerClass, "checkUidSignatures",
-						int.class, int.class, checkSignaturesHook);
+		XposedBridge.hookAllMethods(packageManagerClass, "checkUidSignatures",
+				checkSignaturesHook);
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(packageManagerClass, "checkPermission",
-				String.class, String.class, checkPermissionsHook);
+		XposedBridge.hookAllMethods(packageManagerClass, "checkPermission",
+				checkPermissionsHook);
 
 		// 4.0 and newer
-		XposedHelpers.findAndHookMethod(packageManagerClass,
-				"checkUidPermission", String.class, int.class,
+		XposedBridge.hookAllMethods(packageManagerClass, "checkUidPermission",
 				checkPermissionsHook);
 
 		if (JB_MR1_NEWER) {
 			// 4.2 and newer
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"installPackageWithVerificationAndEncryption", Uri.class,
-					"android.content.pm.IPackageInstallObserver", int.class,
-					String.class, "android.content.pm.VerificationParams",
-					"android.content.pm.ContainerEncryptionParams",
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"installPackageWithVerificationAndEncryption",
 					installPackageHook);
+
 		} else {
-			if (JB_NEWER) {
-				// 4.1
-				XposedHelpers.findAndHookMethod(packageManagerClass,
-						"installPackageWithVerification", Uri.class,
-						"android.content.pm.IPackageInstallObserver",
-						int.class, String.class, Uri.class,
-						"android.content.pm.ManifestDigest",
-						"android.content.pm.ContainerEncryptionParams",
-						installPackageHook);
-
-			} else {
-				// 4.0
-				XposedHelpers
-						.findAndHookMethod(packageManagerClass,
-								"installPackageWithVerification", Uri.class,
-								"android.content.pm.IPackageInstallObserver",
-								int.class, String.class, Uri.class,
-								"android.content.pm.ManifestDigest",
-								installPackageHook);
-
-			}
+			// 4.0 - 4.1
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"installPackageWithVerification", installPackageHook);
 		}
 
 		if (JB_MR2_NEWER) {
 			// 4.3 and newer
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"deletePackageAsUser", String.class,
-					"android.content.pm.IPackageDeleteObserver", int.class,
-					int.class, deletePackageHook);
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"deletePackageAsUser", deletePackageHook);
 		} else {
 			// 4.0 - 4.2
-			XposedHelpers.findAndHookMethod(packageManagerClass,
-					"deletePackage", String.class,
-					"android.content.pm.IPackageDeleteObserver", int.class,
+			XposedBridge.hookAllMethods(packageManagerClass, "deletePackage",
 					deletePackageHook);
 		}
 
-		if (JB_MR1_NEWER) {
-			// 4.2 and newer
-			XposedHelpers.findAndHookMethod(devicePolicyManagerClass,
-					"packageHasActiveAdmins", String.class, int.class,
-					deviceAdminsHook);
-		} else {
-			// 4.0 - 4.1
-			XposedHelpers.findAndHookMethod(devicePolicyManagerClass,
-					"packageHasActiveAdmins", String.class, deviceAdminsHook);
-		}
+		// 4.0 and newer
+		XposedBridge.hookAllMethods(devicePolicyManagerClass,
+				"packageHasActiveAdmins", deviceAdminsHook);
 
 	}
 
@@ -1113,7 +999,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.FDROIDAPPDETAILS,
 					lpparam.classLoader, "install",
-					"org.fdroid.fdroid.data.Apk", fDroidInstallHook);
+					"org.fdroid.fdroid.data.Apk", checkSignaturesFDroidHook);
 		}
 
 		if (Common.BACKUPCONFIRM_PKG.equals(lpparam.packageName)) {

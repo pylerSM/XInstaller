@@ -234,7 +234,7 @@
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
-	<PreferenceCategory
+    <PreferenceCategory
         android:key="help"
         android:title="@string/help" >
         <Preference

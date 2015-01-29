@@ -11,6 +11,7 @@
   <string name="uninstallations">解除安裝設定</string>
   <string name="misc">其他設定</string>
   <string name="apps_info">應用程式資訊</string>
+  <string name="help">幫助</string>
   <string name="backup_and_restore">備份與還原設定</string>
   <string name="backup">備份</string>
   <string name="restore">還原</string>
@@ -59,6 +60,7 @@
   <string name="uninstall_system_apps">解除安裝系統應用</string>
   <string name="app_uninstalled">應用已解除安裝</string>
   <string name="auto_enable_clear_buttons">自動啟用清除按鈕</string>
+  <string name="auto_hide_install">安裝時自動隱藏</string>
   <string name="about">關於</string>
   <string name="developer">開發人員</string>
   <string name="version">版本</string>
