@@ -81,6 +81,7 @@ public class Common {
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
 	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
+	public static final String GOOGLEPLAY_PKG = "com.android.vending";
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
@@ -96,6 +97,7 @@ public class Common {
 	public static final String JARVERIFIER = "java.util.jar.JarVerifier$VerifierEntry";
 	public static final String SIGNATURE = "java.security.Signature";
 	public static final String BACKUPRESTORECONFIRMATION = "com.android.backupconfirm.BackupRestoreConfirmation";
+	public static final String PACKAGEMANAGERREPOSITORY = "com.google.android.finsky.appstate.PackageManagerRepository";
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;

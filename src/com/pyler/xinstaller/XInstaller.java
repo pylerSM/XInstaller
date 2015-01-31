@@ -106,6 +106,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook checkDuplicatedPermissionsHook;
 	public XC_MethodHook autoEnableClearButtonsHook;
 	public XC_MethodHook autoHideInstallHook;
+	public XC_MethodHook computeCertificateHashesHook;
 	public boolean JB_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
 			: false;
 	public boolean JB_MR1_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
@@ -470,6 +471,24 @@ public class XInstaller implements IXposedHookZygoteInit,
 						&& verifySignature) {
 					param.setResult(true);
 					return;
+				}
+			}
+		};
+
+		computeCertificateHashesHook = new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				installUnsignedApps = prefs.getBoolean(
+						Common.PREF_ENABLE_INSTALL_UNSIGNED_APP, false);
+				if (isModuleEnabled() && isExpertModeEnabled()
+						&& installUnsignedApps) {
+					PackageInfo pkgInfo = (PackageInfo) param.args[0];
+					if (pkgInfo.signatures == null) {
+						param.setResult(new String[0]);
+						return;
+					}
 				}
 			}
 		};
@@ -1007,6 +1026,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.BACKUPRESTORECONFIRMATION,
 					lpparam.classLoader, "onCreate", Bundle.class,
 					autoBackupHook);
+		}
+
+		if (Common.GOOGLEPLAY_PKG.equals(lpparam.packageName)) {
+			// 4.0 and newer
+			XposedHelpers.findAndHookMethod(Common.PACKAGEMANAGERREPOSITORY,
+					lpparam.classLoader, "computeCertificateHashes",
+					PackageInfo.class, computeCertificateHashesHook);
 		}
 	}
 
