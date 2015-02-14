@@ -77,6 +77,7 @@ public class Common {
 			+ File.separator + PACKAGE_TAG + ".backup");
 	public static final int SDK = Build.VERSION.SDK_INT;
 	public static final int LATEST_ANDROID_RELEASE = Build.VERSION_CODES.LOLLIPOP;
+	public static final String ANDROID_PKG = "android";
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
@@ -85,7 +86,7 @@ public class Common {
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
-	public static final String DEVICEPOLICYMANAGERSERVICE = "com.android.server.DevicePolicyManagerService";
+	public static final String DEVICEPOLICYMANAGERSERVICE = (SDK >=Build.VERSION_CODES.LOLLIPOP)? "com.android.server.devicepolicy.DevicePolicyManagerService":"com.android.server.DevicePolicyManagerService";
 	public static final String INSTALLEDAPPDETAILS = "com.android.settings.applications.InstalledAppDetails";
 	public static final String PACKAGEINSTALLERACTIVITY = "com.android.packageinstaller.PackageInstallerActivity";
 	public static final String INSTALLAPPPROGRESS = "com.android.packageinstaller.InstallAppProgress";
@@ -98,6 +99,7 @@ public class Common {
 	public static final String SIGNATURE = "java.security.Signature";
 	public static final String BACKUPRESTORECONFIRMATION = "com.android.backupconfirm.BackupRestoreConfirmation";
 	public static final String PACKAGEMANAGERREPOSITORY = "com.google.android.finsky.appstate.PackageManagerRepository";
+	public static final String UTILS = "com.android.settings.Utils";
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;

@@ -5,7 +5,6 @@ import java.security.cert.Certificate;
 import java.util.Hashtable;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -120,22 +119,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean disableCheckSignatures;
 	public Context mContext;
 
-	public Class<?> packageManagerClass = XposedHelpers.findClass(
-			Common.PACKAGEMANAGERSERVICE, null);
-	public Class<?> activityManagerClass = ActivityManager.class;
-	public Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
-			Common.DEVICEPOLICYMANAGERSERVICE, null);
-	public Class<?> packageParserClass = XposedHelpers.findClass(
-			Common.PACKAGEPARSER, null);
-	public Class<?> jarVerifierClass = XposedHelpers.findClass(
-			Common.JARVERIFIER, null);
-	public Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
-			null);
-
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
+		Class<?> packageParserClass = XposedHelpers.findClass(
+				Common.PACKAGEPARSER, null);
+		Class<?> jarVerifierClass = XposedHelpers.findClass(Common.JARVERIFIER,
+				null);
+		Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
+				null);
 		disableCheckSignatures = true;
 
 		autoHideInstallHook = new XC_MethodHook() {
@@ -557,6 +550,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						param.thisObject, "mContext");
 				int id = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[id];
+				XposedBridge.log("Install " + flags);
 				if (isModuleEnabled() && downgradeApps) {
 					if ((flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
 						flags |= Common.INSTALL_ALLOW_DOWNGRADE;
@@ -606,7 +600,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				int flags = (Integer) param.args[id];
 				if (isModuleEnabled() && keepAppsData) {
 					if ((flags & Common.DELETE_KEEP_DATA) == 0) {
-						XposedBridge.log("Added flag");
 						flags |= Common.DELETE_KEEP_DATA;
 					}
 				}
@@ -765,11 +758,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_UNINSTALL, false);
-				Button mOk = (Button) XposedHelpers.getObjectField(
-						param.thisObject, "mOk");
 				if (isModuleEnabled() && autoUninstall) {
-					if (mOk != null) {
-						mOk.performClick();
+					if (!LOLLIPOP_NEWER) {
+						Button mOk = (Button) XposedHelpers.getObjectField(
+								param.thisObject, "mOk");
+						if (mOk != null) {
+							mOk.performClick();
+						}
 					}
 				}
 			}
@@ -778,16 +773,25 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		autoCloseUninstallHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_CLOSE_UNINSTALL, false);
 				if (isModuleEnabled() && autoCloseUninstall) {
 					if (LOLLIPOP_NEWER) {
+						param.setResult(null);
 						XposedHelpers.callMethod(param.thisObject,
 								"startUninstallProgress");
-					} else {
+					}
+
+				}
+			}
+
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				if (isModuleEnabled() && autoCloseUninstall) {
+					if (!LOLLIPOP_NEWER) {
 						Button mOk = (Button) XposedHelpers.getObjectField(
 								param.thisObject, "mOkButton");
 						mOk.performClick();
@@ -848,12 +852,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		if (LOLLIPOP_NEWER) {
 			// 5.0 and newer
-			XposedBridge.hookAllMethods(packageManagerClass,
-					"checkUpgradeKeySetLP", checkDuplicatedPermissionsHook);
-		}
-
-		if (LOLLIPOP_NEWER) {
-			// 5.0 and newer
 			XposedBridge.hookAllMethods(packageParserClass, "parseBaseApk",
 					checkSdkVersionHook);
 		} else {
@@ -861,14 +859,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedBridge.hookAllMethods(packageParserClass, "parsePackage",
 					checkSdkVersionHook);
 		}
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass, "scanPackageLI",
-				scanPackageHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass, "verifySignaturesLP",
-				verifySignaturesHook);
 
 		// 4.0 and newer
 		XposedBridge.hookAllMethods(Process.class, "start", debugAppsHook);
@@ -882,10 +872,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				"onFilterTouchEventForSecurity", showButtonsHook);
 
 		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass,
-				"isVerificationEnabled", verifyAppsHook);
-
-		// 4.0 and newer
 		XposedBridge.hookAllMethods(signatureClass, "verify",
 				verifySignatureHook);
 
@@ -896,57 +882,85 @@ public class XInstaller implements IXposedHookZygoteInit,
 		XposedBridge.hookAllMethods(packageParserClass, "collectCertificates",
 				installUnsignedAppsHook);
 
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass, "compareSignatures",
-				checkSignaturesHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass, "checkSignatures",
-				checkSignaturesHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass, "checkUidSignatures",
-				checkSignaturesHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass, "checkPermission",
-				checkPermissionsHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageManagerClass, "checkUidPermission",
-				checkPermissionsHook);
-
-		if (JB_MR1_NEWER) {
-			// 4.2 and newer
-			XposedBridge.hookAllMethods(packageManagerClass,
-					"installPackageWithVerificationAndEncryption",
-					installPackageHook);
-
-		} else {
-			// 4.0 - 4.1
-			XposedBridge.hookAllMethods(packageManagerClass,
-					"installPackageWithVerification", installPackageHook);
-		}
-
-		if (JB_MR2_NEWER) {
-			// 4.3 and newer
-			XposedBridge.hookAllMethods(packageManagerClass,
-					"deletePackageAsUser", deletePackageHook);
-		} else {
-			// 4.0 - 4.2
-			XposedBridge.hookAllMethods(packageManagerClass, "deletePackage",
-					deletePackageHook);
-		}
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(devicePolicyManagerClass,
-				"packageHasActiveAdmins", deviceAdminsHook);
-
 	}
 
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
+		if (Common.ANDROID_PKG.equals(lpparam.packageName)) {
+			Class<?> packageManagerClass = XposedHelpers.findClass(
+					Common.PACKAGEMANAGERSERVICE, lpparam.classLoader);
+			Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
+					Common.DEVICEPOLICYMANAGERSERVICE, lpparam.classLoader);
+
+			if (LOLLIPOP_NEWER) {
+				// 5.0 and newer
+				XposedBridge.hookAllMethods(packageManagerClass,
+						"checkUpgradeKeySetLP", checkDuplicatedPermissionsHook);
+			}
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass, "scanPackageLI",
+					scanPackageHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"verifySignaturesLP", verifySignaturesHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"isVerificationEnabled", verifyAppsHook);
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"compareSignatures", checkSignaturesHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass, "checkSignatures",
+					checkSignaturesHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"checkUidSignatures", checkSignaturesHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass, "checkPermission",
+					checkPermissionsHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass,
+					"checkUidPermission", checkPermissionsHook);
+
+			if (LOLLIPOP_NEWER) {
+				// 5.0 and newer
+				XposedBridge.hookAllMethods(packageManagerClass,
+						"installPackageAsUser", installPackageHook);
+			} else {
+				if (JB_MR1_NEWER) {
+					// 4.2 - 4.4
+					XposedBridge.hookAllMethods(packageManagerClass,
+							"installPackageWithVerificationAndEncryption",
+							installPackageHook);
+				} else {
+					// 4.0 - 4.1
+					XposedBridge.hookAllMethods(packageManagerClass,
+							"installPackageWithVerification",
+							installPackageHook);
+				}
+			}
+
+			if (JB_MR2_NEWER) {
+				// 4.3 and newer
+				XposedBridge.hookAllMethods(packageManagerClass,
+						"deletePackageAsUser", deletePackageHook);
+			} else {
+				// 4.0 - 4.2
+				XposedBridge.hookAllMethods(packageManagerClass,
+						"deletePackage", deletePackageHook);
+			}
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(devicePolicyManagerClass,
+					"packageHasActiveAdmins", deviceAdminsHook);
+		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.PACKAGEINSTALLERACTIVITY,
@@ -954,9 +968,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 					unknownAppsHook);
 			if (LOLLIPOP_NEWER) {
 				// 5.0 and newer
-				XposedHelpers.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
+				XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
 						lpparam.classLoader, "showConfirmationDialog",
 						autoCloseUninstallHook);
+			} else {
+				// 4.0 - 4.4
+				XposedHelpers
+						.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
+								lpparam.classLoader, "initView",
+								autoCloseUninstallHook);
+
 			}
 			if (KITKAT_NEWER) {
 				// 4.4 and newer
@@ -977,10 +998,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 					autoUninstallHook);
 
 			// 4.0 and newer
-			XposedHelpers.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
-					lpparam.classLoader, "initView", autoCloseUninstallHook);
-
-			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS + "$1",
 					lpparam.classLoader, "handleMessage", Message.class,
 					autoCloseInstallHook);
@@ -992,10 +1009,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
 			if (JB_NEWER) {
-				// 4.1 and newer
-				XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
-						lpparam.classLoader, "isThisASystemPackage",
-						systemAppsHook);
+				if (LOLLIPOP_NEWER) {
+					// 5.0 and newer
+					XposedHelpers.findAndHookMethod(Common.UTILS,
+							lpparam.classLoader, "isSystemPackage",
+							PackageManager.class, PackageInfo.class,
+							systemAppsHook);
+				} else {
+					// 4.1 - 4.4
+					XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+							lpparam.classLoader, "isThisASystemPackage",
+							systemAppsHook);
+				}
 			}
 
 			// 4.0 and newer
