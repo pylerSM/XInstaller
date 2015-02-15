@@ -86,7 +86,8 @@ public class Common {
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
-	public static final String DEVICEPOLICYMANAGERSERVICE = (SDK >=Build.VERSION_CODES.LOLLIPOP)? "com.android.server.devicepolicy.DevicePolicyManagerService":"com.android.server.DevicePolicyManagerService";
+	public static final String DEVICEPOLICYMANAGERSERVICE = (SDK >= Build.VERSION_CODES.LOLLIPOP) ? "com.android.server.devicepolicy.DevicePolicyManagerService"
+			: "com.android.server.DevicePolicyManagerService";
 	public static final String INSTALLEDAPPDETAILS = "com.android.settings.applications.InstalledAppDetails";
 	public static final String PACKAGEINSTALLERACTIVITY = "com.android.packageinstaller.PackageInstallerActivity";
 	public static final String INSTALLAPPPROGRESS = "com.android.packageinstaller.InstallAppProgress";

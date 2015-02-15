@@ -550,7 +550,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						param.thisObject, "mContext");
 				int id = JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[id];
-				XposedBridge.log("Install " + flags);
 				if (isModuleEnabled() && downgradeApps) {
 					if ((flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
 						flags |= Common.INSTALL_ALLOW_DOWNGRADE;
@@ -759,7 +758,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 				autoUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_UNINSTALL, false);
 				if (isModuleEnabled() && autoUninstall) {
-					if (!LOLLIPOP_NEWER) {
+					if (LOLLIPOP_NEWER) {
+						Activity packageInstaller = (Activity) param.thisObject;
+						packageInstaller.onBackPressed();
+						XposedHelpers.callMethod(param.thisObject,
+								"startUninstallProgress");
+
+					} else {
 						Button mOk = (Button) XposedHelpers.getObjectField(
 								param.thisObject, "mOk");
 						if (mOk != null) {
@@ -773,29 +778,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		autoCloseUninstallHook = new XC_MethodHook() {
 			@Override
-			protected void beforeHookedMethod(MethodHookParam param)
+			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				autoCloseUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_CLOSE_UNINSTALL, false);
 				if (isModuleEnabled() && autoCloseUninstall) {
-					if (LOLLIPOP_NEWER) {
-						param.setResult(null);
-						XposedHelpers.callMethod(param.thisObject,
-								"startUninstallProgress");
-					}
-
-				}
-			}
-
-			protected void afterHookedMethod(MethodHookParam param)
-					throws Throwable {
-				if (isModuleEnabled() && autoCloseUninstall) {
-					if (!LOLLIPOP_NEWER) {
-						Button mOk = (Button) XposedHelpers.getObjectField(
-								param.thisObject, "mOkButton");
-						mOk.performClick();
-					}
+					Button mOk = (Button) XposedHelpers.getObjectField(
+							param.thisObject, "mOkButton");
+					mOk.performClick();
 				}
 			}
 
@@ -966,19 +957,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.PACKAGEINSTALLERACTIVITY,
 					lpparam.classLoader, "isInstallingUnknownAppsAllowed",
 					unknownAppsHook);
-			if (LOLLIPOP_NEWER) {
-				// 5.0 and newer
-				XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
-						lpparam.classLoader, "showConfirmationDialog",
-						autoCloseUninstallHook);
-			} else {
-				// 4.0 - 4.4
-				XposedHelpers
-						.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
-								lpparam.classLoader, "initView",
-								autoCloseUninstallHook);
+			// 4.0 - 4.4
+			XposedHelpers.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
+					lpparam.classLoader, "initView", autoCloseUninstallHook);
 
-			}
 			if (KITKAT_NEWER) {
 				// 4.4 and newer
 				XposedHelpers.findAndHookMethod(
@@ -992,10 +974,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 							lpparam.classLoader, "startInstallConfirm",
 							autoInstallHook);
 
-			// 4.0 and newer
-			XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
-					lpparam.classLoader, "onCreate", Bundle.class,
-					autoUninstallHook);
+			if (LOLLIPOP_NEWER) {
+				// 5.0 and newer
+				XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
+						lpparam.classLoader, "showConfirmationDialog",
+						autoUninstallHook);
+			} else {
+				// 4.0 and newer
+				XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
+						lpparam.classLoader, "onCreate", Bundle.class,
+						autoUninstallHook);
+			}
 
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS + "$1",
