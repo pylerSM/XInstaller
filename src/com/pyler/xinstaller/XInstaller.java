@@ -573,8 +573,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 				if (isModuleEnabled() && backupApkFiles) {
-					Uri packageUri = (Uri) param.args[0];
-					String apkFile = packageUri.getPath();
+					String apkFile;
+					if (LOLLIPOP_NEWER) {
+						apkFile = (String) param.args[0];
+					} else {
+						Uri packageUri = (Uri) param.args[0];
+						apkFile = packageUri.getPath();
+					}
 					backupApkFile(apkFile);
 				}
 
