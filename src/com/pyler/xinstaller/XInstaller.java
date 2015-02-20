@@ -17,7 +17,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Process;
@@ -106,16 +105,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook autoEnableClearButtonsHook;
 	public XC_MethodHook autoHideInstallHook;
 	public XC_MethodHook computeCertificateHashesHook;
-	public boolean JB_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
-			: false;
-	public boolean JB_MR1_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
-			: false;
-	public boolean JB_MR2_NEWER = (Common.SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
-			: false;
-	public boolean KITKAT_NEWER = (Common.SDK >= Build.VERSION_CODES.KITKAT) ? true
-			: false;
-	public boolean LOLLIPOP_NEWER = (Common.SDK >= Build.VERSION_CODES.LOLLIPOP) ? true
-			: false;
 	public boolean disableCheckSignatures;
 	public Context mContext;
 
@@ -433,21 +422,43 @@ public class XInstaller implements IXposedHookZygoteInit,
 				if (isModuleEnabled() && isExpertModeEnabled() && verifyJar) {
 					String name = (String) XposedHelpers.getObjectField(
 							param.thisObject, "name");
-					Certificate[] certificates = (Certificate[]) XposedHelpers
-							.getObjectField(param.thisObject, "certificates");
-					Hashtable<String, Certificate[]> verifiedEntries = null;
-					try {
-						verifiedEntries = (Hashtable<String, Certificate[]>) XposedHelpers
-								.findField(param.thisObject.getClass(),
-										"verifiedEntries")
-								.get(param.thisObject);
-					} catch (NoSuchFieldError e) {
-						verifiedEntries = (Hashtable<String, Certificate[]>) XposedHelpers
-								.getObjectField(XposedHelpers
-										.getSurroundingThis(param.thisObject),
-										"verifiedEntries");
+					if (Common.LOLLIPOP_NEWER) {
+						Certificate[][] certChains = (Certificate[][]) XposedHelpers
+								.getObjectField(param.thisObject, "certChains");
+						Hashtable<String, Certificate[][]> verifiedEntries = null;
+
+						try {
+							verifiedEntries = (Hashtable<String, Certificate[][]>) XposedHelpers
+									.findField(param.thisObject.getClass(),
+											"verifiedEntries").get(
+											param.thisObject);
+						} catch (NoSuchFieldError e) {
+							verifiedEntries = (Hashtable<String, Certificate[][]>) XposedHelpers
+									.getObjectField(
+											XposedHelpers
+													.getSurroundingThis(param.thisObject),
+											"verifiedEntries");
+						}
+						verifiedEntries.put(name, certChains);
+					} else {
+						Certificate[] certificates = (Certificate[]) XposedHelpers
+								.getObjectField(param.thisObject,
+										"certificates");
+						Hashtable<String, Certificate[]> verifiedEntries = null;
+						try {
+							verifiedEntries = (Hashtable<String, Certificate[]>) XposedHelpers
+									.findField(param.thisObject.getClass(),
+											"verifiedEntries").get(
+											param.thisObject);
+						} catch (NoSuchFieldError e) {
+							verifiedEntries = (Hashtable<String, Certificate[]>) XposedHelpers
+									.getObjectField(
+											XposedHelpers
+													.getSurroundingThis(param.thisObject),
+											"verifiedEntries");
+						}
+						verifiedEntries.put(name, certificates);
 					}
-					verifiedEntries.put(name, certificates);
 					param.setResult(null);
 				}
 			}
@@ -548,7 +559,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_DISABLE_INSTALL_BACKGROUND, false);
 				mContext = (Context) XposedHelpers.getObjectField(
 						param.thisObject, "mContext");
-				int id = JB_MR1_NEWER ? 2 : 1;
+				int id = Common.JB_MR1_NEWER ? 2 : 1;
 				int flags = (Integer) param.args[id];
 				if (isModuleEnabled() && downgradeApps) {
 					if ((flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
@@ -574,7 +585,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 				if (isModuleEnabled() && backupApkFiles) {
 					String apkFile;
-					if (LOLLIPOP_NEWER) {
+					if (Common.LOLLIPOP_NEWER) {
 						apkFile = (String) param.args[0];
 					} else {
 						Uri packageUri = (Uri) param.args[0];
@@ -600,7 +611,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_KEEP_APP_DATA, false);
 				uninstallBackground = prefs.getBoolean(
 						Common.PREF_DISABLE_UNINSTALL_BACKGROUND, false);
-				int id = JB_MR2_NEWER ? 3 : 2;
+				int id = Common.JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[id];
 				if (isModuleEnabled() && keepAppsData) {
 					if ((flags & Common.DELETE_KEEP_DATA) == 0) {
@@ -763,7 +774,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				autoUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_UNINSTALL, false);
 				if (isModuleEnabled() && autoUninstall) {
-					if (LOLLIPOP_NEWER) {
+					if (Common.LOLLIPOP_NEWER) {
 						Activity packageInstaller = (Activity) param.thisObject;
 						packageInstaller.onBackPressed();
 						XposedHelpers.callMethod(param.thisObject,
@@ -846,7 +857,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
-		if (LOLLIPOP_NEWER) {
+		if (Common.LOLLIPOP_NEWER) {
 			// 5.0 and newer
 			XposedBridge.hookAllMethods(packageParserClass, "parseBaseApk",
 					checkSdkVersionHook);
@@ -889,7 +900,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
 					Common.DEVICEPOLICYMANAGERSERVICE, lpparam.classLoader);
 
-			if (LOLLIPOP_NEWER) {
+			if (Common.LOLLIPOP_NEWER) {
 				// 5.0 and newer
 				XposedBridge.hookAllMethods(packageManagerClass,
 						"checkUpgradeKeySetLP", checkDuplicatedPermissionsHook);
@@ -925,12 +936,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedBridge.hookAllMethods(packageManagerClass,
 					"checkUidPermission", checkPermissionsHook);
 
-			if (LOLLIPOP_NEWER) {
+			if (Common.LOLLIPOP_NEWER) {
 				// 5.0 and newer
 				XposedBridge.hookAllMethods(packageManagerClass,
 						"installPackageAsUser", installPackageHook);
 			} else {
-				if (JB_MR1_NEWER) {
+				if (Common.JB_MR1_NEWER) {
 					// 4.2 - 4.4
 					XposedBridge.hookAllMethods(packageManagerClass,
 							"installPackageWithVerificationAndEncryption",
@@ -943,7 +954,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 			}
 
-			if (JB_MR2_NEWER) {
+			if (Common.JB_MR2_NEWER) {
 				// 4.3 and newer
 				XposedBridge.hookAllMethods(packageManagerClass,
 						"deletePackageAsUser", deletePackageHook);
@@ -966,7 +977,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.UNINSTALLAPPPROGRESS,
 					lpparam.classLoader, "initView", autoCloseUninstallHook);
 
-			if (KITKAT_NEWER) {
+			if (Common.KITKAT_NEWER) {
 				// 4.4 and newer
 				XposedHelpers.findAndHookMethod(
 						Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
@@ -979,7 +990,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 							lpparam.classLoader, "startInstallConfirm",
 							autoInstallHook);
 
-			if (LOLLIPOP_NEWER) {
+			if (Common.LOLLIPOP_NEWER) {
 				// 5.0 and newer
 				XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
 						lpparam.classLoader, "showConfirmationDialog",
@@ -1002,8 +1013,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
-			if (JB_NEWER) {
-				if (LOLLIPOP_NEWER) {
+			if (Common.JB_NEWER) {
+				if (Common.LOLLIPOP_NEWER) {
 					// 5.0 and newer
 					XposedHelpers.findAndHookMethod(Common.UTILS,
 							lpparam.classLoader, "isSystemPackage",

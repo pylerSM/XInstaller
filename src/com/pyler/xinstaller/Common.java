@@ -84,9 +84,21 @@ public class Common {
 	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
 	public static final String GOOGLEPLAY_PKG = "com.android.vending";
 
+	// checks
+	public static final boolean JB_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
+			: false;
+	public static final boolean JB_MR1_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
+			: false;
+	public static final boolean JB_MR2_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
+			: false;
+	public static final boolean KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true
+			: false;
+	public static final boolean LOLLIPOP_NEWER = (SDK >= Build.VERSION_CODES.LOLLIPOP) ? true
+			: false;
+
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
-	public static final String DEVICEPOLICYMANAGERSERVICE = (SDK >= Build.VERSION_CODES.LOLLIPOP) ? "com.android.server.devicepolicy.DevicePolicyManagerService"
+	public static final String DEVICEPOLICYMANAGERSERVICE = (LOLLIPOP_NEWER) ? "com.android.server.devicepolicy.DevicePolicyManagerService"
 			: "com.android.server.DevicePolicyManagerService";
 	public static final String INSTALLEDAPPDETAILS = "com.android.settings.applications.InstalledAppDetails";
 	public static final String PACKAGEINSTALLERACTIVITY = "com.android.packageinstaller.PackageInstallerActivity";
