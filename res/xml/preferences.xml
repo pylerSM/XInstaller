@@ -214,6 +214,10 @@
                     android:defaultValue="false"
                     android:key="disable_verify_signatures"
                     android:title="@string/verify_signatures" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="disable_check_lucky_patcher"
+                    android:title="@string/check_lucky_patcher" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen

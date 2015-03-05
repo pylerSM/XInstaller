@@ -75,6 +75,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean uninstallSystemApps;
 	public boolean autoEnableClearButtons;
 	public boolean autoHideInstall;
+	public boolean checkLuckyPatcher;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -105,6 +106,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook autoEnableClearButtonsHook;
 	public XC_MethodHook autoHideInstallHook;
 	public XC_MethodHook computeCertificateHashesHook;
+	public XC_MethodHook getPackageInfoHook;
 	public boolean disableCheckSignatures;
 	public Context mContext;
 
@@ -120,6 +122,22 @@ public class XInstaller implements IXposedHookZygoteInit,
 				null);
 		disableCheckSignatures = true;
 
+		getPackageInfoHook = new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				checkLuckyPatcher = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_LUCKY_PATCHER, false);
+				if (isModuleEnabled() && checkLuckyPatcher) {
+					String packageName = (String) param.args[0];
+					if (Common.LUCKYPATCHER_PKG.equals(packageName)) {
+						param.args[0] = Common.EMPTY_STRING;
+					}
+				}
+			}
+		};
+
 		autoHideInstallHook = new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
@@ -131,7 +149,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				if (isModuleEnabled() && autoHideInstall) {
 					packageInstaller.onBackPressed();
 				}
-
 			}
 		};
 
@@ -644,7 +661,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 			}
-
 		};
 
 		unknownAppsHook = new XC_MethodHook() {
@@ -660,7 +676,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 			}
-
 		};
 
 		verifyAppsHook = new XC_MethodHook() {
@@ -676,7 +691,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 			}
-
 		};
 
 		deviceAdminsHook = new XC_MethodHook() {
@@ -692,7 +706,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 			}
-
 		};
 
 		checkSignaturesFDroidHook = new XC_MethodHook() {
@@ -720,7 +733,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 							"mInstalledSigID", mInstalledSigID);
 				}
 			}
-
 		};
 
 		autoInstallHook = new XC_MethodHook() {
@@ -767,8 +779,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 		};
 
 		autoUninstallHook = new XC_MethodHook() {
+
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
 				autoUninstall = prefs.getBoolean(
@@ -779,8 +792,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 						packageInstaller.onBackPressed();
 						XposedHelpers.callMethod(param.thisObject,
 								"startUninstallProgress");
+					}
+				}
+			}
 
-					} else {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				autoUninstall = prefs.getBoolean(
+						Common.PREF_ENABLE_AUTO_UNINSTALL, false);
+				if (isModuleEnabled() && autoUninstall) {
+					if (!Common.LOLLIPOP_NEWER) {
 						Button mOk = (Button) XposedHelpers.getObjectField(
 								param.thisObject, "mOk");
 						if (mOk != null) {
@@ -789,7 +812,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 					}
 				}
 			}
-
 		};
 
 		autoCloseUninstallHook = new XC_MethodHook() {
@@ -894,7 +916,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam)
 			throws Throwable {
-		if (Common.ANDROID_PKG.equals(lpparam.packageName)) {
+		if (Common.ANDROID_PKG.equals(lpparam.packageName)
+				&& Common.ANDROID_PKG.equals(lpparam.processName)) {
 			Class<?> packageManagerClass = XposedHelpers.findClass(
 					Common.PACKAGEMANAGERSERVICE, lpparam.classLoader);
 			Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
@@ -905,6 +928,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				XposedBridge.hookAllMethods(packageManagerClass,
 						"checkUpgradeKeySetLP", checkDuplicatedPermissionsHook);
 			}
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageManagerClass, "getPackageInfo",
+					getPackageInfoHook);
 			// 4.0 and newer
 			XposedBridge.hookAllMethods(packageManagerClass, "scanPackageLI",
 					scanPackageHook);
