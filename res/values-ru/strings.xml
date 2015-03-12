@@ -61,6 +61,7 @@
   <string name="app_uninstalled">Приложение было удалено</string>
   <string name="auto_enable_clear_buttons">Отображать кнопки очистки</string>
   <string name="auto_hide_install">Автоматическое скрытие при установке</string>
+  <string name="check_lucky_patcher">Проверка Lucky Patcher</string>
   <string name="about">О программе</string>
   <string name="developer">Разработчик</string>
   <string name="version">Версия</string>

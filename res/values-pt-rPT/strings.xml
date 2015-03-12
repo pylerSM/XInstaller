@@ -61,6 +61,7 @@
   <string name="app_uninstalled">A aplicação foi desinstalada</string>
   <string name="auto_enable_clear_buttons">Ativar botões de limpeza</string>
   <string name="auto_hide_install">Esconder automaticamente na instalação</string>
+  <string name="check_lucky_patcher">Verificação do Lucky Patcher</string>
   <string name="about">Sobre</string>
   <string name="developer">Desenvolvedor</string>
   <string name="version">Versão</string>

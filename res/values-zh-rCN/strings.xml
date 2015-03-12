@@ -61,6 +61,7 @@
   <string name="app_uninstalled">应用已卸载</string>
   <string name="auto_enable_clear_buttons">自动启用清除按钮</string>
   <string name="auto_hide_install">安装时自动隐藏</string>
+  <string name="check_lucky_patcher">检查幸运破解器</string>
   <string name="about">关于</string>
   <string name="developer">开发者</string>
   <string name="version">版本</string>

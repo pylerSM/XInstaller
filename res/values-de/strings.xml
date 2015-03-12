@@ -61,6 +61,7 @@
   <string name="app_uninstalled">App wurde deinstalliert</string>
   <string name="auto_enable_clear_buttons">\"Daten/Cache löschen\" automatisch aktiv</string>
   <string name="auto_hide_install">Beim Installieren automatisch verstecken</string>
+  <string name="check_lucky_patcher">Prüfung auf Lucky Patcher</string>
   <string name="about">Über</string>
   <string name="developer">Entwickler</string>
   <string name="version">Version</string>

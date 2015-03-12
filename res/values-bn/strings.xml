@@ -61,6 +61,7 @@
   <string name="app_uninstalled">অ্যাপ আনইনস্টল হয়েছে</string>
   <string name="auto_enable_clear_buttons">স্বয়ংক্রিয় পরিষ্কার বোতাম অবলোপ করুন</string>
   <string name="auto_hide_install">ইনস্টল করার সময় স্বয়ং ভাবে লুকাবে</string>
+  <string name="check_lucky_patcher">Lucky Patcher পরীক্ষা করা হচ্ছে</string>
   <string name="about">সম্পর্কে</string>
   <string name="developer">ডেভেলপার</string>
   <string name="version">সংস্করণ</string>

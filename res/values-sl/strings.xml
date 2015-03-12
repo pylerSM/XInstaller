@@ -61,6 +61,7 @@
   <string name="app_uninstalled">Aplikacija je bila odstranjena</string>
   <string name="auto_enable_clear_buttons">Samodejno omogoči \"počisti\" gumbe</string>
   <string name="auto_hide_install">Samodejno skrij pri namestitvi</string>
+  <string name="check_lucky_patcher">Preverjanje Lucky Patcher</string>
   <string name="about">O aplikaciji</string>
   <string name="developer">Razvijalec</string>
   <string name="version">Različica</string>

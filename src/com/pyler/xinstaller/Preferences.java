@@ -163,9 +163,8 @@ public class Preferences extends Activity {
 			appHelp.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					String helpUrl = "http://pyler.wen.ru/XInstaller/Help.html";
 					Intent openUrl = new Intent(Intent.ACTION_VIEW);
-					openUrl.setData(Uri.parse(helpUrl));
+					openUrl.setData(Uri.parse(Common.URL_HELP));
 					openUrl.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(openUrl);
 					return true;

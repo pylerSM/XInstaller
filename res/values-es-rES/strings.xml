@@ -58,6 +58,10 @@
   <string name="open_apps_google_play">Abriendo Aplicaciones en Google Play</string>
   <string name="app_name_copied">El Nombre de la Aplicación fue copiado en el Portapapeles</string>
   <string name="uninstall_system_apps">Desinstalación de apps de sistema</string>
+  <string name="app_uninstalled">Se ha desinstalado la app</string>
+  <string name="auto_enable_clear_buttons">Auto habilitar botones claros</string>
+  <string name="auto_hide_install">Autoocultar al instalar</string>
+  <string name="check_lucky_patcher">Comprobando Lucky Patcher</string>
   <string name="about">Acerca de</string>
   <string name="developer">Desarrollador</string>
   <string name="version">Versión</string>

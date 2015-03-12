@@ -76,9 +76,10 @@ public class Common {
 	public static final File PACKAGE_DIR = new File(APP_DIR);
 	public static final File PREFERENCES_BACKUP_FILE = new File(APP_DIR
 			+ File.separator + PACKAGE_TAG + ".backup");
+	public static final String URL_HELP = "http://pyler.wen.ru/XInstaller/Help.html";
 	public static final int SDK = Build.VERSION.SDK_INT;
-	public static final int LATEST_ANDROID_RELEASE = Build.VERSION_CODES.LOLLIPOP;
-	public static final String EMPTY_STRING = "android";
+	public static final int LATEST_ANDROID_RELEASE = Build.VERSION_CODES.LOLLIPOP_MR1;
+	public static final String EMPTY_STRING = "";
 	public static final String ANDROID_PKG = "android";
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
@@ -124,5 +125,6 @@ public class Common {
 	public static final int INSTALL_EXTERNAL = 0x00000008;
 	public static final int DEBUG_ENABLE_DEBUGGER = 0x1;
 	public static final int ROOT_UID = 0;
+	public static final int SYSTEM_UID = 1000;
 	public static final int INSTALL_SUCCEEDED = 1;
 }

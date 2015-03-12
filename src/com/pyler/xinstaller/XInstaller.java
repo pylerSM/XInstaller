@@ -131,8 +131,14 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_DISABLE_CHECK_LUCKY_PATCHER, false);
 				if (isModuleEnabled() && checkLuckyPatcher) {
 					String packageName = (String) param.args[0];
-					if (Common.LUCKYPATCHER_PKG.equals(packageName)) {
-						param.args[0] = Common.EMPTY_STRING;
+					int uid = Binder.getCallingUid();
+					String caller = (String) XposedHelpers.callMethod(
+							param.thisObject, "getNameForUid", uid);
+					if (uid != Common.SYSTEM_UID) {
+						if (Common.LUCKYPATCHER_PKG.equals(packageName)
+								&& !Common.LUCKYPATCHER_PKG.equals(caller)) {
+							param.args[0] = Common.EMPTY_STRING;
+						}
 					}
 				}
 			}

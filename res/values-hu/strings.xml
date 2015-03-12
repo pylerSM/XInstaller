@@ -61,6 +61,7 @@
   <string name="app_uninstalled">Eltávolított alkalmazások</string>
   <string name="auto_enable_clear_buttons">Tisztítás gombok automatikus engedélyezése</string>
   <string name="auto_hide_install">Automatikus elrejtés telepítéskor</string>
+  <string name="check_lucky_patcher">Lucky Patcher ellenőrzése</string>
   <string name="about">Névjegy</string>
   <string name="developer">Fejlesztő</string>
   <string name="version">Verzió</string>

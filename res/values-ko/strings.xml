@@ -61,6 +61,7 @@
   <string name="app_uninstalled">앱이 삭제됨</string>
   <string name="auto_enable_clear_buttons">지우기 버튼 자동 활성화</string>
   <string name="auto_hide_install">설치시에 자동으로 숨기기</string>
+  <string name="check_lucky_patcher">Lucky Patcher 확인</string>
   <string name="about">정보</string>
   <string name="developer">개발자</string>
   <string name="version">버전</string>

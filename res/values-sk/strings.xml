@@ -61,6 +61,7 @@
   <string name="app_uninstalled">Aplikácia bola odinštalovaná</string>
   <string name="auto_enable_clear_buttons">Automatické povolenie tlačidiel vymazania</string>
   <string name="auto_hide_install">Automatické skrývanie pri inštalácii</string>
+  <string name="check_lucky_patcher">Kontrolovanie Lucky Patchera</string>
   <string name="about">O aplikácii</string>
   <string name="developer">Vývojár</string>
   <string name="version">Verzia</string>

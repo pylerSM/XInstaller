@@ -45,11 +45,11 @@
   <string name="show_version">顯示版本資訊</string>
   <string name="current_version">目前版本</string>
   <string name="new_version">新版本</string>
-  <string name="delete_apk_files_install">安裝完成後刪除apk檔</string>
+  <string name="delete_apk_files_install">安裝完成後刪除安裝檔(APK)</string>
   <string name="move_apps">移動應用程式</string>
   <string name="check_sdk_version">檢查SDK版本</string>
-  <string name="install_background">後台安裝</string>
-  <string name="uninstall_background">後台解除安裝</string>
+  <string name="install_background">在背景中安裝</string>
+  <string name="uninstall_background">在背景中解除安裝</string>
   <string name="package_name_copied">安裝包名已複製到剪貼板</string>
   <string name="launch_apps">執行應用程式</string>
   <string name="check_duplicated_permissions">檢查重複的權限</string>
@@ -61,6 +61,7 @@
   <string name="app_uninstalled">應用已解除安裝</string>
   <string name="auto_enable_clear_buttons">自動啟用清除按鈕</string>
   <string name="auto_hide_install">安裝時自動隱藏</string>
+  <string name="check_lucky_patcher">檢查 Lucky Patcher</string>
   <string name="about">關於</string>
   <string name="developer">開發人員</string>
   <string name="version">版本</string>
