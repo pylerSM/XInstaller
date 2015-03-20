@@ -77,7 +77,7 @@ public class Utils extends BroadcastReceiver {
 			String backupApkFile = Common.APP_DIR + fileName;
 			File src = new File(apkFile);
 			File dst = new File(backupApkFile);
-			if (!dst.exists()) {
+			if (!dst.equals(src)) {
 				copyFile(src, dst);
 			}
 		} catch (Exception e) {
