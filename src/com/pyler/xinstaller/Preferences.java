@@ -10,6 +10,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
@@ -52,7 +53,7 @@ public class Preferences extends Activity {
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(context);
 			boolean isExpertModeEnabled = prefs.getBoolean(
-					"enable_expert_mode", false);
+					Common.PREF_ENABLE_EXPERT_MODE, false);
 
 			PreferenceCategory installationsEnable = (PreferenceCategory) findPreference("installations_enable");
 			PreferenceCategory miscEnable = (PreferenceCategory) findPreference("misc_enable");
@@ -149,7 +150,7 @@ public class Preferences extends Activity {
 							return true;
 						}
 					});
-			Preference enableExpertMode = findPreference("enable_expert_mode");
+			Preference enableExpertMode = findPreference(Common.PREF_ENABLE_EXPERT_MODE);
 			enableExpertMode
 					.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 						@Override
@@ -170,6 +171,14 @@ public class Preferences extends Activity {
 					return true;
 				}
 			});
+
+			for (String[] property : Common.DEVICE_PROPERTIES) {
+				EditTextPreference preference = (EditTextPreference) findPreference(property[0]);
+				String propertyValue = prefs.getString(property[0], null);
+				if (propertyValue == null) {
+					preference.setText(property[1]);
+				}
+			}
 		}
 	}
 

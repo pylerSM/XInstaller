@@ -3,6 +3,7 @@ package com.pyler.xinstaller;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AndroidAppHelper;
@@ -17,6 +18,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Process;
@@ -1096,6 +1098,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 					lpparam.classLoader, "computeCertificateHashes",
 					PackageInfo.class, computeCertificateHashesHook);
 		}
+		if (isModuleEnabled() && changeDevicePropertiesEnabled()) {
+			changeDeviceProperties();
+		}
 	}
 
 	public boolean isModuleEnabled() {
@@ -1109,6 +1114,26 @@ public class XInstaller implements IXposedHookZygoteInit,
 		boolean enabled = prefs.getBoolean(Common.PREF_ENABLE_EXPERT_MODE,
 				false);
 		return enabled;
+	}
+
+	public boolean changeDevicePropertiesEnabled() {
+		prefs.reload();
+		boolean enabled = prefs.getBoolean(
+				Common.PREF_ENABLE_CHANGE_DEVICE_PROPERTIES, false);
+		return enabled;
+	}
+
+	public void changeDeviceProperties() {
+		prefs.reload();
+		for (String[] property : Common.DEVICE_PROPERTIES) {
+			String propertyValue = prefs.getString(property[0], null);
+			if (propertyValue != null) {
+				String buildFieldName = property[0].replace("device_", "");
+				buildFieldName = buildFieldName.toUpperCase(Locale.ENGLISH);
+				XposedHelpers.setStaticObjectField(Build.class, buildFieldName,
+						propertyValue);
+			}
+		}
 	}
 
 	public Context getXInstallerContext() {

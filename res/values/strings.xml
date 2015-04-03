@@ -73,5 +73,14 @@
     <string name="preferences_backed_up">Successfully backed up</string>
     <string name="preferences_restored">Successfully restored</string>
     <string name="preferences_reset">Successfully reset</string>
+    <string name="device_properties">Device properties</string>
+    <string name="change">Change</string>
+    <string name="device_model">Model</string>
+    <string name="device_tags">Tags</string>
+    <string name="device_board">Board</string>
+    <string name="device_manufacturer">Manufacturer</string>
+    <string name="device_product">Product</string>
+    <string name="device_hardware">Hardware</string>
+    <string name="change_device_properties">Changing device properties</string>
 
 </resources>

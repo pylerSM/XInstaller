@@ -61,6 +61,22 @@ public class Common {
 	public static final String PREF_ENABLE_AUTO_ENABLE_CLEAR_BUTTON = "enable_auto_enable_clear_buttons";
 	public static final String PREF_ENABLE_AUTO_HIDE_INSTALL = "enable_auto_hide_install";
 	public static final String PREF_DISABLE_CHECK_LUCKY_PATCHER = "disable_check_lucky_patcher";
+	public static final String PREF_ENABLE_CHANGE_DEVICE_PROPERTIES = "enable_change_device_properties";
+
+	public static final String PREF_DEVICE_MODEL = "device_model";
+	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";
+	public static final String PREF_DEVICE_PRODUCT = "device_product";
+	public static final String PREF_DEVICE_HARDWARE = "device_hardware";
+	public static final String PREF_DEVICE_BOARD = "device_board";
+	public static final String PREF_DEVICE_HARDWARE = "device_hardware";
+	public static final String PREF_DEVICE_TAGS = "device_tags";
+	public static final String[][] DEVICE_PROPERTIES = {
+			{ Common.PREF_DEVICE_MODEL, Build.MODEL },
+			{ Common.PREF_DEVICE_MANUFACTURER, Build.MANUFACTURER },
+			{ Common.PREF_DEVICE_PRODUCT, Build.PRODUCT },
+			{ Common.PREF_DEVICE_BOARD, Build.BOARD },
+			{ Common.PREF_DEVICE_HARDWARE, Build.HARDWARE },
+			{ Common.PREF_DEVICE_TAGS, Build.TAGS } };
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()
@@ -86,7 +102,7 @@ public class Common {
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
 	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
 	public static final String GOOGLEPLAY_PKG = "com.android.vending";
-	public static final String LUCKYPATCHER_PKG = "com.forpda.lp";
+	public static final String LUCKYPATCHER_PKG = "com.android.vending.billing.InAppBillingService.LUCK";
 
 	// checks
 	public static final boolean JB_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true

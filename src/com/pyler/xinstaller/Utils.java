@@ -198,6 +198,8 @@ public class Utils extends BroadcastReceiver {
 				if (value instanceof Boolean) {
 					prefsEditor.putBoolean(key,
 							((Boolean) value).booleanValue());
+				} else if (value instanceof String) {
+					prefsEditor.putString(key, (String) value);
 				}
 			}
 			prefsEditor.commit();
