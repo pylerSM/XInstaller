@@ -16,11 +16,13 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class Preferences extends Activity {
 	public static Context context;
 	public static Activity activity;
 	public static Resources resources;
+	public static SharedPreferences prefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +52,7 @@ public class Preferences extends Activity {
 			} catch (NameNotFoundException e) {
 			}
 
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(context);
+			prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			boolean isExpertModeEnabled = prefs.getBoolean(
 					Common.PREF_ENABLE_EXPERT_MODE, false);
 
@@ -104,10 +105,10 @@ public class Preferences extends Activity {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						@Override
 						public boolean onPreferenceClick(Preference preference) {
-							Intent backupPrefs = new Intent(
+							Intent backupPreferences = new Intent(
 									Common.ACTION_BACKUP_PREFERENCES);
-							backupPrefs.setPackage(Common.PACKAGE_NAME);
-							context.sendBroadcast(backupPrefs);
+							backupPreferences.setPackage(Common.PACKAGE_NAME);
+							context.sendBroadcast(backupPreferences);
 							return true;
 						}
 					});
@@ -116,10 +117,10 @@ public class Preferences extends Activity {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						@Override
 						public boolean onPreferenceClick(Preference preference) {
-							Intent restorePrefs = new Intent(
+							Intent restorePreferences = new Intent(
 									Common.ACTION_RESTORE_PREFERENCES);
-							restorePrefs.setPackage(Common.PACKAGE_NAME);
-							context.sendBroadcast(restorePrefs);
+							restorePreferences.setPackage(Common.PACKAGE_NAME);
+							context.sendBroadcast(restorePreferences);
 							return true;
 						}
 					});
@@ -128,10 +129,10 @@ public class Preferences extends Activity {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						@Override
 						public boolean onPreferenceClick(Preference preference) {
-							Intent resetPrefs = new Intent(
+							Intent resetPreferences = new Intent(
 									Common.ACTION_RESET_PREFERENCES);
-							resetPrefs.setPackage(Common.PACKAGE_NAME);
-							context.sendBroadcast(resetPrefs);
+							resetPreferences.setPackage(Common.PACKAGE_NAME);
+							context.sendBroadcast(resetPreferences);
 							return true;
 						}
 					});
@@ -171,12 +172,32 @@ public class Preferences extends Activity {
 					return true;
 				}
 			});
+			Preference resetDeviceProperties = findPreference("reset_device_properties");
+			resetDeviceProperties
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+						@Override
+						public boolean onPreferenceClick(Preference preference) {
+							SharedPreferences.Editor prefsEditor = prefs.edit();
+							for (String[] property : Common.DEVICE_PROPERTIES) {
+								prefsEditor.remove(property[0]);
+								EditTextPreference devicePropertyPreference = (EditTextPreference) findPreference(property[0]);
+								devicePropertyPreference.setText(property[1]);
+							}
+							prefsEditor.commit();
+							Toast.makeText(
+									context,
+									resources
+											.getString(R.string.preferences_reset),
+									Toast.LENGTH_LONG).show();
+							return true;
+						}
+					});
 
 			for (String[] property : Common.DEVICE_PROPERTIES) {
-				EditTextPreference preference = (EditTextPreference) findPreference(property[0]);
+				EditTextPreference devicePropertyPreference = (EditTextPreference) findPreference(property[0]);
 				String propertyValue = prefs.getString(property[0], null);
 				if (propertyValue == null) {
-					preference.setText(property[1]);
+					devicePropertyPreference.setText(property[1]);
 				}
 			}
 		}

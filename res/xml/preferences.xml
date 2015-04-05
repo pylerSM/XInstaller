@@ -213,6 +213,14 @@
                     android:key="device_tags"
                     android:title="@string/device_tags" />
             </PreferenceCategory>
+            <PreferenceCategory
+                android:key="device_properties_reset"
+                android:title="@string/device_properties" >
+                <Preference
+                    android:defaultValue="false"
+                    android:key="reset_device_properties"
+                    android:title="@string/reset" />
+            </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
             android:key="misc"

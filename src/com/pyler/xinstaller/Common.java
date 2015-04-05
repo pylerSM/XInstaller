@@ -66,7 +66,6 @@ public class Common {
 	public static final String PREF_DEVICE_MODEL = "device_model";
 	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";
 	public static final String PREF_DEVICE_PRODUCT = "device_product";
-	public static final String PREF_DEVICE_HARDWARE = "device_hardware";
 	public static final String PREF_DEVICE_BOARD = "device_board";
 	public static final String PREF_DEVICE_HARDWARE = "device_hardware";
 	public static final String PREF_DEVICE_TAGS = "device_tags";
