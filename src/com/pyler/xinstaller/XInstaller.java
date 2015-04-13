@@ -78,6 +78,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean autoEnableClearButtons;
 	public boolean autoHideInstall;
 	public boolean checkLuckyPatcher;
+	public boolean backupAllApps;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -141,6 +142,25 @@ public class XInstaller implements IXposedHookZygoteInit,
 								&& !Common.LUCKYPATCHER_PKG.equals(caller)) {
 							param.args[0] = Common.EMPTY_STRING;
 						}
+					}
+				}
+			}
+
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				prefs.reload();
+				backupAllApps = prefs.getBoolean(
+						Common.PREF_ENABLE_BACKUP_ALL_APPS, false);
+				if (isModuleEnabled() && backupAllApps) {
+					PackageInfo packageInfo = (PackageInfo) param.getResult();
+					if (packageInfo != null) {
+						int flags = packageInfo.applicationInfo.flags;
+						if ((flags & ApplicationInfo.FLAG_ALLOW_BACKUP) == 0) {
+							flags |= ApplicationInfo.FLAG_ALLOW_BACKUP;
+						}
+						packageInfo.applicationInfo.flags = flags;
+						param.setResult(packageInfo);
 					}
 				}
 			}

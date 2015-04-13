@@ -62,6 +62,7 @@ public class Common {
 	public static final String PREF_ENABLE_AUTO_HIDE_INSTALL = "enable_auto_hide_install";
 	public static final String PREF_DISABLE_CHECK_LUCKY_PATCHER = "disable_check_lucky_patcher";
 	public static final String PREF_ENABLE_CHANGE_DEVICE_PROPERTIES = "enable_change_device_properties";
+	public static final String PREF_ENABLE_BACKUP_ALL_APPS = "enable_backup_all_apps";
 
 	public static final String PREF_DEVICE_MODEL = "device_model";
 	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";
@@ -104,16 +105,11 @@ public class Common {
 	public static final String LUCKYPATCHER_PKG = "com.android.vending.billing.InAppBillingService.LUCK";
 
 	// checks
-	public static final boolean JB_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN) ? true
-			: false;
-	public static final boolean JB_MR1_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? true
-			: false;
-	public static final boolean JB_MR2_NEWER = (SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2) ? true
-			: false;
-	public static final boolean KITKAT_NEWER = (SDK >= Build.VERSION_CODES.KITKAT) ? true
-			: false;
-	public static final boolean LOLLIPOP_NEWER = (SDK >= Build.VERSION_CODES.LOLLIPOP) ? true
-			: false;
+	public static final boolean JB_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN;
+	public static final boolean JB_MR1_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+	public static final boolean JB_MR2_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2;
+	public static final boolean KITKAT_NEWER = SDK >= Build.VERSION_CODES.KITKAT;
+	public static final boolean LOLLIPOP_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP;
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";

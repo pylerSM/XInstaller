@@ -217,7 +217,6 @@
                 android:key="device_properties_reset"
                 android:title="@string/device_properties" >
                 <Preference
-                    android:defaultValue="false"
                     android:key="reset_device_properties"
                     android:title="@string/reset" />
             </PreferenceCategory>
@@ -240,6 +239,10 @@
                     android:defaultValue="false"
                     android:key="enable_auto_backup"
                     android:title="@string/auto_backup" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_backup_all_apps"
+                    android:title="@string/backup_all_apps" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="misc_disable"
