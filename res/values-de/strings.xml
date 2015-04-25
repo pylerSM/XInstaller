@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Erfolgreich gesichert</string>
   <string name="preferences_restored">Erfolgreich wiederhergestellt</string>
   <string name="preferences_reset">Erfolgreich zurückgesetzt</string>
+  <string name="device_properties">Geräteeigenschaften</string>
+  <string name="change">Ändere</string>
+  <string name="device_model">Modell</string>
+  <string name="device_tags">Tags</string>
+  <string name="device_board">Board</string>
+  <string name="device_manufacturer">Hersteller</string>
+  <string name="device_product">Produkt</string>
+  <string name="device_hardware">Hardware</string>
+  <string name="change_device_properties">Geräteeigenschaften ändern</string>
+  <string name="backup_all_apps">Backup aller Apps erstellen</string>
 </resources>

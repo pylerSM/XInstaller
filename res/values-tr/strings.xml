@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Başarıyla yedeklendi</string>
   <string name="preferences_restored">Başarıyla geri yüklendi</string>
   <string name="preferences_reset">Başarıyla sıfırlandı</string>
+  <string name="device_properties">Cihaz özellikleri</string>
+  <string name="change">Değiştir</string>
+  <string name="device_model">Model</string>
+  <string name="device_tags">Etiketler</string>
+  <string name="device_board">Anakart</string>
+  <string name="device_manufacturer">Üretici Firma</string>
+  <string name="device_product">Ürün</string>
+  <string name="device_hardware">Donanım</string>
+  <string name="change_device_properties">Cihaz özellikleri değiştiriliyor</string>
+  <string name="backup_all_apps">Bütün uygulamaları yedekleme</string>
 </resources>

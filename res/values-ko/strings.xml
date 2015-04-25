@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">성공적으로 백업됨</string>
   <string name="preferences_restored">성공적으로 복원됨</string>
   <string name="preferences_reset">성공적으로 초기화됨</string>
+  <string name="device_properties">장치 속성</string>
+  <string name="change">변경</string>
+  <string name="device_model">모델</string>
+  <string name="device_tags">태그</string>
+  <string name="device_board">보드</string>
+  <string name="device_manufacturer">제조사</string>
+  <string name="device_product">제품</string>
+  <string name="device_hardware">하드웨어</string>
+  <string name="change_device_properties">장치 속성 변경</string>
+  <string name="backup_all_apps">모든 앱 백업</string>
 </resources>

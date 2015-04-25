@@ -82,6 +82,6 @@
     <string name="device_product">Product</string>
     <string name="device_hardware">Hardware</string>
     <string name="change_device_properties">Changing device properties</string>
-    <string name="backup_all_apps">Backuping all apps</string>
+    <string name="backup_all_apps">Backing up all apps</string>
 
 </resources>

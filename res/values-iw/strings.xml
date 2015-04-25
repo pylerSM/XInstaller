@@ -61,6 +61,7 @@
   <string name="app_uninstalled">האפליקציה הוסרה בהצלחה</string>
   <string name="auto_enable_clear_buttons">הפעלה של כפתורי ניקוי</string>
   <string name="auto_hide_install">הסתרה אוטומטית לאחר התקנה</string>
+  <string name="check_lucky_patcher">בודק Lucky Patcher</string>
   <string name="about">אודות</string>
   <string name="developer">מפתח</string>
   <string name="version">גרסה</string>

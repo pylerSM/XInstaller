@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Copia de segurança feita com sucesso</string>
   <string name="preferences_restored">Restaurado com sucesso</string>
   <string name="preferences_reset">Valores de fábrica restaurados com sucesso</string>
+  <string name="device_properties">Propriedades do dispositivo</string>
+  <string name="change">Mudar</string>
+  <string name="device_model">Modelo</string>
+  <string name="device_tags">Tags</string>
+  <string name="device_board">Placa Mãe</string>
+  <string name="device_manufacturer">Fabricante</string>
+  <string name="device_product">Produto</string>
+  <string name="device_hardware">Hardware</string>
+  <string name="change_device_properties">A mudar as propriedades do dispositivo</string>
+  <string name="backup_all_apps">Backup de todas as apps</string>
 </resources>

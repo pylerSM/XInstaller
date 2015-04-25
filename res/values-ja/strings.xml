@@ -61,7 +61,7 @@
   <string name="app_uninstalled">アプリをアンインストールしました</string>
   <string name="auto_enable_clear_buttons">消去ボタンを自動で有効化</string>
   <string name="auto_hide_install">インストール時に自動で隠す</string>
-  <string name="check_lucky_patcher">Lucky Patcherのチェック中</string>
+  <string name="check_lucky_patcher">Lucky Patcherのチェック</string>
   <string name="about">アプリ情報</string>
   <string name="developer">開発者</string>
   <string name="version">バージョン</string>
@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">バックアップしました</string>
   <string name="preferences_restored">リストアしました</string>
   <string name="preferences_reset">リセットしました</string>
+  <string name="device_properties">機器のプロパティ</string>
+  <string name="change">変更</string>
+  <string name="device_model">モデル</string>
+  <string name="device_tags">タグ</string>
+  <string name="device_board">ボード</string>
+  <string name="device_manufacturer">メーカー</string>
+  <string name="device_product">製品名</string>
+  <string name="device_hardware">ハードウェア</string>
+  <string name="change_device_properties">機器のプロパティの変更</string>
+  <string name="backup_all_apps">全てのアプリをバックアップ</string>
 </resources>

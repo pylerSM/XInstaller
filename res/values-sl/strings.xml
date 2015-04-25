@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Uspešno varnostno kopiranje</string>
   <string name="preferences_restored">Uspešna obnovitev</string>
   <string name="preferences_reset">Uspešna ponastavitev</string>
+  <string name="device_properties">Lastnosti naprave</string>
+  <string name="change">Spremeni</string>
+  <string name="device_model">Model</string>
+  <string name="device_tags">Oznake</string>
+  <string name="device_board">Plošča</string>
+  <string name="device_manufacturer">Proizvajalec</string>
+  <string name="device_product">Izdelek</string>
+  <string name="device_hardware">Strojna oprema</string>
+  <string name="change_device_properties">Spreminjanje lastnosti naprave</string>
+  <string name="backup_all_apps">Varnostno kopiranje aplikacij</string>
 </resources>

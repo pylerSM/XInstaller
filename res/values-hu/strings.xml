@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Sikeres biztonsági mentés</string>
   <string name="preferences_restored">Sikeres visszaállítás</string>
   <string name="preferences_reset">Sikeres alaphelyzetbe állítás</string>
+  <string name="device_properties">Eszköz tulajdonságai</string>
+  <string name="change">Módosítás</string>
+  <string name="device_model">Modell</string>
+  <string name="device_tags">Címkék</string>
+  <string name="device_board">Board</string>
+  <string name="device_manufacturer">Gyártó</string>
+  <string name="device_product">Termék</string>
+  <string name="device_hardware">Hardver</string>
+  <string name="change_device_properties">Eszköz tulajdonságainak módosítása</string>
+  <string name="backup_all_apps">Összes alkalmazás mentése</string>
 </resources>

@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Úspešne zálohované</string>
   <string name="preferences_restored">Úspešne obnovené</string>
   <string name="preferences_reset">Úspešne resetované</string>
+  <string name="device_properties">Vlastnosti zariadenia</string>
+  <string name="change">Zmeniť</string>
+  <string name="device_model">Model</string>
+  <string name="device_tags">Značky</string>
+  <string name="device_board">Doska</string>
+  <string name="device_manufacturer">Výrobca</string>
+  <string name="device_product">Produkt</string>
+  <string name="device_hardware">Hardvér</string>
+  <string name="change_device_properties">Zmena vlastností zariadenia</string>
+  <string name="backup_all_apps">Zálohovanie všetkých aplikácií</string>
 </resources>

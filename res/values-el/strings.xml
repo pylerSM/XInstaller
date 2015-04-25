@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Επιτυχές αντίγραφο ασφαλείας</string>
   <string name="preferences_restored">Επιτυχής αποκατάσταση</string>
   <string name="preferences_reset">Επιτυχής επαναφορά</string>
+  <string name="device_properties">Ιδιότητες συσκευής</string>
+  <string name="change">Αλλαγή</string>
+  <string name="device_model">Μοντέλο</string>
+  <string name="device_tags">Ετικέτες</string>
+  <string name="device_board">Πλακέτα</string>
+  <string name="device_manufacturer">Κατασκευαστής</string>
+  <string name="device_product">Προϊόν</string>
+  <string name="device_hardware">Υλικό</string>
+  <string name="change_device_properties">Αλλαγή ιδιοτήτων συσκευής</string>
+  <string name="backup_all_apps">Αντίγραφα ασφαλείας για όλες τις εφαρμογές</string>
 </resources>

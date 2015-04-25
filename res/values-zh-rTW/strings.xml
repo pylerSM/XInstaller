@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">備份成功</string>
   <string name="preferences_restored">還原成功</string>
   <string name="preferences_reset">重設成功</string>
+  <string name="device_properties">裝置詳情</string>
+  <string name="change">變更</string>
+  <string name="device_model">型號</string>
+  <string name="device_tags">標籤</string>
+  <string name="device_board">廠牌</string>
+  <string name="device_manufacturer">製造商</string>
+  <string name="device_product">裝置</string>
+  <string name="device_hardware">硬體設備</string>
+  <string name="change_device_properties">更改裝置詳情</string>
+  <string name="backup_all_apps">備份所有應用程式</string>
 </resources>

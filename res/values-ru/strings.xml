@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">Успешное резервное копирование</string>
   <string name="preferences_restored">Успешное восстановление</string>
   <string name="preferences_reset">Успешный сброс</string>
+  <string name="device_properties">Свойства устройства</string>
+  <string name="change">Измененить</string>
+  <string name="device_model">Модель</string>
+  <string name="device_tags">Теги</string>
+  <string name="device_board">Форум</string>
+  <string name="device_manufacturer">Производитель</string>
+  <string name="device_product">Продукт</string>
+  <string name="device_hardware">Аппаратура</string>
+  <string name="change_device_properties">Изменение свойств устройства</string>
+  <string name="backup_all_apps">Резервное копирование всех приложений</string>
 </resources>

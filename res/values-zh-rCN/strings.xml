@@ -70,4 +70,14 @@
   <string name="preferences_backed_up">备份成功</string>
   <string name="preferences_restored">恢复成功</string>
   <string name="preferences_reset">重置成功</string>
+  <string name="device_properties">设备属性</string>
+  <string name="change">更改</string>
+  <string name="device_model">型号</string>
+  <string name="device_tags">标签</string>
+  <string name="device_board">品牌</string>
+  <string name="device_manufacturer">制造商</string>
+  <string name="device_product">产品</string>
+  <string name="device_hardware">硬件</string>
+  <string name="change_device_properties">更改设备属性</string>
+  <string name="backup_all_apps">备份所有的应用程序</string>
 </resources>
