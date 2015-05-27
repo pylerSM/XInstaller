@@ -83,5 +83,7 @@
     <string name="device_hardware">Hardware</string>
     <string name="change_device_properties">Changing device properties</string>
     <string name="backup_all_apps">Backing up all apps</string>
+    <string name="open_app_ops">Opening App Ops</string>
+    <string name="auto_update_google_play">Auto updating Google Play</string>
 
 </resources>

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="460"
-    android:versionName="4.6" >
+    android:versionCode="463"
+    android:versionName="4.6.3-TEST" >
 
     <uses-sdk
         android:minSdkVersion="15"

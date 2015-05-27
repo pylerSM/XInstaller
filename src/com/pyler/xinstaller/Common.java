@@ -63,6 +63,8 @@ public class Common {
 	public static final String PREF_DISABLE_CHECK_LUCKY_PATCHER = "disable_check_lucky_patcher";
 	public static final String PREF_ENABLE_CHANGE_DEVICE_PROPERTIES = "enable_change_device_properties";
 	public static final String PREF_ENABLE_BACKUP_ALL_APPS = "enable_backup_all_apps";
+	public static final String PREF_ENABLE_OPEN_APP_OPS = "enable_open_app_ops";
+	public static final String PREF_DISABLE_AUTO_UPDATE_GOOGLE_PLAY = "disable_auto_update_google_play";
 
 	public static final String PREF_DEVICE_MODEL = "device_model";
 	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";
@@ -103,6 +105,7 @@ public class Common {
 	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
 	public static final String GOOGLEPLAY_PKG = "com.android.vending";
 	public static final String LUCKYPATCHER_PKG = "com.android.vending.billing.InAppBillingService.LUCK";
+	public static final String APPOPSXPOSED_PKG = "at.jclehner.appopsxposed";
 
 	// checks
 	public static final boolean JB_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN;
@@ -110,6 +113,7 @@ public class Common {
 	public static final boolean JB_MR2_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2;
 	public static final boolean KITKAT_NEWER = SDK >= Build.VERSION_CODES.KITKAT;
 	public static final boolean LOLLIPOP_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP;
+	public static final boolean LOLLIPOP_MR1_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP_MR1;
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
@@ -128,6 +132,9 @@ public class Common {
 	public static final String BACKUPRESTORECONFIRMATION = "com.android.backupconfirm.BackupRestoreConfirmation";
 	public static final String PACKAGEMANAGERREPOSITORY = "com.google.android.finsky.appstate.PackageManagerRepository";
 	public static final String UTILS = "com.android.settings.Utils";
+	public static final String APPOPSDETAILS = "com.android.settings.applications.AppOpsDetails";
+	public static final String SELFUPDATESCHEDULER = "com.google.android.finsky.utils.SelfUpdateScheduler";
+	public static final String APPOPSXPOSED_APPOPSACTIVITY = "at.jclehner.appopsxposed.AppOpsActivity";
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;
