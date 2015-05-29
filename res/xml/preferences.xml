@@ -73,7 +73,7 @@
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="enable_open_app_ops"
-                    android:title="@string/open_app_ops" />        
+                    android:title="@string/open_app_ops" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="installations_disable"
@@ -106,10 +106,6 @@
                     android:defaultValue="false"
                     android:key="disable_check_duplicated_permissions"
                     android:title="@string/check_duplicated_permissions" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_auto_update_google_play"
-                    android:title="@string/auto_update_google_play" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -271,6 +267,10 @@
                     android:defaultValue="false"
                     android:key="disable_check_lucky_patcher"
                     android:title="@string/check_lucky_patcher" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="disable_auto_update_google_play"
+                    android:title="@string/auto_update_google_play" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen

@@ -39,7 +39,7 @@ public class Utils extends BroadcastReceiver {
 		resources = ctx.getResources();
 		String action = intent.getAction();
 		Bundle extras = intent.getExtras();
-		boolean hasExtras = (extras != null) ? true : false;
+		boolean hasExtras = extras != null;
 		if (Common.ACTION_BACKUP_APK_FILE.equals(action)) {
 			if (hasExtras) {
 				String apkFile = extras.getString(Common.FILE);
@@ -81,6 +81,7 @@ public class Utils extends BroadcastReceiver {
 				copyFile(src, dst);
 			}
 		} catch (Exception e) {
+			Toast.makeText(ctx, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 

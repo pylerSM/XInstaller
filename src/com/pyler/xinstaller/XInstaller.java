@@ -119,6 +119,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook getPackageInfoHook;
 	public XC_MethodHook platformSignatureHook;
 	public XC_MethodHook autoUpdateGooglePlayHook;
+	public XC_MethodHook autoBackupApkHook;
 	public boolean disableCheckSignatures;
 	public Context mContext;
 
@@ -126,17 +127,25 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
-		Class<?> packageParserClass = XposedHelpers.findClass(
-				Common.PACKAGEPARSER, null);
-		Class<?> jarVerifierClass = XposedHelpers.findClass(Common.JARVERIFIER,
-				null);
-		Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
-				null);
 		disableCheckSignatures = true;
+
+		autoBackupApkHook = new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				reloadPreferences();
+				backupApkFiles = prefs.getBoolean(
+						Common.PREF_ENABLE_BACKUP_APK_FILE, false);
+				if (isModuleEnabled() && backupApkFiles) {
+					XposedHelpers.setObjectField(param.thisObject, "stageDir",
+							null);
+				}
+			}
+		};
 
 		autoUpdateGooglePlayHook = new XC_MethodHook() {
 			@Override
-			protected void beforeHookedMethod(MethodHookParam param)
+			protected void afterHookedMethod(MethodHookParam param)
 					throws Throwable {
 				reloadPreferences();
 				autoUpdateGooglePlay = prefs.getBoolean(
@@ -642,17 +651,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 				mContext = (Context) XposedHelpers.getObjectField(
 						param.thisObject, "mContext");
 				boolean isInstallStage = "installStage".equals(param.method
-						.getName()); // TODO
+						.getName());
 				int flags, id = 0;
 
-				/*
-				 * if (isInstallStage) { id = 4; flags = (Integer)
-				 * XposedHelpers.getObjectField( param.args[id],
-				 * "installFlags"); } else {
-				 */
-				id = Common.JB_MR1_NEWER ? 2 : 1;
-				flags = (Integer) param.args[id];
-				// }
+				if (isInstallStage) {
+					id = 4;
+					flags = (Integer) XposedHelpers.getObjectField(
+							param.args[id], "installFlags");
+				} else {
+					id = Common.JB_MR1_NEWER ? 2 : 1;
+					flags = (Integer) param.args[id];
+				}
 				if (isModuleEnabled() && downgradeApps) {
 					if ((flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
 						flags |= Common.INSTALL_ALLOW_DOWNGRADE;
@@ -672,23 +681,22 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 				if (isModuleEnabled()) {
-					/*
-					 * if (isInstallStage) { XposedBridge.log("Setting flags");
-					 * Object sessions = param.args[id];
-					 * XposedHelpers.setIntField(sessions, "installFlags",
-					 * flags); param.args[id] = sessions; } else {
-					 */
-					param.args[id] = flags;
-					// }
+					if (isInstallStage) {
+						Object sessions = param.args[id];
+						XposedHelpers.setIntField(sessions, "installFlags",
+								flags);
+						param.args[id] = sessions;
+					} else {
+
+						param.args[id] = flags;
+					}
 				}
 
 				if (isModuleEnabled() && backupApkFiles) {
 					String apkFile;
 					if (Common.LOLLIPOP_NEWER && isInstallStage) {
-						// Cant copy with new API TODO
 						File tempApk = (File) param.args[1];
 						apkFile = tempApk.getPath();
-						;
 					} else {
 						if (Common.LOLLIPOP_NEWER) {
 							apkFile = (String) param.args[0];
@@ -697,7 +705,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 							apkFile = packageUri.getPath();
 						}
 					}
-					XposedBridge.log("Path is " + apkFile); //TODO
 					backupApkFile(apkFile);
 				}
 
@@ -714,25 +721,21 @@ public class XInstaller implements IXposedHookZygoteInit,
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				prefs.reload();
-				// FIXME
-				// XposedBridge.log("hooked");
 				keepAppsData = prefs.getBoolean(
 						Common.PREF_ENABLE_KEEP_APP_DATA, false);
 				uninstallBackground = prefs.getBoolean(
 						Common.PREF_DISABLE_UNINSTALL_BACKGROUND, false);
 				int id = Common.JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[id];
+
 				if (isModuleEnabled() && keepAppsData) {
 					if ((flags & Common.DELETE_KEEP_DATA) == 0) {
 						flags |= Common.DELETE_KEEP_DATA;
 					}
 				}
-				// FIXME
-				// XposedBridge.log("Uninstall UID " + Binder.getCallingUid()
-				// + " uninstallBackground= " + uninstallBackground);
+
 				if (isModuleEnabled() && uninstallBackground) {
 					if (Binder.getCallingUid() == Common.ROOT_UID) {
-						XposedBridge.log("background uninstall cancelled");
 						param.setResult(null);
 					}
 				}
@@ -987,7 +990,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						String packageName = appInfo.packageName;
 						Intent openAppInAppOps = new Intent();
 						boolean useSettingsApp = true;
-						// TODO
+
 						try {
 							PackageInfo pkgInfo = mContext.getPackageManager()
 									.getPackageInfo(Common.APPOPSXPOSED_PKG, 0);
@@ -998,18 +1001,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 								useSettingsApp = false;
 							}
 						} catch (NameNotFoundException e) {
-							if (Common.LOLLIPOP_NEWER) {
-								// return;
-							}
 						}
 
 						if (useSettingsApp) {
-							//openAppInAppOps.setAction(Settings.ACTION_SETTINGS);
-							//Class<?> subSettings = XposedHelpers.findClass("com.android.settings.SubSettings", param.getClass().getClassLoader());
-							//openAppInAppOps = new Intent(mContext, subSettings);
-							/*XposedBridge.log("T: " + Settings.ACTION_SETTINGS);*/
 							openAppInAppOps
-									.setAction("android.settings.APP_OPS_SETTINGS"); //TODO externalize
+									.setAction(Common.ACTION_APP_OPS_SETTINGS);
 						}
 
 						Bundle args = new Bundle();
@@ -1034,38 +1030,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		};
 
-		if (Common.LOLLIPOP_NEWER) {
-			// 5.0 and newer
-			XposedBridge.hookAllMethods(packageParserClass, "parseBaseApk",
-					checkSdkVersionHook);
-		} else {
-			// 4.0 - 4.4
-			XposedBridge.hookAllMethods(packageParserClass, "parsePackage",
-					checkSdkVersionHook);
-		}
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(Process.class, "start", debugAppsHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(MessageDigest.class, "isEqual",
-				verifySignatureHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(View.class,
-				"onFilterTouchEventForSecurity", showButtonsHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(signatureClass, "verify",
-				verifySignatureHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(jarVerifierClass, "verify", verifyJarHook);
-
-		// 4.0 and newer
-		XposedBridge.hookAllMethods(packageParserClass, "collectCertificates",
-				installUnsignedAppsHook);
-
 	}
 
 	@Override
@@ -1077,6 +1041,45 @@ public class XInstaller implements IXposedHookZygoteInit,
 					Common.PACKAGEMANAGERSERVICE, lpparam.classLoader);
 			Class<?> devicePolicyManagerClass = XposedHelpers.findClass(
 					Common.DEVICEPOLICYMANAGERSERVICE, lpparam.classLoader);
+			Class<?> packageParserClass = XposedHelpers.findClass(
+					Common.PACKAGEPARSER, lpparam.classLoader);
+			Class<?> jarVerifierClass = XposedHelpers.findClass(
+					Common.JARVERIFIER, lpparam.classLoader);
+			Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
+					lpparam.classLoader);
+
+			if (Common.LOLLIPOP_NEWER) {
+				// 5.0 and newer
+				XposedBridge.hookAllMethods(packageParserClass, "parseBaseApk",
+						checkSdkVersionHook);
+			} else {
+				// 4.0 - 4.4
+				XposedBridge.hookAllMethods(packageParserClass, "parsePackage",
+						checkSdkVersionHook);
+			}
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(Process.class, "start", debugAppsHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(MessageDigest.class, "isEqual",
+					verifySignatureHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(View.class,
+					"onFilterTouchEventForSecurity", showButtonsHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(signatureClass, "verify",
+					verifySignatureHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(jarVerifierClass, "verify",
+					verifyJarHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(packageParserClass,
+					"collectCertificates", installUnsignedAppsHook);
 
 			if (Common.LOLLIPOP_NEWER) {
 				// 5.0 and newer
@@ -1137,19 +1140,33 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 			}
 
-			if (Common.JB_MR2_NEWER) {
-				// 4.3 and newer
-				XposedBridge.hookAllMethods(packageManagerClass,
-						"deletePackageAsUser", deletePackageHook); // TODO AsUser
-			} else {
-				// 4.0 - 4.2
+			if (Common.LOLLIPOP_NEWER) {
+				// 5.0 and newer
 				XposedBridge.hookAllMethods(packageManagerClass,
 						"deletePackage", deletePackageHook);
+			} else {
+				if (Common.JB_MR2_NEWER) {
+					// 4.3 - 4.4
+					XposedBridge.hookAllMethods(packageManagerClass,
+							"deletePackageAsUser", deletePackageHook);
+				} else {
+					// 4.0 - 4.2
+					XposedBridge.hookAllMethods(packageManagerClass,
+							"deletePackage", deletePackageHook);
+				}
 			}
 
 			// 4.0 and newer
 			XposedBridge.hookAllMethods(devicePolicyManagerClass,
 					"packageHasActiveAdmins", deviceAdminsHook);
+			// 5.0 and newer
+			// TODO
+			boolean test = false;
+			if (Common.LOLLIPOP_NEWER && test) {
+				XposedBridge.hookAllMethods(XposedHelpers.findClass(
+						Common.PACKAGEINSTALLERSESSION, lpparam.classLoader),
+						"destroyInternal", autoBackupApkHook);
+			}
 		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			if (Common.LOLLIPOP_MR1_NEWER) {
@@ -1157,7 +1174,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 				XposedHelpers.findAndHookMethod(
 						Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
 						"isUnknownSourcesEnabled", unknownAppsHook);
-			} else {// 4.0 - 5.0
+			} else {
+				// 4.0 - 5.0
 				XposedHelpers.findAndHookMethod(
 						Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
 						"isInstallingUnknownAppsAllowed", unknownAppsHook);
@@ -1199,7 +1217,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS,
 					lpparam.classLoader, "initView", autoHideInstallHook);
-
 		}
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
@@ -1234,9 +1251,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 					autoEnableClearButtonsHook);
 			// 5.0 and newer
 			if (Common.LOLLIPOP_NEWER) {
-				XposedHelpers.findAndHookMethod(Common.APPOPSDETAILS,
-						lpparam.classLoader, "isPlatformSigned",
-						platformSignatureHook);
+				XposedBridge.hookAllMethods(XposedHelpers.findClass(
+						Common.APPOPSDETAILS, lpparam.classLoader),
+						"isPlatformSigned", platformSignatureHook);
 			}
 		}
 
@@ -1271,19 +1288,22 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public void reloadPreferences() {
+		// TODO for final build
+		// remove if it doesn't work
+		boolean changeStrictModePolicy = isExpertModeEnabled();
+		reloadPreferences(changeStrictModePolicy);
+	}
+
+	public void reloadPreferences(boolean changePolicy) {
 		if (Common.LOLLIPOP_NEWER) {
 			StrictMode.ThreadPolicy oldPolicy = StrictMode
 					.allowThreadDiskReads();
-			StrictMode.ThreadPolicy oldPolicy2 = StrictMode
-					.allowThreadDiskWrites();
 			try {
-				try {
-					prefs.reload();
-				} catch (Exception e) {
-				}
+				prefs.reload();
 			} finally {
-				// TODO
-				// StrictMode.setThreadPolicy(oldPolicy2);
+				if (changePolicy) {
+					StrictMode.setThreadPolicy(oldPolicy);
+				}
 			}
 		} else {
 			prefs.reload();

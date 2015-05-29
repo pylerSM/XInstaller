@@ -14,6 +14,8 @@ public class Common {
 	public static final String ACTION_RESTORE_PREFERENCES = "xinstaller.intent.action.RESTORE_PREFERENCES";
 	public static final String ACTION_RESET_PREFERENCES = "xinstaller.intent.action.RESET_PREFERENCES";
 
+	public static final String ACTION_APP_OPS_SETTINGS = "android.settings.APP_OPS_SETTINGS";
+
 	public static final String FILE = "file";
 	public static final String PREFERENCE = "preference";
 	public static final String VALUE = "value";
@@ -135,6 +137,7 @@ public class Common {
 	public static final String APPOPSDETAILS = "com.android.settings.applications.AppOpsDetails";
 	public static final String SELFUPDATESCHEDULER = "com.google.android.finsky.utils.SelfUpdateScheduler";
 	public static final String APPOPSXPOSED_APPOPSACTIVITY = "at.jclehner.appopsxposed.AppOpsActivity";
+	public static final String PACKAGEINSTALLERSESSION = "com.android.server.pm.PackageInstallerSession";
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;
