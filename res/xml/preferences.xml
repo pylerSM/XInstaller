@@ -251,6 +251,10 @@
                     android:defaultValue="false"
                     android:key="enable_backup_all_apps"
                     android:title="@string/backup_all_apps" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_hide_app_crashes"
+                    android:title="@string/hide_app_crashes" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="misc_disable"

@@ -87,6 +87,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean openAppOps;
 	public boolean autoUpdateGooglePlay;
 	public boolean disableUserApps;
+	public boolean hideAppCrashes;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -123,15 +124,30 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook initUninstallButtonsHook;
 	public XC_MethodHook disableChangerHook;
 	public XC_MethodHook disableUserAppsHook;
+	public XC_MethodHook hideAppCrashesHook;
 	public boolean disableCheckSignatures;
 	public Context mContext;
-	public Class<?> mDisableChanger;
+	public Class<?> disableChangerClass;
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
 		prefs.makeWorldReadable();
 		disableCheckSignatures = true;
+
+		hideAppCrashesHook = new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param)
+					throws Throwable {
+				reloadPreferences();
+				hideAppCrashes = prefs.getBoolean(
+						Common.PREF_ENABLE_HIDE_APP_CRASHES, false);
+				if (isModuleEnabled() && hideAppCrashes) {
+					XposedHelpers.setObjectField(param.thisObject,
+							"DISMISS_TIMEOUT", 0);
+				}
+			}
+		};
 
 		initUninstallButtonsHook = new XC_MethodHook() {
 			@Override
@@ -221,7 +237,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						if (!appEntryInfoEnabled) {
 							Object disableChanger = XposedHelpers
 									.newInstance(
-											mDisableChanger,
+											disableChangerClass,
 											param.thisObject,
 											appEntryInfo,
 											PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
@@ -1153,6 +1169,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 					Common.JARVERIFIER, lpparam.classLoader);
 			Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
 					lpparam.classLoader);
+			Class<?> appErrorDialogClass = XposedHelpers.findClass(
+					Common.APPERRORDIALOG, lpparam.classLoader);
 
 			if (Common.LOLLIPOP_NEWER) {
 				// 5.0 and newer
@@ -1265,6 +1283,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 			// 4.0 and newer
 			XposedBridge.hookAllMethods(devicePolicyManagerClass,
 					"packageHasActiveAdmins", deviceAdminsHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllConstructors(appErrorDialogClass,
+					hideAppCrashesHook);
 		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			if (Common.LOLLIPOP_MR1_NEWER) {
@@ -1318,7 +1340,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
-			mDisableChanger = XposedHelpers.findClass(
+			disableChangerClass = XposedHelpers.findClass(
 					Common.INSTALLEDAPPDETAILS + ".DisableChanger",
 					lpparam.classLoader);
 

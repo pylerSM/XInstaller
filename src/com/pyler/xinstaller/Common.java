@@ -68,6 +68,7 @@ public class Common {
 	public static final String PREF_ENABLE_OPEN_APP_OPS = "enable_open_app_ops";
 	public static final String PREF_DISABLE_AUTO_UPDATE_GOOGLE_PLAY = "disable_auto_update_google_play";
 	public static final String PREF_ENABLE_DISABLE_USER_APPS = "enable_disable_user_apps";
+	public static final String PREF_ENABLE_HIDE_APP_CRASHES = "enable_hide_app_crashes";
 
 	public static final String PREF_DEVICE_MODEL = "device_model";
 	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";
@@ -138,7 +139,7 @@ public class Common {
 	public static final String APPOPSDETAILS = "com.android.settings.applications.AppOpsDetails";
 	public static final String SELFUPDATESCHEDULER = "com.google.android.finsky.utils.SelfUpdateScheduler";
 	public static final String APPOPSXPOSED_APPOPSACTIVITY = "at.jclehner.appopsxposed.AppOpsActivity";
-	public static final String PACKAGEINSTALLERSESSION = "com.android.server.pm.PackageInstallerSession";
+	public static final String APPERRORDIALOG = "com.android.server.am.AppErrorDialog";
 
 	// flags
 	public static final int DELETE_KEEP_DATA = 0x00000001;

@@ -103,10 +103,6 @@ public class Utils extends BroadcastReceiver {
 		}
 		final String apkFile = pkgInfo.applicationInfo.sourceDir;
 		boolean installedInSystem = apkFile.startsWith("/system");
-		boolean isSystemApp = (pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
-		if (!isSystemApp) {
-			return;
-		}
 		String removeAPK = "rm " + apkFile;
 		String removeData = "pm clear " + packageName;
 		String remountRW = "mount -o remount,rw /system";

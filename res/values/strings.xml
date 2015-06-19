@@ -110,5 +110,6 @@
     <string name="zh_CN">Chinese Simplified</string>
     <string name="zh_TW">Chinese Traditional</string>
     <string name="disable_user_apps">Disabling user apps</string>
+    <string name="hide_app_crashes">Hiding app crashes</string>
 
 </resources>
