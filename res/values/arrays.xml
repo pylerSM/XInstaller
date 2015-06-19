@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="locales" translatable="false">
+        <item>@string/system</item>
+        <item>@string/ar</item>
+        <item>@string/bn</item>
+        <item>@string/cs</item>
+        <item>@string/de</item>
+        <item>@string/el</item>
+        <item>@string/es_ES</item>
+        <item>@string/fr</item>
+        <item>@string/hu</item>
+        <item>@string/it</item>
+        <item>@string/iw</item>
+        <item>@string/ja</item>
+        <item>@string/ko</item>
+        <item>@string/ms</item>
+        <item>@string/nl</item>
+        <item>@string/pl</item>
+        <item>@string/pt_PT</item>
+        <item>@string/ru</item>
+        <item>@string/sk</item>
+        <item>@string/sl</item>
+        <item>@string/tr</item>
+        <item>@string/zh_CN</item>
+        <item>@string/zh_TW</item>
+    </string-array>
+    <string-array name="locale_codes" translatable="false">
+        <item>system</item>
+        <item>ar</item>
+        <item>bn</item>
+        <item>cs</item>
+        <item>de</item>
+        <item>el</item>
+        <item>es_ES</item>
+        <item>fr</item>
+        <item>hu</item>
+        <item>it</item>
+        <item>iw</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>ms</item>
+        <item>nl</item>
+        <item>pl</item>
+        <item>pt_PT</item>
+        <item>ru</item>
+        <item>sk</item>
+        <item>sl</item>
+        <item>tr</item>
+        <item>zh_CN</item>
+        <item>zh_TW</item>
+    </string-array>
+
+</resources>

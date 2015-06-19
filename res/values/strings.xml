@@ -85,5 +85,30 @@
     <string name="backup_all_apps">Backing up all apps</string>
     <string name="open_app_ops">Opening App Ops</string>
     <string name="auto_update_google_play">Auto updating Google Play</string>
+    <string name="locale">Locale</string>
+    <string name="system">System</string>
+    <string name="ar">Arabic</string>
+    <string name="bn">Bengali</string>
+    <string name="cs">Czech</string>
+    <string name="de">German</string>
+    <string name="el">Greek</string>
+    <string name="es_ES">Spanish</string>
+    <string name="fr">French</string>
+    <string name="hu">Hungarian</string>
+    <string name="it">Italian</string>
+    <string name="iw">Hebrew</string>
+    <string name="ja">Japanese</string>
+    <string name="ko">Korean</string>
+    <string name="ms">Malay</string>
+    <string name="nl">Dutch</string>
+    <string name="pl">Polish</string>
+    <string name="pt_PT">Portuguese</string>
+    <string name="ru">Russian</string>
+    <string name="sk">Slovak</string>
+    <string name="sl">Slovenian</string>
+    <string name="tr">Turkish</string>
+    <string name="zh_CN">Chinese Simplified</string>
+    <string name="zh_TW">Chinese Traditional</string>
+    <string name="disable_user_apps">Disabling user apps</string>
 
 </resources>

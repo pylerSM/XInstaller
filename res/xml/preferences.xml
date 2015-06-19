@@ -178,6 +178,10 @@
                     android:defaultValue="false"
                     android:key="enable_uninstall_system_apps"
                     android:title="@string/uninstall_system_apps" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_disable_user_apps"
+                    android:title="@string/disable_user_apps" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="apps_info_disable"
@@ -290,6 +294,17 @@
                     android:title="@string/reset" />
             </PreferenceCategory>
         </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="locale"
+        android:title="@string/locale" >
+        <ListPreference
+            android:defaultValue="system"
+            android:entries="@array/locales"
+            android:entryValues="@array/locale_codes"
+            android:key="app_locale"
+            android:summary="%s"
+            android:title="@string/locale" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="help"

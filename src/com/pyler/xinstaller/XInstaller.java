@@ -25,7 +25,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Process;
-import android.os.StrictMode;
 import android.preference.PreferenceActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +36,7 @@ import android.widget.Toast;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -86,6 +86,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean backupAllApps;
 	public boolean openAppOps;
 	public boolean autoUpdateGooglePlay;
+	public boolean disableUserApps;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -119,9 +120,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public XC_MethodHook getPackageInfoHook;
 	public XC_MethodHook platformSignatureHook;
 	public XC_MethodHook autoUpdateGooglePlayHook;
-	public XC_MethodHook autoBackupApkHook;
+	public XC_MethodHook initUninstallButtonsHook;
+	public XC_MethodHook disableChangerHook;
+	public XC_MethodHook disableUserAppsHook;
 	public boolean disableCheckSignatures;
 	public Context mContext;
+	public Class<?> mDisableChanger;
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
@@ -129,16 +133,118 @@ public class XInstaller implements IXposedHookZygoteInit,
 		prefs.makeWorldReadable();
 		disableCheckSignatures = true;
 
-		autoBackupApkHook = new XC_MethodHook() {
+		initUninstallButtonsHook = new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param)
+					throws Throwable {
+				reloadPreferences();
+				disableUserApps = prefs.getBoolean(
+						Common.PREF_ENABLE_DISABLE_USER_APPS, false);
+				if (isModuleEnabled() && disableUserApps) {
+					Object appEntry = XposedHelpers.getObjectField(
+							param.thisObject, "mAppEntry");
+					Object appEntryInfo = XposedHelpers.getObjectField(
+							appEntry, "info");
+					boolean appEntryInfoEnabled = (Boolean) XposedHelpers
+							.getObjectField(appEntryInfo, "enabled");
+					int appEntryInfoFlags = (Integer) XposedHelpers
+							.getObjectField(appEntryInfo, "flags");
+					mContext = AndroidAppHelper.currentApplication();
+					boolean isSystem = false;
+					if ((appEntryInfoFlags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+						isSystem = true;
+					}
+					if (!isSystem) {
+						Button mSpecialDisableButton = (Button) XposedHelpers
+								.getObjectField(param.thisObject,
+										"mSpecialDisableButton");
+						XposedHelpers.callMethod(mSpecialDisableButton,
+								"setOnClickListener", param.thisObject);
+
+						Resources resources = (Resources) XposedHelpers
+								.callMethod(param.thisObject, "getResources");
+						String textDisable = (String) resources
+								.getText(resources.getIdentifier(
+										"disable_text", "string",
+										Common.SETTINGS_PKG));
+						if (textDisable == null) {
+							textDisable = getXInstallerContext().getResources()
+									.getString(R.string.disable);
+						}
+						String textEnable = (String) resources
+								.getText(resources.getIdentifier("enable_text",
+										"string", Common.SETTINGS_PKG));
+						if (textEnable == null) {
+							textEnable = getXInstallerContext().getResources()
+									.getString(R.string.enable);
+						}
+
+						if (appEntryInfoEnabled)
+							mSpecialDisableButton.setText(textDisable);
+						else
+							mSpecialDisableButton.setText(textEnable);
+
+						try {
+							View mMoreControlButtons = (View) XposedHelpers
+									.getObjectField(param.thisObject,
+											"mMoreControlButtons");
+							mMoreControlButtons.setVisibility(View.VISIBLE);
+						} catch (NoSuchFieldError e) {
+							mSpecialDisableButton.setVisibility(View.VISIBLE);
+						}
+					}
+				}
+			}
+		};
+
+		disableChangerHook = new XC_MethodReplacement() {
+			@Override
+			protected Object replaceHookedMethod(MethodHookParam param)
+					throws Throwable {
+				reloadPreferences();
+				disableUserApps = prefs.getBoolean(
+						Common.PREF_ENABLE_DISABLE_USER_APPS, false);
+				if (isModuleEnabled() && disableUserApps) {
+					Object v = param.args[0];
+					Object mSpecialDisableButton = XposedHelpers
+							.getObjectField(param.thisObject,
+									"mSpecialDisableButton");
+
+					if (v == mSpecialDisableButton) {
+						Object appEntry = XposedHelpers.getObjectField(
+								param.thisObject, "mAppEntry");
+						Object appEntryInfo = XposedHelpers.getObjectField(
+								appEntry, "info");
+						boolean appEntryInfoEnabled = (Boolean) XposedHelpers
+								.getObjectField(appEntryInfo, "enabled");
+
+						if (!appEntryInfoEnabled) {
+							Object disableChanger = XposedHelpers
+									.newInstance(
+											mDisableChanger,
+											param.thisObject,
+											appEntryInfo,
+											PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+							XposedHelpers.callMethod(disableChanger, "execute",
+									(Object) null);
+							return null;
+						}
+					}
+				}
+				return XposedBridge.invokeOriginalMethod(param.method,
+						param.thisObject, param.args);
+			}
+		};
+		disableUserAppsHook = new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				reloadPreferences();
-				backupApkFiles = prefs.getBoolean(
-						Common.PREF_ENABLE_BACKUP_APK_FILE, false);
-				if (isModuleEnabled() && backupApkFiles) {
-					XposedHelpers.setObjectField(param.thisObject, "stageDir",
-							null);
+				disableUserApps = prefs.getBoolean(
+						Common.PREF_ENABLE_DISABLE_USER_APPS, false);
+				if (isModuleEnabled() && disableUserApps) {
+					if ((Integer) param.args[0] == 9)
+						param.args[0] = 7;
 				}
 			}
 		};
@@ -1159,14 +1265,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 			// 4.0 and newer
 			XposedBridge.hookAllMethods(devicePolicyManagerClass,
 					"packageHasActiveAdmins", deviceAdminsHook);
-			// 5.0 and newer
-			// TODO
-			boolean test = false;
-			if (Common.LOLLIPOP_NEWER && test) {
-				XposedBridge.hookAllMethods(XposedHelpers.findClass(
-						Common.PACKAGEINSTALLERSESSION, lpparam.classLoader),
-						"destroyInternal", autoBackupApkHook);
-			}
 		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			if (Common.LOLLIPOP_MR1_NEWER) {
@@ -1220,6 +1318,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
+			mDisableChanger = XposedHelpers.findClass(
+					Common.INSTALLEDAPPDETAILS + ".DisableChanger",
+					lpparam.classLoader);
+
 			if (Common.JB_NEWER) {
 				if (Common.LOLLIPOP_NEWER) {
 					// 5.0 and newer
@@ -1255,6 +1357,21 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.APPOPSDETAILS, lpparam.classLoader),
 						"isPlatformSigned", platformSignatureHook);
 			}
+
+			// 4.0 and newer
+			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+					lpparam.classLoader, "initUninstallButtons",
+					initUninstallButtonsHook);
+
+			// 4.0 and newer
+			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+					lpparam.classLoader, "onClick", View.class,
+					disableChangerHook);
+
+			// 4.0 and newer
+			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+					lpparam.classLoader, "showDialogInner", int.class,
+					int.class, disableUserAppsHook);
 		}
 
 		if (Common.FDROID_PKG.equals(lpparam.packageName)) {
@@ -1288,24 +1405,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	}
 
 	public void reloadPreferences() {
-		// TODO for final build
-		// remove if it doesn't work
-		boolean changeStrictModePolicy = isExpertModeEnabled();
-		reloadPreferences(changeStrictModePolicy);
-	}
-
-	public void reloadPreferences(boolean changePolicy) {
-		if (Common.LOLLIPOP_NEWER) {
-			StrictMode.ThreadPolicy oldPolicy = StrictMode
-					.allowThreadDiskReads();
-			try {
-				prefs.reload();
-			} finally {
-				if (changePolicy) {
-					StrictMode.setThreadPolicy(oldPolicy);
-				}
-			}
-		} else {
+		if (isModuleEnabled()) {
 			prefs.reload();
 		}
 	}

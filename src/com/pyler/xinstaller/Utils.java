@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import com.pyler.xinstaller.R;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;

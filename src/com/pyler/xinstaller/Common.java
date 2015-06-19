@@ -67,6 +67,7 @@ public class Common {
 	public static final String PREF_ENABLE_BACKUP_ALL_APPS = "enable_backup_all_apps";
 	public static final String PREF_ENABLE_OPEN_APP_OPS = "enable_open_app_ops";
 	public static final String PREF_DISABLE_AUTO_UPDATE_GOOGLE_PLAY = "disable_auto_update_google_play";
+	public static final String PREF_ENABLE_DISABLE_USER_APPS = "enable_disable_user_apps";
 
 	public static final String PREF_DEVICE_MODEL = "device_model";
 	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";

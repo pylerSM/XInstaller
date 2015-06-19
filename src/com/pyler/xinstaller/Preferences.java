@@ -23,6 +23,7 @@ public class Preferences extends Activity {
 	public static Activity activity;
 	public static Resources resources;
 	public static SharedPreferences prefs;
+	public static AppLocaleManager appLocaleManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,15 @@ public class Preferences extends Activity {
 			getPreferenceManager().setSharedPreferencesMode(
 					Context.MODE_WORLD_READABLE);
 			addPreferencesFromResource(R.xml.preferences);
+
+			prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+			appLocaleManager = new AppLocaleManager(context);
+			String currentAppLocale = prefs.getString(
+					AppLocaleManager.PREF_APP_LOCALE, AppLocaleManager.SYSTEM);
+			appLocaleManager.setLocale(currentAppLocale);
+			appLocaleManager.inicialize();
+
 			Preference appVersion = findPreference("app_version");
 			PackageManager pm = context.getPackageManager();
 			try {
@@ -52,7 +62,6 @@ public class Preferences extends Activity {
 			} catch (NameNotFoundException e) {
 			}
 
-			prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			boolean isExpertModeEnabled = prefs.getBoolean(
 					Common.PREF_ENABLE_EXPERT_MODE, false);
 
@@ -161,6 +170,17 @@ public class Preferences extends Activity {
 							return true;
 						}
 					});
+
+			Preference appLocale = findPreference("app_locale");
+			appLocale
+					.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+						@Override
+						public boolean onPreferenceChange(
+								Preference preference, Object newValue) {
+							activity.recreate();
+							return true;
+						}
+					});
 			Preference appHelp = findPreference("app_help");
 			appHelp.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				@Override
@@ -172,6 +192,7 @@ public class Preferences extends Activity {
 					return true;
 				}
 			});
+
 			Preference resetDeviceProperties = findPreference("reset_device_properties");
 			resetDeviceProperties
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
