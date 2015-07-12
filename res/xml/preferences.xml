@@ -80,8 +80,8 @@
                 android:title="@string/disable" >
                 <CheckBoxPreference
                     android:defaultValue="false"
-                    android:key="disable_check_signatures"
-                    android:title="@string/check_signatures" />
+                    android:key="disable_check_signatures_install"
+                    android:title="@string/check_signatures_install" />
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_check_signatures_fdroid"
@@ -265,6 +265,10 @@
                     android:title="@string/check_permissions" />
                 <CheckBoxPreference
                     android:defaultValue="false"
+                    android:key="disable_check_signatures"
+                    android:title="@string/check_signatures" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
                     android:key="disable_verify_jar"
                     android:title="@string/verify_jar" />
                 <CheckBoxPreference
@@ -298,10 +302,7 @@
                     android:title="@string/reset" />
             </PreferenceCategory>
         </PreferenceScreen>
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="locale"
-        android:title="@string/locale" >
+
         <ListPreference
             android:defaultValue="system"
             android:entries="@array/locales"
@@ -309,10 +310,7 @@
             android:key="app_locale"
             android:summary="%s"
             android:title="@string/locale" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="help"
-        android:title="@string/help" >
+
         <Preference
             android:key="app_help"
             android:title="@string/help" />

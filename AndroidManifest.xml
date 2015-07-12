@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
     android:versionCode="469"
-    android:versionName="4.6.9-BETA" >
+    android:versionName="4.6.9-BETA3" >
 
     <uses-sdk
         android:minSdkVersion="15"

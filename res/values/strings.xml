@@ -111,6 +111,6 @@
     <string name="zh_TW">Chinese Traditional</string>
     <string name="disable_user_apps">Disabling user apps</string>
     <string name="hide_app_crashes">Hiding app crashes</string>
-    <string name="module_not_enabled_xposed">Module is not enabled in Xposed Installer</string>
+    <string name="check_signatures_install">Checking signatures</string>
 
 </resources>

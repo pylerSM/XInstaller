@@ -48,9 +48,6 @@ public class Preferences extends Activity {
 			prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 			appLocaleManager = new AppLocaleManager(context);
-			String currentAppLocale = prefs.getString(
-					AppLocaleManager.PREF_APP_LOCALE, AppLocaleManager.SYSTEM);
-			appLocaleManager.setLocale(currentAppLocale);
 			appLocaleManager.inicialize();
 
 			Preference appVersion = findPreference("app_version");
@@ -89,6 +86,10 @@ public class Preferences extends Activity {
 				miscDisable.removePreference(checkPermissions);
 				miscDisable.removePreference(verifyJar);
 				miscDisable.removePreference(verifySignature);
+			}
+
+			if (Common.LOLLIPOP_NEWER) {
+				installationsEnable.removePreference(installUnsignedApps);
 			}
 
 			Preference enableAppIcon = findPreference("enable_app_icon");

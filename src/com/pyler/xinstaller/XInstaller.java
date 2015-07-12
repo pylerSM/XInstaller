@@ -88,6 +88,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean autoUpdateGooglePlay;
 	public boolean disableUserApps;
 	public boolean hideAppCrashes;
+	public boolean checkSignaturesInstall;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -747,6 +748,21 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				checkSignatures = prefs.getBoolean(
 						Common.PREF_DISABLE_CHECK_SIGNATURE, false);
+				checkSignaturesInstall = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_SIGNATURE_INSTALL, false);
+				if (isModuleEnabled() && checkSignaturesInstall
+						&& disableCheckSignatures) {
+					int uid = Binder.getCallingUid();
+					String caller = AndroidAppHelper.currentPackageName();
+					if (checkSignaturesInstall
+							&& ((Common.PACKAGEINSTALLER_PKG.equals(caller)
+									|| uid == Common.ROOT_UID
+									|| uid == Common.SYSTEM_UID || uid == Common.SHELL_UID))) {
+						param.setResult(PackageManager.SIGNATURE_MATCH);
+						return;
+					}
+				}
+
 				if (isModuleEnabled() && checkSignatures
 						&& disableCheckSignatures) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);
@@ -1023,12 +1039,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 				autoUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_UNINSTALL, false);
 				if (isModuleEnabled() && autoUninstall) {
-					if (!Common.LOLLIPOP_NEWER) {
-						Button mOk = (Button) XposedHelpers.getObjectField(
-								param.thisObject, "mOk");
-						if (mOk != null) {
-							mOk.performClick();
-						}
+					Button mOk = (Button) XposedHelpers.getObjectField(
+							param.thisObject, "mOk");
+					if (mOk != null) {
+						mOk.performClick();
 					}
 				}
 			}
@@ -1044,7 +1058,9 @@ public class XInstaller implements IXposedHookZygoteInit,
 				if (isModuleEnabled() && autoCloseUninstall) {
 					Button mOk = (Button) XposedHelpers.getObjectField(
 							param.thisObject, "mOkButton");
-					mOk.performClick();
+					if (mOk != null) {
+						mOk.performClick();
+					}
 				}
 			}
 
@@ -1081,13 +1097,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 				if (isModuleEnabled() && autoLaunchInstall) {
-					if (installedApp) {
+					if (installedApp && mLaunch != null) {
 						mLaunch.performClick();
 					}
 				}
 
 				if (isModuleEnabled() && autoCloseInstall) {
-					if (installedApp) {
+					if (installedApp && mDone != null) {
 						mDone.performClick();
 					}
 				}
@@ -1201,9 +1217,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedBridge.hookAllMethods(jarVerifierClass, "verify",
 					verifyJarHook);
 
-			// 4.0 and newer
-			XposedBridge.hookAllMethods(packageParserClass,
-					"collectCertificates", installUnsignedAppsHook);
+			if (!Common.LOLLIPOP_NEWER) {
+				// 4.0 - 4.4
+				XposedBridge.hookAllMethods(packageParserClass,
+						"collectCertificates", installUnsignedAppsHook);
+			}
 
 			if (Common.LOLLIPOP_NEWER) {
 				// 5.0 and newer
@@ -1287,6 +1305,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			// 4.0 and newer
 			XposedBridge.hookAllConstructors(appErrorDialogClass,
 					hideAppCrashesHook);
+
 		}
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			if (Common.LOLLIPOP_MR1_NEWER) {
@@ -1319,10 +1338,17 @@ public class XInstaller implements IXposedHookZygoteInit,
 							autoInstallHook);
 
 			if (Common.LOLLIPOP_NEWER) {
-				// 5.0 and newer
-				XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
-						lpparam.classLoader, "showConfirmationDialog",
-						autoUninstallHook);
+				try {
+					// 5.0 and newer
+					XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
+							lpparam.classLoader, "showConfirmationDialog",
+							autoUninstallHook);
+				} catch (NoSuchMethodError nsme) {
+					// Samsung 5.0
+					XposedBridge.hookAllMethods(XposedHelpers.findClass(
+							Common.UNINSTALLERACTIVITY, lpparam.classLoader),
+							"onCreate", autoUninstallHook);
+				}
 			} else {
 				// 4.0 and newer
 				XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
@@ -1334,6 +1360,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS + "$1",
 					lpparam.classLoader, "handleMessage", Message.class,
 					autoCloseInstallHook);
+
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS,
 					lpparam.classLoader, "initView", autoHideInstallHook);
@@ -1373,6 +1400,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 					lpparam.classLoader, "refreshSizeInfo",
 					autoEnableClearButtonsHook);
+
 			// 5.0 and newer
 			if (Common.LOLLIPOP_NEWER) {
 				XposedBridge.hookAllMethods(XposedHelpers.findClass(
@@ -1411,16 +1439,20 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (Common.GOOGLEPLAY_PKG.equals(lpparam.packageName)) {
-			// 4.0 and newer
-			XposedHelpers.findAndHookMethod(Common.PACKAGEMANAGERREPOSITORY,
-					lpparam.classLoader, "computeCertificateHashes",
-					PackageInfo.class, computeCertificateHashesHook);
+			if (!Common.LOLLIPOP_NEWER) {
+				// 4.0 - 4.4
+				XposedHelpers.findAndHookMethod(
+						Common.PACKAGEMANAGERREPOSITORY, lpparam.classLoader,
+						"computeCertificateHashes", PackageInfo.class,
+						computeCertificateHashesHook);
+			}
 
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.SELFUPDATESCHEDULER,
 					lpparam.classLoader, "checkForSelfUpdate", int.class,
 					String.class, autoUpdateGooglePlayHook);
 		}
+
 		if (isModuleEnabled() && changeDevicePropertiesEnabled()) {
 			changeDeviceProperties();
 		}

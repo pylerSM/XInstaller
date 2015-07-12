@@ -69,6 +69,7 @@ public class Common {
 	public static final String PREF_DISABLE_AUTO_UPDATE_GOOGLE_PLAY = "disable_auto_update_google_play";
 	public static final String PREF_ENABLE_DISABLE_USER_APPS = "enable_disable_user_apps";
 	public static final String PREF_ENABLE_HIDE_APP_CRASHES = "enable_hide_app_crashes";
+	public static final String PREF_DISABLE_CHECK_SIGNATURE_INSTALL = "disable_check_signatures_install";
 
 	public static final String PREF_DEVICE_MODEL = "device_model";
 	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";
@@ -102,6 +103,7 @@ public class Common {
 	public static final int SDK = Build.VERSION.SDK_INT;
 	public static final int LATEST_ANDROID_RELEASE = Build.VERSION_CODES.LOLLIPOP_MR1;
 	public static final String EMPTY_STRING = "";
+	public static final String XINSTALLER_PKG = PACKAGE_NAME;
 	public static final String ANDROID_PKG = "android";
 	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
@@ -149,5 +151,6 @@ public class Common {
 	public static final int DEBUG_ENABLE_DEBUGGER = 0x1;
 	public static final int ROOT_UID = 0;
 	public static final int SYSTEM_UID = 1000;
+	public static final int SHELL_UID = 2000;
 	public static final int INSTALL_SUCCEEDED = 1;
 }
