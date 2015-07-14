@@ -88,7 +88,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean autoUpdateGooglePlay;
 	public boolean disableUserApps;
 	public boolean hideAppCrashes;
-	public boolean checkSignaturesInstall;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -748,21 +747,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				checkSignatures = prefs.getBoolean(
 						Common.PREF_DISABLE_CHECK_SIGNATURE, false);
-				checkSignaturesInstall = prefs.getBoolean(
-						Common.PREF_DISABLE_CHECK_SIGNATURE_INSTALL, false);
-				if (isModuleEnabled() && checkSignaturesInstall
-						&& disableCheckSignatures) {
-					int uid = Binder.getCallingUid();
-					String caller = AndroidAppHelper.currentPackageName();
-					if (checkSignaturesInstall
-							&& ((Common.PACKAGEINSTALLER_PKG.equals(caller)
-									|| uid == Common.ROOT_UID
-									|| uid == Common.SYSTEM_UID || uid == Common.SHELL_UID))) {
-						param.setResult(PackageManager.SIGNATURE_MATCH);
-						return;
-					}
-				}
-
 				if (isModuleEnabled() && checkSignatures
 						&& disableCheckSignatures) {
 					param.setResult(PackageManager.SIGNATURE_MATCH);

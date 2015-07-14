@@ -80,8 +80,8 @@
                 android:title="@string/disable" >
                 <CheckBoxPreference
                     android:defaultValue="false"
-                    android:key="disable_check_signatures_install"
-                    android:title="@string/check_signatures_install" />
+                    android:key="disable_check_signatures"
+                    android:title="@string/check_signatures" />
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_check_signatures_fdroid"
@@ -263,10 +263,6 @@
                     android:defaultValue="false"
                     android:key="disable_check_permissions"
                     android:title="@string/check_permissions" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_check_signatures"
-                    android:title="@string/check_signatures" />
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="disable_verify_jar"
