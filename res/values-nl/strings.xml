@@ -70,4 +70,10 @@
   <string name="preferences_backed_up">Backup succesvol gemaakt</string>
   <string name="preferences_restored">Succesvol hersteld</string>
   <string name="preferences_reset">Succesvol gereset</string>
+  <string name="change">Verander</string>
+  <string name="device_model">Model</string>
+  <string name="device_tags">Toestel tags</string>
+  <string name="device_board">Board</string>
+  <string name="device_product">Toestel product</string>
+  <string name="backup_all_apps">Alle apps backuppen</string>
 </resources>

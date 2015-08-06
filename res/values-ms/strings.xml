@@ -80,4 +80,6 @@
   <string name="device_hardware">Perkakasan</string>
   <string name="change_device_properties">Mengubah sifat-sifat peranti</string>
   <string name="backup_all_apps">Menyandarkan semua aplikasi</string>
+  <string name="open_app_ops">Membuka Operasi Apl</string>
+  <string name="auto_update_google_play">Auto mengemaskini Google Play</string>
 </resources>

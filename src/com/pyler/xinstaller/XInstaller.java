@@ -1201,8 +1201,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedBridge.hookAllMethods(jarVerifierClass, "verify",
 					verifyJarHook);
 
-			if (!Common.LOLLIPOP_NEWER) {
-				// 4.0 - 4.4
+			if (!Common.KITKAT_NEWER) {
+				// 4.0 - 4.3
 				XposedBridge.hookAllMethods(packageParserClass,
 						"collectCertificates", installUnsignedAppsHook);
 			}
@@ -1423,8 +1423,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 		}
 
 		if (Common.GOOGLEPLAY_PKG.equals(lpparam.packageName)) {
-			if (!Common.LOLLIPOP_NEWER) {
-				// 4.0 - 4.4
+			if (!Common.KITKAT_NEWER) {
+				// 4.0 - 4.3
 				XposedHelpers.findAndHookMethod(
 						Common.PACKAGEMANAGERREPOSITORY, lpparam.classLoader,
 						"computeCertificateHashes", PackageInfo.class,
