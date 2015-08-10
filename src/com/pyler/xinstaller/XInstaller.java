@@ -1064,7 +1064,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_DELETE_APK_FILE_INSTALL, false);
 				openAppOps = prefs.getBoolean(Common.PREF_ENABLE_OPEN_APP_OPS,
 						false);
-				;
 				mContext = AndroidAppHelper.currentApplication();
 				Button mDone = (Button) XposedHelpers.getObjectField(
 						XposedHelpers.getSurroundingThis(param.thisObject),
@@ -1089,6 +1088,15 @@ public class XInstaller implements IXposedHookZygoteInit,
 				if (isModuleEnabled() && autoCloseInstall) {
 					if (installedApp && mDone != null) {
 						mDone.performClick();
+						String appInstalledText = "";
+						Resources resources = mContext.getResources();
+						appInstalledText = (String) resources.getText(resources
+								.getIdentifier("install_done", "string",
+										Common.PACKAGEINSTALLER_PKG));
+						if (!appInstalledText.isEmpty()) {
+							Toast.makeText(mContext,
+									appInstalledText, Toast.LENGTH_LONG).show();
+						}
 					}
 				}
 
