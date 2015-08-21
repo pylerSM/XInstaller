@@ -82,7 +82,6 @@ public class Utils extends BroadcastReceiver {
 				copyFile(src, dst);
 			}
 		} catch (Exception e) {
-			Toast.makeText(ctx, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 

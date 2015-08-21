@@ -70,4 +70,5 @@
   <string name="preferences_backed_up">Respaldado con éxito</string>
   <string name="preferences_restored">Restaurado con éxito</string>
   <string name="preferences_reset">Reiniciado con éxito</string>
+  <string name="device_properties">Propiedades del dispositivo</string>
 </resources>

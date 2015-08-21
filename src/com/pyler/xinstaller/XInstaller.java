@@ -1,6 +1,5 @@
 package com.pyler.xinstaller;
 
-import java.io.File;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Hashtable;
@@ -815,19 +814,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 				if (isModuleEnabled() && backupApkFiles) {
-					String apkFile;
-					if (Common.LOLLIPOP_NEWER && isInstallStage) {
-						File tempApk = (File) param.args[1];
-						apkFile = tempApk.getPath();
-					} else {
+					if (!isInstallStage) {
+						String apkFile = null;
 						if (Common.LOLLIPOP_NEWER) {
 							apkFile = (String) param.args[0];
 						} else {
 							Uri packageUri = (Uri) param.args[0];
 							apkFile = packageUri.getPath();
 						}
+						if (apkFile != null) {
+							backupApkFile(apkFile);
+						}
 					}
-					backupApkFile(apkFile);
 				}
 
 				if (isModuleEnabled() && installBackground) {
@@ -1094,8 +1092,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 								.getIdentifier("install_done", "string",
 										Common.PACKAGEINSTALLER_PKG));
 						if (!appInstalledText.isEmpty()) {
-							Toast.makeText(mContext,
-									appInstalledText, Toast.LENGTH_LONG).show();
+							Toast.makeText(mContext, appInstalledText,
+									Toast.LENGTH_LONG).show();
 						}
 					}
 				}
