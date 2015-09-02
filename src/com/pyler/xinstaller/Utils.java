@@ -11,7 +11,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import com.pyler.xinstaller.R;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +38,7 @@ public class Utils extends BroadcastReceiver {
 		ctx = context;
 		resources = ctx.getResources();
 		String action = intent.getAction();
+
 		Bundle extras = intent.getExtras();
 		boolean hasExtras = extras != null;
 		if (Common.ACTION_BACKUP_APK_FILE.equals(action)) {
@@ -62,6 +62,8 @@ public class Utils extends BroadcastReceiver {
 			restorePreferences();
 		} else if (Common.ACTION_RESET_PREFERENCES.equals(action)) {
 			resetPreferences();
+		} else if (Common.ACTION_CONFIRM_CHECK_SIGNATURE.equals(action)) {
+			confirmCheckSignatures();
 		}
 	}
 
@@ -223,5 +225,12 @@ public class Utils extends BroadcastReceiver {
 
 		Toast.makeText(ctx, resources.getString(R.string.preferences_reset),
 				Toast.LENGTH_LONG).show();
+	}
+
+	public void confirmCheckSignatures() {
+		Intent openConfirmCheckSignatures = new Intent(ctx,
+				ConfirmCheckSignatures.class);
+		openConfirmCheckSignatures.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		ctx.startActivity(openConfirmCheckSignatures);
 	}
 }

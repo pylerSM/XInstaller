@@ -63,13 +63,11 @@ public class Preferences extends Activity {
 					Common.PREF_ENABLE_EXPERT_MODE, false);
 
 			PreferenceCategory installationsEnable = (PreferenceCategory) findPreference("installations_enable");
-			PreferenceCategory miscEnable = (PreferenceCategory) findPreference("misc_enable");
 			PreferenceCategory miscDisable = (PreferenceCategory) findPreference("misc_disable");
 			PreferenceCategory about = (PreferenceCategory) findPreference("about");
 
 			Preference installUnsignedApps = findPreference(Common.PREF_ENABLE_INSTALL_UNSIGNED_APP);
 			Preference installOnExternal = findPreference(Common.PREF_ENABLE_INSTALL_EXTERNAL_STORAGE);
-			Preference debugApps = findPreference(Common.PREF_ENABLE_DEBUG_APP);
 			Preference checkPermissions = findPreference(Common.PREF_DISABLE_CHECK_PERMISSION);
 			Preference verifyJar = findPreference(Common.PREF_DISABLE_VERIFY_JAR);
 			Preference verifySignature = findPreference(Common.PREF_DISABLE_VERIFY_SIGNATURE);
@@ -82,7 +80,6 @@ public class Preferences extends Activity {
 			if (!isExpertModeEnabled) {
 				installationsEnable.removePreference(installUnsignedApps);
 				installationsEnable.removePreference(installOnExternal);
-				miscEnable.removePreference(debugApps);
 				miscDisable.removePreference(checkPermissions);
 				miscDisable.removePreference(verifyJar);
 				miscDisable.removePreference(verifySignature);

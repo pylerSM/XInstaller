@@ -74,6 +74,10 @@
                     android:defaultValue="false"
                     android:key="enable_open_app_ops"
                     android:title="@string/open_app_ops" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="enable_confirm_check_signatures"
+                    android:title="@string/confirm_check_signatures" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="installations_disable"

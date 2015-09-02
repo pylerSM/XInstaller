@@ -87,6 +87,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 	public boolean autoUpdateGooglePlay;
 	public boolean disableUserApps;
 	public boolean hideAppCrashes;
+	public boolean confirmCheckSignatures;
 	public XC_MethodHook checkSignaturesHook;
 	public XC_MethodHook deletePackageHook;
 	public XC_MethodHook installPackageHook;
@@ -596,9 +597,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				int id = 5;
 				int flags = (Integer) param.args[id];
-				if (isModuleEnabled() && isExpertModeEnabled()
-
-				&& debugApps) {
+				if (isModuleEnabled() && debugApps) {
 					if ((flags & Common.DEBUG_ENABLE_DEBUGGER) == 0) {
 						flags |= Common.DEBUG_ENABLE_DEBUGGER;
 					}
@@ -962,9 +961,27 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				showVersions = prefs.getBoolean(
 						Common.PREF_ENABLE_SHOW_VERSION, false);
+				checkSignatures = prefs.getBoolean(
+						Common.PREF_DISABLE_CHECK_SIGNATURE, false);
+				confirmCheckSignatures = prefs.getBoolean(
+						Common.PREF_ENABLE_CONFIRM_CHECK_SIGNATURE, false);
 				mContext = AndroidAppHelper.currentApplication();
 				Button mOk = (Button) XposedHelpers.getObjectField(
 						param.thisObject, "mOk");
+				PackageManager mPm = mContext.getPackageManager();
+				PackageInfo mPkgInfo = (PackageInfo) XposedHelpers
+						.getObjectField(param.thisObject, "mPkgInfo");
+				Resources res = getXInstallerContext().getResources();
+
+				if (isModuleEnabled() && confirmCheckSignatures
+						&& !checkSignatures) {
+					Intent confirmSignatureCheck = new Intent(
+							Common.ACTION_CONFIRM_CHECK_SIGNATURE);
+					confirmSignatureCheck.setPackage(Common.PACKAGE_NAME);
+					getXInstallerContext().sendBroadcast(confirmSignatureCheck);
+
+				}
+
 				if (isModuleEnabled() && autoInstall) {
 					XposedHelpers.setObjectField(param.thisObject,
 							"mScrollView", null);
@@ -974,15 +991,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
 				if (isModuleEnabled() && showVersions) {
-					Resources res = getXInstallerContext().getResources();
-					PackageManager pm = mContext.getPackageManager();
-					PackageInfo mPkgInfo = (PackageInfo) XposedHelpers
-							.getObjectField(param.thisObject, "mPkgInfo");
 					String packageName = mPkgInfo.packageName;
 					String versionInfo = res.getString(R.string.new_version)
 							+ ": " + mPkgInfo.versionName;
 					try {
-						PackageInfo pi = pm.getPackageInfo(packageName, 0);
+						PackageInfo pi = mPm.getPackageInfo(packageName, 0);
 						String currentVersion = pi.versionName;
 						versionInfo += "\n"
 								+ res.getString(R.string.current_version)

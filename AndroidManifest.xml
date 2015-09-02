@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="472"
-    android:versionName="4.72" >
+    android:versionCode="475"
+    android:versionName="4.75" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -53,8 +53,14 @@
                 <action android:name="xinstaller.intent.action.BACKUP_PREFERENCES" />
                 <action android:name="xinstaller.intent.action.RESTORE_PREFERENCES" />
                 <action android:name="xinstaller.intent.action.RESET_PREFERENCES" />
+                <action android:name="xinstaller.intent.action.CONFIRM_CHECK_SIGNATURE" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".ConfirmCheckSignatures"
+            android:theme="@android:style/Theme.Translucent" >
+        </activity>
     </application>
 
 </manifest>
