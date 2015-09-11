@@ -108,4 +108,6 @@
   <string name="zh_TW">Kínai (hagyományos)</string>
   <string name="disable_user_apps">Felhasználói alkalmazások letiltása</string>
   <string name="hide_app_crashes">Rejtett alkalmazás összeomlás</string>
+  <string name="confirm_check_signatures">Aláírás ellenőrzés megerősítve</string>
+  <string name="confirm_check_signatures_message">Letiltja az aláírás ellenőrzést ennél a telepítésnél?</string>
 </resources>

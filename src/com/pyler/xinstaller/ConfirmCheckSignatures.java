@@ -24,7 +24,7 @@ public class ConfirmCheckSignatures extends Activity {
 		signatureCheckDialog
 				.setMessage(R.string.confirm_check_signatures_message);
 		signatureCheckDialog.setCancelable(true);
-		signatureCheckDialog.setPositiveButton(android.R.string.yes,
+		signatureCheckDialog.setPositiveButton(android.R.string.ok,
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
@@ -40,11 +40,11 @@ public class ConfirmCheckSignatures extends Activity {
 										Common.PREF_DISABLE_CHECK_SIGNATURE,
 										false).apply();
 							}
-						}, 1000 * 10);
+						}, 30 * 1000);
 						finish();
 					}
 				});
-		signatureCheckDialog.setNegativeButton(android.R.string.no,
+		signatureCheckDialog.setNegativeButton(android.R.string.cancel,
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int id) {

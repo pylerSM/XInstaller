@@ -108,4 +108,6 @@
   <string name="zh_TW">Tradiční čínština</string>
   <string name="disable_user_apps">Zakázání použivatelských aplikací</string>
   <string name="hide_app_crashes">Skrýt pády aplikací</string>
+  <string name="confirm_check_signatures">Potvrzování kontroly podpisů</string>
+  <string name="confirm_check_signatures_message">Zakázat kontrolu podpisů pro tuto instalaci?</string>
 </resources>

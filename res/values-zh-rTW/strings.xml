@@ -80,7 +80,7 @@
   <string name="device_hardware">硬體設備</string>
   <string name="change_device_properties">更改裝置詳情</string>
   <string name="backup_all_apps">備份所有應用程式</string>
-  <string name="open_app_ops">開始App授權管理工具</string>
+  <string name="open_app_ops">啟用App授權管理工具</string>
   <string name="auto_update_google_play">Play商店自動更新</string>
   <string name="locale">地區設定</string>
   <string name="system">系統</string>
@@ -108,4 +108,6 @@
   <string name="zh_TW">繁體中文</string>
   <string name="disable_user_apps">停用使用者應用程式</string>
   <string name="hide_app_crashes">隱藏應用程式崩潰</string>
+  <string name="confirm_check_signatures">安裝時詢問是否暫時停用簽名檢查，提醒: 如果已勾選停用簽名檢查者，此選項將無效</string>
+  <string name="confirm_check_signatures_message">請問此次安裝是否暫時停用簽名檢查？</string>
 </resources>
