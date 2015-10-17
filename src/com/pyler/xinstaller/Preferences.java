@@ -39,6 +39,7 @@ public class Preferences extends Activity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+            context = getActivity();
 			activity = getActivity();
 			resources = context.getResources();
 			getPreferenceManager().setSharedPreferencesMode(

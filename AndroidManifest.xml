@@ -24,7 +24,9 @@
             android:name="xposedminversion"
             android:value="30" />
 
-        <activity android:name=".Preferences" >
+        <activity 
+            android:name=".Preferences" 
+            android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -59,7 +61,8 @@
 
         <activity
             android:name=".ConfirmCheckSignatures"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|screenSize" >
         </activity>
     </application>
 
