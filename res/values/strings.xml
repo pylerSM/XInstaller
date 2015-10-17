@@ -55,12 +55,16 @@
     <string name="uninstall_background">Uninstalling in background</string>
     <string name="package_name_copied">Package name was copied to clipboard</string>
     <string name="launch_apps">Launching apps</string>
+    <string name="launch_apps_summary">Click on the app icon.</string>
     <string name="check_duplicated_permissions">Checking duplicated permissions</string>
     <string name="export_apps">Exporting apps</string>
+    <string name="export_apps_summary">Click on the app name.</string>
     <string name="apk_file_exported">APK file was exported</string>
     <string name="open_apps_google_play">Opening apps in Google Play</string>
+    <string name="open_apps_google_play_summary">Long-press the app icon.</string>
     <string name="app_name_copied">App name was copied to clipboard</string>
     <string name="uninstall_system_apps">Uninstalling system apps</string>
+    <string name="uninstall_system_apps_summary">Long-press on the disable button.</string>
     <string name="app_uninstalled">App was uninstalled</string>
     <string name="auto_enable_clear_buttons">Auto enabling clear buttons</string>
     <string name="auto_hide_install">Auto hiding when installing</string>
