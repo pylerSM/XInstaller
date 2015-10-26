@@ -22,14 +22,14 @@
 			android:key="github">
 			<intent
 				android:action="android.intent.action.VIEW"
-				android:data="https://github.com/pyler/xinstaller"/>
+				android:data="https://github.com/pylerSM/xinstaller"/>
 		</PreferenceScreen>
 		<PreferenceScreen
 			android:title="@string/bug_report"
 			android:key="bug_report" >
 			<intent
 				android:action="android.intent.action.VIEW"
-				android:data="https://github.com/pyler/xinstaller/issues"/>
+				android:data="https://github.com/pylerSM/xinstaller/issues"/>
 		</PreferenceScreen>
 		<Preference
 			android:key="app_version"
