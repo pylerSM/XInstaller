@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:key="enable"
+        android:title="@string/enable" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_show_buttons"
+            android:title="@string/show_buttons" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_debug_apps"
+            android:title="@string/debug_apps" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_auto_backup"
+            android:title="@string/auto_backup" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_backup_all_apps"
+            android:title="@string/backup_all_apps" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_hide_app_crashes"
+            android:title="@string/hide_app_crashes" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="disable"
+        android:title="@string/disable" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="disable_check_permissions"
+            android:title="@string/check_permissions" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="disable_verify_jar"
+            android:title="@string/verify_jar" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="disable_verify_signatures"
+            android:title="@string/verify_signatures" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="disable_check_lucky_patcher"
+            android:title="@string/check_lucky_patcher" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="disable_auto_update_google_play"
+            android:title="@string/auto_update_google_play" />
+    </PreferenceCategory>
+</PreferenceScreen>
+ 

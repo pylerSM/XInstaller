@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<Preference
+		android:summary="@string/app_developer"
+		android:title="@string/developer" />
+	<Preference
+		android:key="app_translator"
+		android:summary="@string/app_translator"
+		android:title="@string/translator" />
+	<PreferenceCategory
+		android:title="@string/app"
+		android:key="about_app_category">
+		<PreferenceScreen
+			android:title="@string/xposed"
+			android:key="xposed">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="http://repo.xposed.info/module/com.pyler.xinstaller"/>
+		</PreferenceScreen>
+		<PreferenceScreen
+			android:title="@string/github"
+			android:key="github">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="https://github.com/pyler/xinstaller"/>
+		</PreferenceScreen>
+		<PreferenceScreen
+			android:title="@string/bug_report"
+			android:key="bug_report" >
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="https://github.com/pyler/xinstaller/issues"/>
+		</PreferenceScreen>
+		<Preference
+			android:key="app_version"
+			android:title="@string/version" />
+	</PreferenceCategory>
+</PreferenceScreen>

@@ -1,12 +1,19 @@
 <resources>
-
+	
     <string name="app_description">Various tweaks for Package Installer</string>
     <string name="app_name" translatable="false">XInstaller</string>
     <string name="app_developer" translatable="false">pyler</string>
+	<string name="github" translateable="false">Github</string>
+	<string name="xposed" translateable="false">Xposed</string>
+	<string name="bug_report">Report bug</string>
     <string name="app_translator"></string>
     <string name="app_translator_url"></string>
     <string name="app">App</string>
     <string name="module">Module</string>
+	<string name="xposed_module_not_active">Xposed module not activated.</string>
+	<string name="xposed_module_not_active_subtext">"Did you enable the module and reboot?"</string>
+	<string name="module_disabled_in_settings">XInstaller is disabled in the settings.</string>
+	<string name="module_disabled_in_settings_subtext">Click to enable.</string>
     <string name="app_icon">Launcher icon</string>
     <string name="expert_mode">Expert mode</string>
     <string name="app_settings">Settings</string>

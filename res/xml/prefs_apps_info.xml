@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:key="enable"
+        android:title="@string/enable" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_disable_system_apps"
+            android:title="@string/disable_system_apps" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_show_package_name"
+            android:title="@string/show_package_name" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_launch_apps"
+            android:title="@string/launch_apps"
+            android:summary="@string/launch_apps_summary" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_move_apps"
+            android:title="@string/move_apps" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_export_apps"
+            android:title="@string/export_apps"
+            android:summary="@string/export_apps_summary" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_open_apps_google_play"
+            android:title="@string/open_apps_google_play"
+            android:summary="@string/open_apps_google_play_summary" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_auto_enable_clear_buttons"
+            android:title="@string/auto_enable_clear_buttons" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_uninstall_system_apps"
+            android:title="@string/uninstall_system_apps"
+            android:summary="@string/uninstall_system_apps_summary" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_disable_user_apps"
+            android:title="@string/disable_user_apps" />
+    </PreferenceCategory>
+    <!-- Disabled for now. It looks weird empty.
+    <PreferenceCategory
+    android:key="apps_info_disable"
+    android:title="@string/disable" >
+    </PreferenceCategory>-->
+</PreferenceScreen>

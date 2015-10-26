@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:key="enable"
+        android:title="@string/enable" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_change_device_properties"
+            android:title="@string/change_device_properties" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="device_properties_change"
+        android:title="@string/change" >
+        <EditTextPreference
+            android:key="device_model"
+            android:title="@string/device_model" />
+        <EditTextPreference
+            android:key="device_manufacturer"
+            android:title="@string/device_manufacturer" />
+        <EditTextPreference
+            android:key="device_product"
+            android:title="@string/device_product" />
+        <EditTextPreference
+            android:key="device_board"
+            android:title="@string/device_board" />
+        <EditTextPreference
+            android:key="device_hardware"
+            android:title="@string/device_hardware" />
+        <EditTextPreference
+            android:key="device_tags"
+            android:title="@string/device_tags" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="device_properties_reset"
+        android:title="@string/device_properties" >
+        <Preference
+            android:key="reset_device_properties"
+            android:title="@string/reset" />
+    </PreferenceCategory>
+</PreferenceScreen>

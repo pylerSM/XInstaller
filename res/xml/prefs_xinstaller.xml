@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.pyler.xinstaller.CustomSwitchPreference
+        android:defaultValue="true"
+        android:key="enable_module"
+        android:title="@string/module" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="enable_app_icon"
+        android:title="@string/app_icon" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="enable_expert_mode"
+        android:title="@string/expert_mode" />
+    <ListPreference
+        android:defaultValue="system"
+        android:entries="@array/locales"
+        android:entryValues="@array/locale_codes"
+        android:key="app_locale"
+        android:summary="%s"
+        android:title="@string/locale" />
+    <PreferenceScreen
+        android:key="app_help"
+        android:title="@string/help" />
+    <PreferenceScreen
+        android:key="about"
+        android:title="@string/about" />
+	<PreferenceScreen
+		android:key="backup_restore_preferences"
+		android:title="@string/backup_and_restore"/>
+</PreferenceScreen>
