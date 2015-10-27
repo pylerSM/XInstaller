@@ -1,12 +1,19 @@
 <resources>
-
+	
     <string name="app_description">Various tweaks for Package Installer</string>
     <string name="app_name" translatable="false">XInstaller</string>
     <string name="app_developer" translatable="false">pyler</string>
+	<string name="github" translateable="false">Github</string>
+	<string name="xposed" translateable="false">Xposed</string>
+	<string name="bug_report">Report bug</string>
     <string name="app_translator"></string>
     <string name="app_translator_url"></string>
     <string name="app">App</string>
     <string name="module">Module</string>
+	<string name="xposed_module_not_active">Xposed module not activated.</string>
+	<string name="xposed_module_not_active_subtext">"Did you enable the module and reboot?"</string>
+	<string name="module_disabled_in_settings">XInstaller is disabled in the settings.</string>
+	<string name="module_disabled_in_settings_subtext">Click to enable.</string>
     <string name="app_icon">Launcher icon</string>
     <string name="expert_mode">Expert mode</string>
     <string name="app_settings">Settings</string>
@@ -55,12 +62,16 @@
     <string name="uninstall_background">Uninstalling in background</string>
     <string name="package_name_copied">Package name was copied to clipboard</string>
     <string name="launch_apps">Launching apps</string>
+    <string name="launch_apps_summary">Click on the app icon.</string>
     <string name="check_duplicated_permissions">Checking duplicated permissions</string>
     <string name="export_apps">Exporting apps</string>
+    <string name="export_apps_summary">Click on the app name.</string>
     <string name="apk_file_exported">APK file was exported</string>
     <string name="open_apps_google_play">Opening apps in Google Play</string>
+    <string name="open_apps_google_play_summary">Long-press the app icon.</string>
     <string name="app_name_copied">App name was copied to clipboard</string>
     <string name="uninstall_system_apps">Uninstalling system apps</string>
+    <string name="uninstall_system_apps_summary">Long-press on the disable button.</string>
     <string name="app_uninstalled">App was uninstalled</string>
     <string name="auto_enable_clear_buttons">Auto enabling clear buttons</string>
     <string name="auto_hide_install">Auto hiding when installing</string>

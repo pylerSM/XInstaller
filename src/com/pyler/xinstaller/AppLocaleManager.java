@@ -19,7 +19,7 @@ public class AppLocaleManager {
 	}
 
 	@SuppressLint("NewApi")
-	public void inicialize() {
+	public void initialize() {
 		if (mContext == null) {
 			return;
 		}

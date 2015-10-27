@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceCategory
+		android:key="enable"
+		android:title="@string/enable" >
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_downgrade_apps"
+			android:title="@string/downgrade_apps" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_install_unknown_apps"
+			android:title="@string/install_unknown_apps" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_install_external_storage"
+			android:title="@string/install_external_storage" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_auto_install"
+			android:title="@string/auto_install" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_auto_hide_install"
+			android:title="@string/auto_hide_install" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_auto_close_install"
+			android:title="@string/auto_close_install" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_auto_launch_install"
+			android:title="@string/auto_launch_install" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_backup_apk_files"
+			android:title="@string/backup_apk_files" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_install_unsigned_apps"
+			android:title="@string/install_unsigned_apps" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_show_version"
+			android:title="@string/show_version" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_delete_apk_files_install"
+			android:title="@string/delete_apk_files_install" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_open_app_ops"
+			android:title="@string/open_app_ops" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="enable_confirm_check_signatures"
+			android:title="@string/confirm_check_signatures" />
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:key="disable"
+		android:title="@string/disable" >
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="disable_check_signatures"
+			android:title="@string/check_signatures" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="disable_check_signatures_fdroid"
+			android:title="@string/check_signatures_fdroid" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="disable_forward_lock"
+			android:title="@string/forward_lock" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="disable_verify_apps"
+			android:title="@string/verify_apps" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="disable_check_sdk_version"
+			android:title="@string/check_sdk_version" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="disable_install_background"
+			android:title="@string/install_background" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="disable_check_duplicated_permissions"
+			android:title="@string/check_duplicated_permissions" />
+	</PreferenceCategory>
+</PreferenceScreen>

@@ -1,333 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory
-        android:key="app"
-        android:title="@string/app" >
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="enable_module"
-            android:title="@string/module" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="enable_app_icon"
-            android:title="@string/app_icon" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="enable_expert_mode"
-            android:title="@string/expert_mode" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="preferences"
-        android:title="@string/app_settings" >
-        <PreferenceScreen
-            android:key="installations"
-            android:title="@string/installations" >
-            <PreferenceCategory
-                android:key="installations_enable"
-                android:title="@string/enable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_downgrade_apps"
-                    android:title="@string/downgrade_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_install_unknown_apps"
-                    android:title="@string/install_unknown_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_install_external_storage"
-                    android:title="@string/install_external_storage" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_install"
-                    android:title="@string/auto_install" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_hide_install"
-                    android:title="@string/auto_hide_install" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_close_install"
-                    android:title="@string/auto_close_install" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_launch_install"
-                    android:title="@string/auto_launch_install" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_backup_apk_files"
-                    android:title="@string/backup_apk_files" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_install_unsigned_apps"
-                    android:title="@string/install_unsigned_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_show_version"
-                    android:title="@string/show_version" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_delete_apk_files_install"
-                    android:title="@string/delete_apk_files_install" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_open_app_ops"
-                    android:title="@string/open_app_ops" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_confirm_check_signatures"
-                    android:title="@string/confirm_check_signatures" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="installations_disable"
-                android:title="@string/disable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_check_signatures"
-                    android:title="@string/check_signatures" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_check_signatures_fdroid"
-                    android:title="@string/check_signatures_fdroid" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_forward_lock"
-                    android:title="@string/forward_lock" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_verify_apps"
-                    android:title="@string/verify_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_check_sdk_version"
-                    android:title="@string/check_sdk_version" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_install_background"
-                    android:title="@string/install_background" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_check_duplicated_permissions"
-                    android:title="@string/check_duplicated_permissions" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:key="uninstallations"
-            android:title="@string/uninstallations" >
-            <PreferenceCategory
-                android:key="uninstallations_enable"
-                android:title="@string/enable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_keep_apps_data"
-                    android:title="@string/keep_apps_data" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_uninstall_device_admins"
-                    android:title="@string/uninstall_device_admins" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_uninstall"
-                    android:title="@string/auto_uninstall" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_close_uninstall"
-                    android:title="@string/auto_close_uninstall" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="uninstallations_disable"
-                android:title="@string/disable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_uninstall_background"
-                    android:title="@string/uninstall_background" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:key="apps_info"
-            android:title="@string/apps_info" >
-            <PreferenceCategory
-                android:key="apps_info_enable"
-                android:title="@string/enable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_disable_system_apps"
-                    android:title="@string/disable_system_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_show_package_name"
-                    android:title="@string/show_package_name" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_launch_apps"
-                    android:title="@string/launch_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_move_apps"
-                    android:title="@string/move_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_export_apps"
-                    android:title="@string/export_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_open_apps_google_play"
-                    android:title="@string/open_apps_google_play" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_enable_clear_buttons"
-                    android:title="@string/auto_enable_clear_buttons" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_uninstall_system_apps"
-                    android:title="@string/uninstall_system_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_disable_user_apps"
-                    android:title="@string/disable_user_apps" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="apps_info_disable"
-                android:title="@string/disable" >
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:key="device_properties"
-            android:title="@string/device_properties" >
-            <PreferenceCategory
-                android:key="device_properties_enable"
-                android:title="@string/enable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_change_device_properties"
-                    android:title="@string/change_device_properties" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="device_properties_change"
-                android:title="@string/change" >
-                <EditTextPreference
-                    android:key="device_model"
-                    android:title="@string/device_model" />
-                <EditTextPreference
-                    android:key="device_manufacturer"
-                    android:title="@string/device_manufacturer" />
-                <EditTextPreference
-                    android:key="device_product"
-                    android:title="@string/device_product" />
-                <EditTextPreference
-                    android:key="device_board"
-                    android:title="@string/device_board" />
-                <EditTextPreference
-                    android:key="device_hardware"
-                    android:title="@string/device_hardware" />
-                <EditTextPreference
-                    android:key="device_tags"
-                    android:title="@string/device_tags" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="device_properties_reset"
-                android:title="@string/device_properties" >
-                <Preference
-                    android:key="reset_device_properties"
-                    android:title="@string/reset" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:key="misc"
-            android:title="@string/misc" >
-            <PreferenceCategory
-                android:key="misc_enable"
-                android:title="@string/enable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_show_buttons"
-                    android:title="@string/show_buttons" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_debug_apps"
-                    android:title="@string/debug_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_auto_backup"
-                    android:title="@string/auto_backup" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_backup_all_apps"
-                    android:title="@string/backup_all_apps" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_hide_app_crashes"
-                    android:title="@string/hide_app_crashes" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="misc_disable"
-                android:title="@string/disable" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_check_permissions"
-                    android:title="@string/check_permissions" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_verify_jar"
-                    android:title="@string/verify_jar" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_verify_signatures"
-                    android:title="@string/verify_signatures" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_check_lucky_patcher"
-                    android:title="@string/check_lucky_patcher" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="disable_auto_update_google_play"
-                    android:title="@string/auto_update_google_play" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:key="backup_restore_preferences"
-            android:title="@string/backup_and_restore" >
-            <PreferenceCategory
-                android:key="backup_restore"
-                android:title="@string/app_settings" >
-                <Preference
-                    android:key="backup_preferences"
-                    android:title="@string/backup" />
-                <Preference
-                    android:key="restore_preferences"
-                    android:title="@string/restore" />
-                <Preference
-                    android:key="reset_preferences"
-                    android:title="@string/reset" />
-            </PreferenceCategory>
-        </PreferenceScreen>
+ 	<header
+		android:fragment="com.pyler.xinstaller.Preferences$Settings"
+		android:title="@string/app_name">
+        <extra
+			android:name="settings"
+            android:value="xinstaller"/>
+    </header>
 
-        <ListPreference
-            android:defaultValue="system"
-            android:entries="@array/locales"
-            android:entryValues="@array/locale_codes"
-            android:key="app_locale"
-            android:summary="%s"
-            android:title="@string/locale" />
+    <header
+        android:fragment="com.pyler.xinstaller.Preferences$Settings"
+        android:title="@string/installations">
+        <extra
+            android:name="settings"
+            android:value="installations"/>
+    </header>
 
-        <Preference
-            android:key="app_help"
-            android:title="@string/help" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="about"
-        android:title="@string/about" >
-        <Preference
-            android:summary="@string/app_developer"
-            android:title="@string/developer" />
-        <Preference
-            android:key="app_translator"
-            android:summary="@string/app_translator"
-            android:title="@string/translator" />
-        <Preference
-            android:key="app_version"
-            android:title="@string/version" />
-    </PreferenceCategory>
+    <header
+        android:fragment="com.pyler.xinstaller.Preferences$Settings"
+        android:title="@string/uninstallations">
+        <extra
+            android:name="settings"
+            android:value="uninstallations"/>
+    </header>
+    
+    <header
+        android:fragment="com.pyler.xinstaller.Preferences$Settings"
+        android:title="@string/apps_info">
+        <extra
+            android:name="settings"
+            android:value="apps_info"/>
+    </header>
 
-</PreferenceScreen>
+    <header
+        android:fragment="com.pyler.xinstaller.Preferences$Settings"
+        android:title="@string/device_properties" >
+        <extra
+            android:name="settings"
+            android:value="device_properties"/>
+    </header>
+    <header
+        android:fragment="com.pyler.xinstaller.Preferences$Settings"
+        android:title="@string/misc">
+        <extra
+            android:name="settings"
+            android:value="misc"/>
+    </header>
+</preference-headers>
