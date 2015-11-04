@@ -1411,11 +1411,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 						"isPlatformSigned", platformSignatureHook);
 			}
 
-			// 4.0 and newer
-			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
-					lpparam.classLoader, "initUninstallButtons",
-					initUninstallButtonsHook);
-
+			// 4.2 and newer
+			if (Common.JB_MR1_NEWER) {
+				XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+						lpparam.classLoader, "initUninstallButtons",
+						initUninstallButtonsHook);
+			}
+			
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 					lpparam.classLoader, "onClick", View.class,
