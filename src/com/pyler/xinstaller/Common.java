@@ -26,13 +26,12 @@ public class Common {
 	public static final int PREF_CATEGORY_XINSTALLER = R.xml.prefs_xinstaller;
 	public static final int PREF_CATEGORY_INSTALLATIONS = R.xml.prefs_installations;
 	public static final int PREF_CATEGORY_UNINSTALLATIONS = R.xml.prefs_uninstallations;
-    public static final int PREF_CATEGORY_APPS_INFO = R.xml.prefs_apps_info;
+	public static final int PREF_CATEGORY_APPS_INFO = R.xml.prefs_apps_info;
 	public static final int PREF_CATEGORY_DEVICE_PROPERTIES = R.xml.prefs_device_properties;
 	public static final int PREF_CATEGORY_MISC = R.xml.prefs_misc;
 	public static final int PREF_CATEGORY_ABOUT = R.xml.prefs_about;
 	public static final int PREF_CATEGORY_BACKUP_RESTORE = R.xml.prefs_backup_restore;
-	
-	
+
 	public static final String PREF_APP_HELP = "app_help";
 	public static final String PREF_ENABLE_APP_ICON = "enable_app_icon";
 	public static final String PREF_APP_TRANSLATOR = "app_translator";
@@ -40,11 +39,11 @@ public class Common {
 	public static final String PREF_APP_VERSION = "app_version";
 	public static final String PREF_APP_ABOUT = "about";
 	public static final String PREF_APP_BACKUP_RESTORE = "backup_restore_preferences";
-	
+
 	public static final String PREF_BACKUP_PREFERENCES = "backup_preferences";
 	public static final String PREF_RESTORE_PREFERENCES = "restore_preferences";
 	public static final String PREF_RESET_PREFERENCES = "reset_preferences";
-	
+
 	public static final String PREF_ENABLE = "enable";
 	public static final String PREF_DISABLE = "disable";
 	public static final String PREF_ENABLE_MODULE = "enable_module";

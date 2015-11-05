@@ -267,7 +267,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 		autoUpdateGooglePlayHook = new XC_MethodHook() {
 			@Override
-			protected void afterHookedMethod(MethodHookParam param)
+			protected void beforeHookedMethod(MethodHookParam param)
 					throws Throwable {
 				reloadPreferences();
 				autoUpdateGooglePlay = prefs.getBoolean(
@@ -1417,7 +1417,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						lpparam.classLoader, "initUninstallButtons",
 						initUninstallButtonsHook);
 			}
-			
+
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 					lpparam.classLoader, "onClick", View.class,
@@ -1456,6 +1456,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.SELFUPDATESCHEDULER,
 					lpparam.classLoader, "checkForSelfUpdate", int.class,
 					String.class, autoUpdateGooglePlayHook);
+		}
+
+		if (Common.XINSTALLER_PKG.equals(lpparam.packageName)) {
+			XposedHelpers.findAndHookMethod(Common.XINSTALLER_PKG
+					+ ".Preferences", lpparam.classLoader, "isModuleEnabled",
+					XC_MethodReplacement.returnConstant(true));
 		}
 
 		if (isModuleEnabled() && changeDevicePropertiesEnabled()) {

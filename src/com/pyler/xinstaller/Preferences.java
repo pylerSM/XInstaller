@@ -1,5 +1,8 @@
 package com.pyler.xinstaller;
 
+import java.util.List;
+
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,7 +29,6 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,8 +37,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.List;
 
 public class Preferences extends PreferenceActivity {
 	public static Context context;
@@ -50,10 +50,14 @@ public class Preferences extends PreferenceActivity {
 	public static String url = "file:///android_asset/Help.html";
 
 	/**
-	 * We let Xposed toggle this. {@see com.pyler.xinstaller.ModuleEnabledChecker}
+	 * We let Xposed toggle this. {@see com.pyler.xinstaller.XInstaller}
 	 */
-	public Boolean isModuleEnabled() {
-		return new Boolean(false);
+	public Boolean isModuleEnabled2() {
+		return Boolean.valueOf(false);
+	}
+
+	public boolean isModuleEnabled() {
+		return false;
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class Preferences extends PreferenceActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		boolean isModuleEnabled = isModuleEnabled().booleanValue();
+		boolean isModuleEnabled = isModuleEnabled()/* .booleanValue() */; // TODO
 		boolean isEnabledSettings = isEnabledInSettings();
 
 		if (!isModuleEnabled || !isEnabledSettings)
@@ -76,10 +80,12 @@ public class Preferences extends PreferenceActivity {
 	/**
 	 * Shows an error at the bottom of the screen.
 	 */
+	@SuppressLint("InflateParams")
 	private void showError(boolean module, boolean settings) {
 
 		LayoutInflater inflater = getLayoutInflater();
-		final View view = inflater.inflate(R.layout.disabled_footer, null, false);
+		final View view = inflater.inflate(R.layout.disabled_footer, null,
+				false);
 		TextView tv1 = (TextView) view.findViewById(android.R.id.text1);
 		TextView tv2 = (TextView) view.findViewById(android.R.id.text2);
 		tv1.setSingleLine(false);
@@ -92,39 +98,37 @@ public class Preferences extends PreferenceActivity {
 			tv2.setText(R.string.module_disabled_in_settings_subtext);
 			view.setOnClickListener(new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						getPreferenceManager()
-								.getDefaultSharedPreferences(Preferences.this)
-								.edit()
-								.putBoolean(Common.PREF_ENABLE_MODULE, true)
-								.apply();
-						view.setVisibility(View.GONE);
-					}
+				@Override
+				public void onClick(View v) {
+					PreferenceManager
+							.getDefaultSharedPreferences(Preferences.this)
+							.edit().putBoolean(Common.PREF_ENABLE_MODULE, true)
+							.apply();
+					view.setVisibility(View.GONE);
+				}
 
+			});
+		} else
+			return;
 
-				});
-		} else return;
-		
 		setListFooter(view);
 	}
 
 	public boolean isEnabledInSettings() {
-		boolean isEnabledInSettings = getPreferenceManager()
-			.getDefaultSharedPreferences(this)
-			.getBoolean(Common.PREF_ENABLE_MODULE, true);
+		boolean isEnabledInSettings = PreferenceManager
+				.getDefaultSharedPreferences(this).getBoolean(
+						Common.PREF_ENABLE_MODULE, true);
 
 		return isEnabledInSettings;
 	}
 
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// We remove the help button in the help menu. Kinda silly if we don't.
-		HelpFragmentPhone helpFragment = (HelpFragmentPhone) 
-			getFragmentManager().findFragmentByTag("help");
+		HelpFragmentPhone helpFragment = (HelpFragmentPhone) getFragmentManager()
+				.findFragmentByTag("help");
 
-		if (helpFragment == null || !helpFragment.isVisible()) 
+		if (helpFragment == null || !helpFragment.isVisible())
 			getMenuInflater().inflate(R.menu.menu, menu);
 
 		return true;
@@ -133,12 +137,12 @@ public class Preferences extends PreferenceActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_help: 
-				showHelpFrag();
-				break;
-			case android.R.id.home:
-				onBackPressed();
-				break;
+		case R.id.action_help:
+			showHelpFrag();
+			break;
+		case android.R.id.home:
+			onBackPressed();
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -165,15 +169,16 @@ public class Preferences extends PreferenceActivity {
 		} else {
 			helpFragPhone = new HelpFragmentPhone();
 			ft.addToBackStack(null)
-				.replace(android.R.id.content, helpFragPhone, "help")
-				.commit();
+					.replace(android.R.id.content, helpFragPhone, "help")
+					.commit();
 		}
 	}
 
 	/**
 	 * The PreferenceFragment with the settings in it.
 	 */
-	public static class Settings extends PreferenceFragment implements OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
+	public static class Settings extends PreferenceFragment implements
+			OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
 
 		/**
 		 * Empty constructor.
@@ -199,7 +204,7 @@ public class Preferences extends PreferenceActivity {
 
 			resources = context.getResources();
 			getPreferenceManager().setSharedPreferencesMode(
-				Context.MODE_WORLD_READABLE);
+					Context.MODE_WORLD_READABLE);
 
 			// If we are on a tablet
 			isLarge = ((PreferenceActivity) activity).onIsMultiPane();
@@ -209,10 +214,10 @@ public class Preferences extends PreferenceActivity {
 				if (!isLarge) {
 					ab.setDisplayHomeAsUpEnabled(true);
 					ab.setDisplayShowHomeEnabled(true);
-				} else 
+				} else
 					ab.setTitle(R.string.app_name);
 			}
-            String whichSettings = getArguments().getString("settings");
+			String whichSettings = getArguments().getString("settings");
 			int prefsType = getPrefsType(whichSettings);
 
 			addPreferencesFromResource(prefsType);
@@ -230,130 +235,149 @@ public class Preferences extends PreferenceActivity {
 
 			int prefsType = getPrefsType(getArguments().getString("settings"));
 			boolean isExpertModeEnabled = prefs.getBoolean(
-				Common.PREF_ENABLE_EXPERT_MODE, false);
+					Common.PREF_ENABLE_EXPERT_MODE, false);
 
 			PreferenceScreen prefScreen = getPreferenceScreen();
 
-			PreferenceCategory prefCatEnable = (PreferenceCategory) prefScreen.findPreference(Common.PREF_ENABLE);
-			PreferenceCategory prefCatDisable = (PreferenceCategory) prefScreen.findPreference(Common.PREF_DISABLE);
+			PreferenceCategory prefCatEnable = (PreferenceCategory) prefScreen
+					.findPreference(Common.PREF_ENABLE);
+			PreferenceCategory prefCatDisable = (PreferenceCategory) prefScreen
+					.findPreference(Common.PREF_DISABLE);
 
-            switch (prefsType) {
-				case Common.PREF_CATEGORY_INSTALLATIONS: {
-					Preference installUnsignedApps = findPreference(Common.PREF_ENABLE_INSTALL_UNSIGNED_APP);
-					if (!isExpertModeEnabled) {
+			switch (prefsType) {
+			case Common.PREF_CATEGORY_INSTALLATIONS: {
+				Preference installUnsignedApps = findPreference(Common.PREF_ENABLE_INSTALL_UNSIGNED_APP);
+				if (!isExpertModeEnabled) {
 
-						Preference installOnExternal = findPreference(Common.PREF_ENABLE_INSTALL_EXTERNAL_STORAGE);
+					Preference installOnExternal = findPreference(Common.PREF_ENABLE_INSTALL_EXTERNAL_STORAGE);
 
-						prefCatEnable.removePreference(installUnsignedApps);
-						prefCatEnable.removePreference(installOnExternal);
-					}
-					if (Common.LOLLIPOP_NEWER) 
-						prefCatEnable.removePreference(installUnsignedApps);
-					
-					} break;
-				case Common.PREF_CATEGORY_MISC:
-					if (!isExpertModeEnabled) {
-						Preference checkPermissions = findPreference(Common.PREF_DISABLE_CHECK_PERMISSION);
-						Preference verifyJar = findPreference(Common.PREF_DISABLE_VERIFY_JAR);
-						Preference verifySignature = findPreference(Common.PREF_DISABLE_VERIFY_SIGNATURE);
-						prefCatEnable.removePreference(checkPermissions);
-						prefCatDisable.removePreference(verifyJar);
-						prefCatDisable.removePreference(verifySignature);
-					} break;
-				case Common.PREF_CATEGORY_XINSTALLER: {
+					prefCatEnable.removePreference(installUnsignedApps);
+					prefCatEnable.removePreference(installOnExternal);
+				}
+				if (Common.LOLLIPOP_NEWER)
+					prefCatEnable.removePreference(installUnsignedApps);
 
-						CustomSwitchPreference enableModule = (CustomSwitchPreference) findPreference(Common.PREF_ENABLE_MODULE);
-						enableModule.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-								/**
-								 * This is separate because OnPreferenceChangeListeners do NOT like SwitchPreferences.
-								 * It could technically be in the normal switch, but it is easier to mark it this way.
-								 */
-								@Override
-								public boolean onPreferenceChange(Preference preference, Object newValue) {     
-									if (((CustomSwitchPreference) preference).isChecked() != (Boolean) newValue) 
-										recreateApp();
-									return true;
-								}
-							});
+			}
+				break;
+			case Common.PREF_CATEGORY_MISC:
+				if (!isExpertModeEnabled) {
+					Preference checkPermissions = findPreference(Common.PREF_DISABLE_CHECK_PERMISSION);
+					Preference verifyJar = findPreference(Common.PREF_DISABLE_VERIFY_JAR);
+					Preference verifySignature = findPreference(Common.PREF_DISABLE_VERIFY_SIGNATURE);
+					prefCatEnable.removePreference(checkPermissions);
+					prefCatDisable.removePreference(verifyJar);
+					prefCatDisable.removePreference(verifySignature);
+				}
+				break;
+			case Common.PREF_CATEGORY_XINSTALLER: {
 
-						Preference enableAppIcon = findPreference(Common.PREF_ENABLE_APP_ICON);
-						enableAppIcon.setOnPreferenceChangeListener(this);
-
-						Preference enableExpertMode = findPreference(Common.PREF_ENABLE_EXPERT_MODE);	
-						enableExpertMode.setOnPreferenceChangeListener(this);
-
-						Preference appLocale = findPreference(Common.PREF_APP_LOCALE);
-						appLocale.setOnPreferenceChangeListener(this);
-
-						Preference appHelp = findPreference(Common.PREF_APP_HELP);
-						appHelp.setOnPreferenceClickListener(this);
-
-						Preference appAbout = findPreference(Common.PREF_APP_ABOUT);
-						appAbout.setOnPreferenceClickListener(this);
-
-						Preference appBackupRestorePreferences = findPreference(Common.PREF_APP_BACKUP_RESTORE);
-						appBackupRestorePreferences.setOnPreferenceClickListener(this);
-					}break;
-				case Common.PREF_CATEGORY_BACKUP_RESTORE: {
-						Preference backupPreferences = findPreference(Common.PREF_BACKUP_PREFERENCES);
-						backupPreferences.setOnPreferenceClickListener(this);
-
-						Preference restorePreferences = findPreference(Common.PREF_RESTORE_PREFERENCES);
-						restorePreferences.setOnPreferenceClickListener(this);
-
-						Preference resetPreferences = findPreference(Common.PREF_RESET_PREFERENCES);
-						resetPreferences.setOnPreferenceClickListener(this);
-
-					} break;
-				case Common.PREF_CATEGORY_ABOUT: {
-						Preference appVersion = findPreference(Common.PREF_APP_VERSION);
-						PackageManager pm = context.getPackageManager();
-
-						try {
-							String versionName = pm.getPackageInfo(
-								context.getPackageName(), 0).versionName;
-							appVersion.setSummary(versionName);
-						}
-						catch (NameNotFoundException e) {}
-						Preference appTranslator = findPreference(Common.PREF_APP_TRANSLATOR);
-						String translator = resources.getString(R.string.app_translator);
-						if (translator.isEmpty()) 
-							prefScreen.removePreference(appTranslator);
-						appTranslator.setOnPreferenceClickListener(this);
-
-
-					} break;
-				case Common.PREF_CATEGORY_DEVICE_PROPERTIES: {
-						Preference resetDeviceProperties = findPreference(Common.PREF_RESET_DEVICE_PROPERTIES);
-						resetDeviceProperties.setOnPreferenceClickListener(this);
-
-						for (String[] property : Common.DEVICE_PROPERTIES) {
-							EditTextPreference devicePropertyPreference = (EditTextPreference) findPreference(property[0]);
-							String propertyValue = prefs.getString(property[0], null);
-							if (propertyValue == null) {
-								devicePropertyPreference.setText(property[1]);
+				CustomSwitchPreference enableModule = (CustomSwitchPreference) findPreference(Common.PREF_ENABLE_MODULE);
+				enableModule
+						.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+							/**
+							 * This is separate because
+							 * OnPreferenceChangeListeners do NOT like
+							 * SwitchPreferences. It could technically be in the
+							 * normal switch, but it is easier to mark it this
+							 * way.
+							 */
+							@Override
+							public boolean onPreferenceChange(
+									Preference preference, Object newValue) {
+								if (((CustomSwitchPreference) preference)
+										.isChecked() != (Boolean) newValue)
+									recreateApp();
+								return true;
 							}
-						}
+						});
+
+				Preference enableAppIcon = findPreference(Common.PREF_ENABLE_APP_ICON);
+				enableAppIcon.setOnPreferenceChangeListener(this);
+
+				Preference enableExpertMode = findPreference(Common.PREF_ENABLE_EXPERT_MODE);
+				enableExpertMode.setOnPreferenceChangeListener(this);
+
+				Preference appLocale = findPreference(Common.PREF_APP_LOCALE);
+				appLocale.setOnPreferenceChangeListener(this);
+
+				Preference appHelp = findPreference(Common.PREF_APP_HELP);
+				appHelp.setOnPreferenceClickListener(this);
+
+				Preference appAbout = findPreference(Common.PREF_APP_ABOUT);
+				appAbout.setOnPreferenceClickListener(this);
+
+				Preference appBackupRestorePreferences = findPreference(Common.PREF_APP_BACKUP_RESTORE);
+				appBackupRestorePreferences.setOnPreferenceClickListener(this);
+			}
+				break;
+			case Common.PREF_CATEGORY_BACKUP_RESTORE: {
+				Preference backupPreferences = findPreference(Common.PREF_BACKUP_PREFERENCES);
+				backupPreferences.setOnPreferenceClickListener(this);
+
+				Preference restorePreferences = findPreference(Common.PREF_RESTORE_PREFERENCES);
+				restorePreferences.setOnPreferenceClickListener(this);
+
+				Preference resetPreferences = findPreference(Common.PREF_RESET_PREFERENCES);
+				resetPreferences.setOnPreferenceClickListener(this);
+
+			}
+				break;
+			case Common.PREF_CATEGORY_ABOUT: {
+				Preference appVersion = findPreference(Common.PREF_APP_VERSION);
+				PackageManager pm = context.getPackageManager();
+
+				try {
+					String versionName = pm.getPackageInfo(
+							context.getPackageName(), 0).versionName;
+					appVersion.setSummary(versionName);
+				} catch (NameNotFoundException e) {
+				}
+				Preference appTranslator = findPreference(Common.PREF_APP_TRANSLATOR);
+				String translator = resources
+						.getString(R.string.app_translator);
+				if (translator.isEmpty())
+					prefScreen.removePreference(appTranslator);
+				appTranslator.setOnPreferenceClickListener(this);
+
+			}
+				break;
+			case Common.PREF_CATEGORY_DEVICE_PROPERTIES: {
+				Preference resetDeviceProperties = findPreference(Common.PREF_RESET_DEVICE_PROPERTIES);
+				resetDeviceProperties.setOnPreferenceClickListener(this);
+
+				for (String[] property : Common.DEVICE_PROPERTIES) {
+					EditTextPreference devicePropertyPreference = (EditTextPreference) findPreference(property[0]);
+					String propertyValue = prefs.getString(property[0], null);
+					if (propertyValue == null) {
+						devicePropertyPreference.setText(property[1]);
 					}
-			}			
+				}
+			}
+			}
 		}
 
 		/**
 		 * Returns the current preference screen name.
 		 * 
-		 * It is actually the R.xml preference file, so it doubles 
-		 * its usage. :)
+		 * It is actually the R.xml preference file, so it doubles its usage. :)
 		 */
 		public static int getPrefsType(String prefsType) {
-			switch (prefsType) {
-				case "xinstaller": return Common.PREF_CATEGORY_XINSTALLER;
-				case "installations": return Common.PREF_CATEGORY_INSTALLATIONS;
-				case "uninstallations": return Common.PREF_CATEGORY_UNINSTALLATIONS;
-				case "apps_info": return Common.PREF_CATEGORY_APPS_INFO;
-				case "misc": return Common.PREF_CATEGORY_MISC;
-				case "device_properties": return Common.PREF_CATEGORY_DEVICE_PROPERTIES;
-				case "backup_restore_preferences": return Common.PREF_CATEGORY_BACKUP_RESTORE;
-				case "about": return Common.PREF_CATEGORY_ABOUT;
+			if ("xinstaller".equals(prefsType)) {
+				return Common.PREF_CATEGORY_XINSTALLER;
+			} else if ("installations".equals(prefsType)) {
+				return Common.PREF_CATEGORY_INSTALLATIONS;
+			} else if ("uninstallations".equals(prefsType)) {
+				return Common.PREF_CATEGORY_UNINSTALLATIONS;
+			} else if ("apps_info".equals(prefsType)) {
+				return Common.PREF_CATEGORY_APPS_INFO;
+			} else if ("misc".equals(prefsType)) {
+				return Common.PREF_CATEGORY_MISC;
+			} else if ("device_properties".equals(prefsType)) {
+				return Common.PREF_CATEGORY_DEVICE_PROPERTIES;
+			} else if ("backup_restore_preferences".equals(prefsType)) {
+				return Common.PREF_CATEGORY_BACKUP_RESTORE;
+			} else if ("about".equals(prefsType)) {
+				return Common.PREF_CATEGORY_ABOUT;
 			}
 			// Oops.
 			return 0;
@@ -367,7 +391,9 @@ public class Preferences extends PreferenceActivity {
 				getActivity().recreate();
 			else {
 				Intent b = new Intent(getActivity(), Preferences.class);
-				b.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				b.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+						| Intent.FLAG_ACTIVITY_CLEAR_TASK
+						| Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(b);
 				getActivity().finish();
 			}
@@ -376,102 +402,90 @@ public class Preferences extends PreferenceActivity {
 		public void switchToNewScreen(Settings settings, Preference preference) {
 			Preferences prefsActivity = (Preferences) getActivity();
 
-			prefsActivity.startPreferencePanel("com.pyler.xinstaller.Preferences$Settings", 
-					settings.getArguments(), 
-					preference.getTitleRes(), 
-					//don't care here.
+			prefsActivity.startPreferencePanel(
+					"com.pyler.xinstaller.Preferences$Settings",
+					settings.getArguments(), preference.getTitleRes(),
+					// don't care here.
 					null, null, 0);
 		}
+
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			switch (preference.getKey()) {
-				case Common.PREF_APP_ABOUT: {
-						Settings settings = Settings.newInstance(Common.PREF_APP_ABOUT);
-						switchToNewScreen(settings, preference);
-						return true;
-					} 
-				case Common.PREF_APP_BACKUP_RESTORE: {
-						Settings settings = Settings.newInstance(Common.PREF_APP_BACKUP_RESTORE);
-						switchToNewScreen(settings, preference);
-						return true;
-					} 
-				case Common.PREF_BACKUP_PREFERENCES: {
-						Intent backupPreferences = new Intent(
-							Common.ACTION_BACKUP_PREFERENCES);
-						backupPreferences.setPackage(Common.PACKAGE_NAME);
-						context.sendBroadcast(backupPreferences);
-						return true;
-					}
-				case Common.PREF_RESTORE_PREFERENCES: {
-						Intent restorePreferences = new Intent(
-							Common.ACTION_RESTORE_PREFERENCES);
-						restorePreferences.setPackage(Common.PACKAGE_NAME);
-						context.sendBroadcast(restorePreferences);
-						return true;
-					}
-				case Common.PREF_RESET_PREFERENCES: {
-						Intent resetPreferences = new Intent(
-							Common.ACTION_RESET_PREFERENCES);
-						resetPreferences.setPackage(Common.PACKAGE_NAME);
-						context.sendBroadcast(resetPreferences);
-						return true;
-					}
-				case Common.PREF_APP_TRANSLATOR: {
-						String translatorUrl = resources
-							.getString(R.string.app_translator_url);
-						if (!translatorUrl.isEmpty()) {
-							Intent openUrl = new Intent(Intent.ACTION_VIEW);
-							openUrl.setData(Uri.parse(translatorUrl));
-							openUrl.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							startActivity(openUrl);
-						}
-						return true;
-					}
-				case Common.PREF_APP_HELP: {
-						((Preferences) getActivity()).showHelpFrag();
-						return true;
-					}
-				case Common.PREF_RESET_DEVICE_PROPERTIES: {
-						SharedPreferences.Editor prefsEditor = prefs.edit();
-						for (String[] property : Common.DEVICE_PROPERTIES) {
-							prefsEditor.remove(property[0]);
-							EditTextPreference devicePropertyPreference = (EditTextPreference) findPreference(property[0]);
-							devicePropertyPreference.setText(property[1]);
-						}
-						prefsEditor.commit();
-						Toast.makeText(
-							context,
-							resources
-							.getString(R.string.preferences_reset),
-							Toast.LENGTH_LONG).show();
-						return true;
-					}	
+			String preferenceKey = preference.getKey();
+			if (Common.PREF_APP_ABOUT.equals(preferenceKey)) {
+				Settings settings = Settings.newInstance(Common.PREF_APP_ABOUT);
+				switchToNewScreen(settings, preference);
+				return true;
+			} else if (Common.PREF_APP_BACKUP_RESTORE.equals(preferenceKey)) {
+				Settings settings = Settings
+						.newInstance(Common.PREF_APP_BACKUP_RESTORE);
+				switchToNewScreen(settings, preference);
+				return true;
+			} else if (Common.PREF_BACKUP_PREFERENCES.equals(preferenceKey)) {
+				Intent backupPreferences = new Intent(
+						Common.ACTION_BACKUP_PREFERENCES);
+				backupPreferences.setPackage(Common.PACKAGE_NAME);
+				context.sendBroadcast(backupPreferences);
+				return true;
+			} else if (Common.PREF_RESTORE_PREFERENCES.equals(preferenceKey)) {
+				Intent restorePreferences = new Intent(
+						Common.ACTION_RESTORE_PREFERENCES);
+				restorePreferences.setPackage(Common.PACKAGE_NAME);
+				context.sendBroadcast(restorePreferences);
+				return true;
+			} else if (Common.PREF_RESET_PREFERENCES.equals(preferenceKey)) {
+				Intent resetPreferences = new Intent(
+						Common.ACTION_RESET_PREFERENCES);
+				resetPreferences.setPackage(Common.PACKAGE_NAME);
+				context.sendBroadcast(resetPreferences);
+				return true;
+			} else if (Common.PREF_APP_TRANSLATOR.equals(preferenceKey)) {
+
+				String translatorUrl = resources
+						.getString(R.string.app_translator_url);
+				if (!translatorUrl.isEmpty()) {
+					Intent openUrl = new Intent(Intent.ACTION_VIEW);
+					openUrl.setData(Uri.parse(translatorUrl));
+					openUrl.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(openUrl);
+				}
+				return true;
+			} else if (Common.PREF_APP_HELP.equals(preferenceKey)) {
+				((Preferences) getActivity()).showHelpFrag();
+				return true;
+			} else if (Common.PREF_RESET_DEVICE_PROPERTIES
+					.equals(preferenceKey)) {
+				SharedPreferences.Editor prefsEditor = prefs.edit();
+				for (String[] property : Common.DEVICE_PROPERTIES) {
+					prefsEditor.remove(property[0]);
+					EditTextPreference devicePropertyPreference = (EditTextPreference) findPreference(property[0]);
+					devicePropertyPreference.setText(property[1]);
+				}
+				prefsEditor.commit();
+				Toast.makeText(context,
+						resources.getString(R.string.preferences_reset),
+						Toast.LENGTH_LONG).show();
+				return true;
 			}
 			return true;
 		}
 
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object newValue) {
-			switch (preference.getKey()) {
-				case Common.PREF_ENABLE_APP_ICON: {
-						PackageManager packageManager = context
-							.getPackageManager();
-						int state = (Boolean) newValue ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-							: PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-						String settings = Common.PACKAGE_NAME + ".Settings";
-						ComponentName alias = new ComponentName(context,
-																settings);
-						packageManager.setComponentEnabledSetting(alias,
-																  state, PackageManager.DONT_KILL_APP);
-						return true;
-					} 
-					// They all do the same thing.
-				case Common.PREF_ENABLE_EXPERT_MODE:
-				case Common.PREF_APP_LOCALE: {
-						recreateApp();
-						return true;
-					}
-
+			String preferenceKey = preference.getKey();
+			if (Common.PREF_ENABLE_APP_ICON.equals(preferenceKey)) {
+				PackageManager packageManager = context.getPackageManager();
+				int state = (Boolean) newValue ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+						: PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+				String settings = Common.PACKAGE_NAME + ".Settings";
+				ComponentName alias = new ComponentName(context, settings);
+				packageManager.setComponentEnabledSetting(alias, state,
+						PackageManager.DONT_KILL_APP);
+				return true;
+			} else if (Common.PREF_ENABLE_EXPERT_MODE.equals(preferenceKey)
+					|| Common.PREF_APP_LOCALE.equals(preferenceKey)) {
+				recreateApp();
+				return true;
 			}
 			return true;
 		}
@@ -500,19 +514,19 @@ public class Preferences extends PreferenceActivity {
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 			dialog = new AlertDialog.Builder(activity)
-				.setTitle(R.string.app_name)
-				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						getActivity()
-							.getFragmentManager()
-							.beginTransaction()
-							.remove(HelpFragmentTablet.this)
-							.commit();
-					}
-				})
-				.create();
+					.setTitle(R.string.app_name)
+					.setPositiveButton(android.R.string.ok,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+									getActivity().getFragmentManager()
+											.beginTransaction()
+											.remove(HelpFragmentTablet.this)
+											.commit();
+								}
+							}).create();
 
 			WebView wv = new WebView(getActivity());
 			dialog.setView(wv);
@@ -529,6 +543,7 @@ public class Preferences extends PreferenceActivity {
 	public static class HelpFragmentPhone extends Fragment {
 
 		private static String oldTitle;
+
 		/**
 		 * Empty constructor.
 		 */
@@ -540,11 +555,12 @@ public class Preferences extends PreferenceActivity {
 			super.onCreate(savedInstanceState);
 			oldTitle = (String) getActivity().getTitle();
 
-
 			getActivity().setTitle(R.string.help);
 		}
+
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+		public View onCreateView(LayoutInflater inflater, ViewGroup parent,
+				Bundle savedInstanceState) {
 			super.onCreateView(inflater, parent, savedInstanceState);
 
 			WebView v = new WebView(getActivity());
@@ -571,7 +587,7 @@ public class Preferences extends PreferenceActivity {
 		@Override
 		public void onStop() {
 			getActivity().setTitle(oldTitle);
-			ActionBar ab = getActivity().getActionBar(); 
+			ActionBar ab = getActivity().getActionBar();
 			if (ab != null && oldTitle.equals(getString(R.string.app_name))) {
 				ab.setDisplayHomeAsUpEnabled(false);
 				ab.setHomeButtonEnabled(false);
