@@ -9,7 +9,7 @@
 		android:title="@string/translator" />
 	<PreferenceCategory
 		android:title="@string/app"
-		android:key="about_app_category">
+		android:key="about_app_category"/>
 		<PreferenceScreen
 			android:title="@string/xposed"
 			android:key="xposed">
@@ -34,5 +34,5 @@
 		<Preference
 			android:key="app_version"
 			android:title="@string/version" />
-	</PreferenceCategory>
+
 </PreferenceScreen>
