@@ -173,6 +173,14 @@ public class Preferences extends PreferenceActivity {
 					.commit();
 		}
 	}
+	
+	/**
+	 * Fix crash on 4.4+
+	 */
+	@Override
+	protected boolean isValidFragment(String name) {
+		return name.equals(Settings.class.getName());
+	}
 
 	/**
 	 * The PreferenceFragment with the settings in it.
