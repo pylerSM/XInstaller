@@ -3,7 +3,6 @@ package com.pyler.xinstaller;
 import java.io.File;
 
 import android.os.Build;
-import android.os.Environment;
 
 public class Common {
 	// utils
