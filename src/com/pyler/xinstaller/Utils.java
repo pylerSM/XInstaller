@@ -27,6 +27,14 @@ import android.widget.Toast;
 @SuppressLint("WorldReadableFiles")
 @SuppressWarnings("deprecation")
 public class Utils extends BroadcastReceiver {
+	public static final String APP_DIR = Environment
+			.getExternalStorageDirectory()
+			+ File.separator
+			+ Common.PACKAGE_TAG
+			+ File.separator;
+	public static final File PACKAGE_DIR = new File(APP_DIR);
+	public static final File PREFERENCES_BACKUP_FILE = new File(APP_DIR
+			+ File.separator + PACKAGE_TAG + ".backup");
 	public Context ctx;
 	public Resources resources;
 
@@ -77,7 +85,7 @@ public class Utils extends BroadcastReceiver {
 			String appName = (String) pm.getApplicationLabel(ai);
 			String versionName = pi.versionName;
 			String fileName = appName + " " + versionName + ".apk";
-			String backupApkFile = Common.APP_DIR + fileName;
+			String backupApkFile = APP_DIR + fileName;
 			File src = new File(apkFile);
 			File dst = new File(backupApkFile);
 			if (!dst.equals(src)) {
@@ -175,7 +183,7 @@ public class Utils extends BroadcastReceiver {
 	}
 
 	public void restorePreferences() {
-		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
+		if (!PREFERENCES_BACKUP_FILE.exists()) {
 			Toast.makeText(ctx, resources.getString(R.string.no_backup_file),
 					Toast.LENGTH_LONG).show();
 			return;
@@ -184,7 +192,7 @@ public class Utils extends BroadcastReceiver {
 		ObjectInputStream input = null;
 		try {
 			input = new ObjectInputStream(new FileInputStream(
-					Common.PREFERENCES_BACKUP_FILE));
+					PREFERENCES_BACKUP_FILE));
 			SharedPreferences prefs = ctx.getSharedPreferences(
 					Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
 			SharedPreferences.Editor prefsEditor = prefs.edit();
