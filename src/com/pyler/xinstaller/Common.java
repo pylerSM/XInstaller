@@ -116,14 +116,6 @@ public class Common {
 	public static final String PACKAGE_PREFERENCES = PACKAGE_NAME
 			+ "_preferences";
 	public static final String PACKAGE_TAG = "XInstaller";
-	public static final String APP_DIR = Environment
-			.getExternalStorageDirectory()
-			+ File.separator
-			+ PACKAGE_TAG
-			+ File.separator;
-	public static final File PACKAGE_DIR = new File(APP_DIR);
-	public static final File PREFERENCES_BACKUP_FILE = new File(APP_DIR
-			+ File.separator + PACKAGE_TAG + ".backup");
 	public static final String URL_HELP = "http://pyler.wen.ru/XInstaller/Help.html";
 	public static final int SDK = Build.VERSION.SDK_INT;
 	public static final int LATEST_ANDROID_RELEASE = 23; // Android M
