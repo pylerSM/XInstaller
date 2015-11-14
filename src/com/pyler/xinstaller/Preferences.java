@@ -54,7 +54,7 @@ public class Preferences extends PreferenceActivity {
 	 */
 	public Boolean isModuleEnabled2() {
 		return Boolean.valueOf(false);
-	}
+	} //REMOVE ME
 
 	public boolean isModuleEnabled() {
 		return false;
@@ -70,7 +70,7 @@ public class Preferences extends PreferenceActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		boolean isModuleEnabled = isModuleEnabled()/* .booleanValue() */; // TODO
+		boolean isModuleEnabled = isModuleEnabled()/* .booleanValue() */; // TODO, REMOVE ME
 		boolean isEnabledSettings = isEnabledInSettings();
 
 		if (!isModuleEnabled || !isEnabledSettings)
@@ -101,7 +101,7 @@ public class Preferences extends PreferenceActivity {
 				@Override
 				public void onClick(View v) {
 					PreferenceManager
-							.getDefaultSharedPreferences(Preferences.this)
+							.getSharedPreferences(Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
 							.edit().putBoolean(Common.PREF_ENABLE_MODULE, true)
 							.apply();
 					view.setVisibility(View.GONE);
