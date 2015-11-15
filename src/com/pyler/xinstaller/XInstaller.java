@@ -1394,10 +1394,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 					lpparam.classLoader, "setAppLabelAndIcon",
 					PackageInfo.class, showPackageNameHook);
 
-			// 4.0 and newer
-			XposedBridge.hookAllMethods(XposedHelpers.findClass(
-					Common.CANBEONSDCARDCHECKER, lpparam.classLoader), "check",
-					moveAppsHook);
+			// 4.0 - 5.1
+			if (!Common.MARSHMALLOW_NEWER) {
+				XposedBridge.hookAllMethods(XposedHelpers.findClass(
+						Common.CANBEONSDCARDCHECKER, lpparam.classLoader), "check",
+						moveAppsHook);
+			}
 
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
