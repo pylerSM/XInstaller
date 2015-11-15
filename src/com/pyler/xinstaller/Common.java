@@ -136,6 +136,7 @@ public class Common {
 	public static final boolean KITKAT_NEWER = SDK >= Build.VERSION_CODES.KITKAT;
 	public static final boolean LOLLIPOP_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP;
 	public static final boolean LOLLIPOP_MR1_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP_MR1;
+	public static final boolean MARSHMALLOW_NEVER = SDK >= 23; // TODO
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
