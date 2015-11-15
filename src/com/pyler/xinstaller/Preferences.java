@@ -96,7 +96,7 @@ public class Preferences extends PreferenceActivity {
 
 				@Override
 				public void onClick(View v) {
-					PreferenceManager
+					context
 							.getSharedPreferences(Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE)
 							.edit().putBoolean(Common.PREF_ENABLE_MODULE, true)
 							.apply();
