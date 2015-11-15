@@ -1401,10 +1401,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 						moveAppsHook);
 			}
 
-			// 4.0 and newer
+			// 4.0 - 5.1
+			if (!Common.MARSHMALLOW_NEWER) {
 			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 					lpparam.classLoader, "refreshSizeInfo",
 					autoEnableClearButtonsHook);
+			}
 
 			// 5.0 and newer
 			if (Common.LOLLIPOP_NEWER) {
