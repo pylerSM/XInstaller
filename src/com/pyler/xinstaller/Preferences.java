@@ -52,10 +52,6 @@ public class Preferences extends PreferenceActivity {
 	/**
 	 * We let Xposed toggle this. {@see com.pyler.xinstaller.XInstaller}
 	 */
-	public Boolean isModuleEnabled2() {
-		return Boolean.valueOf(false);
-	} //REMOVE ME
-
 	public boolean isModuleEnabled() {
 		return false;
 	}
