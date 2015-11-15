@@ -117,7 +117,7 @@ public class Common {
 	public static final String PACKAGE_TAG = "XInstaller";
 	public static final String URL_HELP = "http://pyler.wen.ru/XInstaller/Help.html";
 	public static final int SDK = Build.VERSION.SDK_INT;
-	public static final int LATEST_ANDROID_RELEASE = 23; // Android M
+	public static final int LATEST_ANDROID_RELEASE = 24; // Android N
 	public static final String EMPTY_STRING = "";
 	public static final String XINSTALLER_PKG = PACKAGE_NAME;
 	public static final String ANDROID_PKG = "android";
