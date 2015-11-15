@@ -35,14 +35,14 @@ public class Utils extends BroadcastReceiver {
 			+ File.separator;
 	public static final File PACKAGE_DIR = new File(APP_DIR);
 	public static final File PREFERENCES_BACKUP_FILE = new File(APP_DIR
-			+ File.separator + PACKAGE_TAG + ".backup");
+			+ File.separator + Common.PACKAGE_TAG + ".backup");
 	public Context ctx;
 	public Resources resources;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (!Common.PACKAGE_DIR.exists()) {
-			Common.PACKAGE_DIR.mkdir();
+		if (!PACKAGE_DIR.exists()) {
+			PACKAGE_DIR.mkdir();
 		}
 		ctx = context;
 		resources = ctx.getResources();
@@ -153,9 +153,9 @@ public class Utils extends BroadcastReceiver {
 	}
 
 	public void backupPreferences() {
-		if (!Common.PREFERENCES_BACKUP_FILE.exists()) {
+		if (!PREFERENCES_BACKUP_FILE.exists()) {
 			try {
-				Common.PREFERENCES_BACKUP_FILE.createNewFile();
+				PREFERENCES_BACKUP_FILE.createNewFile();
 			} catch (Exception e) {
 			}
 		}
@@ -163,7 +163,7 @@ public class Utils extends BroadcastReceiver {
 		ObjectOutputStream output = null;
 		try {
 			output = new ObjectOutputStream(new FileOutputStream(
-					Common.PREFERENCES_BACKUP_FILE));
+					PREFERENCES_BACKUP_FILE));
 			SharedPreferences prefs = ctx.getSharedPreferences(
 					Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE);
 			output.writeObject(prefs.getAll());
