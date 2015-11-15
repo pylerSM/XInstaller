@@ -1429,10 +1429,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 					lpparam.classLoader, "onClick", View.class,
 					disableChangerHook);
 
-			// 4.0 and newer
-			XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
+			// 4.0 - 5.1
+			if (!Common.MARSHMALLOW_NEWER) {
+				XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
 					lpparam.classLoader, "showDialogInner", int.class,
 					int.class, disableUserAppsHook);
+			}	
 		}
 
 		if (Common.FDROID_PKG.equals(lpparam.packageName)) {
