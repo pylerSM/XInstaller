@@ -66,7 +66,7 @@ public class Preferences extends PreferenceActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		boolean isModuleEnabled = isModuleEnabled()/* .booleanValue() */; // TODO, REMOVE ME
+		boolean isModuleEnabled = isModuleEnabled();
 		boolean isEnabledSettings = isEnabledInSettings();
 
 		if (!isModuleEnabled || !isEnabledSettings)
@@ -232,6 +232,18 @@ public class Preferences extends PreferenceActivity {
 			appLocaleManager.initialize();
 
 		}
+		
+        	@Override
+        	public void onPause() {
+            		super.onPause();
+
+            		// Set preferences file permissions to be world readable
+            		File prefsDir = new File(getActivity().getApplicationInfo().dataDir, "shared_prefs");
+            		File prefsFile = new File(prefsDir, getPreferenceManager().getSharedPreferencesName() + ".xml");
+            		if (prefsFile.exists()) {
+                		prefsFile.setReadable(true, false);
+            		}
+        	}
 
 		@Override
 		public void onResume() {
