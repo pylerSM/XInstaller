@@ -460,18 +460,36 @@ public class XInstaller implements IXposedHookZygoteInit,
 						Common.PREF_ENABLE_UNINSTALL_SYSTEM_APP, false);
 				mContext = AndroidAppHelper.currentApplication();
 				PackageInfo pkgInfo = (PackageInfo) param.args[0];
-				TextView appVersion = (TextView) XposedHelpers.getObjectField(
-						param.thisObject, "mAppVersion");
-				View mRootView = (View) XposedHelpers.getObjectField(
-						param.thisObject, "mRootView");
-				Resources mResources = mRootView.getResources();
-				int appSnippetId = mResources.getIdentifier("app_snippet",
-						"id", Common.SETTINGS_PKG);
-				View appSnippet = mRootView.findViewById(appSnippetId);
-				int iconId = mResources.getIdentifier("app_icon", "id",
-						Common.SETTINGS_PKG);
-				int labelId = mResources.getIdentifier("app_name", "id",
-						Common.SETTINGS_PKG);
+				Object view;
+				Resources mResources;
+
+				if (Build.VERSION.SDK_INT >= 23) {
+					view = XposedHelpers.getObjectField(param.thisObject, "mHeader");
+					mResources = (Resources) XposedHelpers.callMethod(param.thisObject, "getResources");
+				} else {
+					view = XposedHelpers.getObjectField(param.thisObject, "mRootView");
+					mResources = ((View) view).getResources();
+				}
+
+				View appSnippet;
+				TextView appVersion;
+				int iconId = 0;
+				int labelId = 0;
+				int appSnippetId = mResources.getIdentifier("app_snippet", "id", Common.SETTINGS_PKG);
+
+				if (Build.VERSION.SDK_INT >= 23) {
+					int appVersionId = mResources.getIdentifier("summary", "id", "android");
+					appVersion = (TextView) XposedHelpers.callMethod(view, "findViewById", appVersionId);
+					appSnippet = (View) XposedHelpers.callMethod(view, "findViewById", appSnippetId);
+					iconId = mResources.getIdentifier("icon", "id", "android");
+					labelId = mResources.getIdentifier("title", "id", "android");
+				} else {
+					appVersion = (TextView) XposedHelpers.getObjectField(param.thisObject, "mAppVersion");
+					appSnippet = ((View) view).findViewById(appSnippetId);
+					iconId = mResources.getIdentifier("app_icon", "id", Common.SETTINGS_PKG);
+					labelId = mResources.getIdentifier("app_name", "id", Common.SETTINGS_PKG);
+				}
+
 				ImageView appIcon = (ImageView) appSnippet.findViewById(iconId);
 				TextView appLabel = (TextView) appSnippet.findViewById(labelId);
 				String version = appVersion.getText().toString();
