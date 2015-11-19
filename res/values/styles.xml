@@ -16,5 +16,9 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+	
+	<style name="preferenceHeadersStyle" parent="android:Widget.DeviceDefault.ListView">
+		<item name="android:textColorSecondary">?android:attr/textColorPrimary</item>
+	</style>
 
 </resources>
