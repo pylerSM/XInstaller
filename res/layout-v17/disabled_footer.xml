@@ -1,31 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:gravity="top"
     android:layout_gravity="top"
-    android:background="@drawable/footer_bg"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?android:attr/listPreferredItemPaddingRight" >
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:background="@drawable/footer_bg"
+    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
     <TextView
-        android:id="@android:id/text1"
+        android:id="@+android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:singleLine="true"
-        android:ellipsize="marquee"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white"
     />
     <TextView
-        android:id="@android:id/text2"
+        android:id="@+android:id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@android:id/text1"
-        android:layout_alignLeft="@android:id/text1"
-        android:singleLine="true"
-        android:ellipsize="marquee"
+        android:layout_below="@+android:id/text1"
+        android:layout_alignStart="@+android:id/text1"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#EEEEEE" />
+        android:textColor="#CCCCCC"/>
 </RelativeLayout>
