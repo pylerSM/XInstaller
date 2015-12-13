@@ -1229,10 +1229,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 					verifySignatureHook);
 
 			// 4.0 and newer
-			XposedBridge.hookAllMethods(View.class,
-					"onFilterTouchEventForSecurity", showButtonsHook);
-
-			// 4.0 and newer
 			XposedBridge.hookAllMethods(signatureClass, "verify",
 					verifySignatureHook);
 
@@ -1387,6 +1383,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 			// 4.0 and newer
 			XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS,
 					lpparam.classLoader, "initView", autoHideInstallHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(View.class,
+					"onFilterTouchEventForSecurity", showButtonsHook);
 		}
 
 		if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
@@ -1467,6 +1467,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 			XposedHelpers.findAndHookMethod(Common.BACKUPRESTORECONFIRMATION,
 					lpparam.classLoader, "onCreate", Bundle.class,
 					autoBackupHook);
+
+			// 4.0 and newer
+			XposedBridge.hookAllMethods(View.class,
+					"onFilterTouchEventForSecurity", showButtonsHook);
 		}
 
 		if (Common.GOOGLEPLAY_PKG.equals(lpparam.packageName)) {
