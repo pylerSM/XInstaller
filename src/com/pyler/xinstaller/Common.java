@@ -1,7 +1,5 @@
 package com.pyler.xinstaller;
 
-import java.io.File;
-
 import android.os.Build;
 
 public class Common {

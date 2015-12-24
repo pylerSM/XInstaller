@@ -41,8 +41,6 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
-import java.io.File;
-
 public class XInstaller implements IXposedHookZygoteInit,
 		IXposedHookLoadPackage {
 	public XSharedPreferences prefs;

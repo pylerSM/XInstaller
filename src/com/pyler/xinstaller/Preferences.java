@@ -1,5 +1,8 @@
 package com.pyler.xinstaller;
 
+import java.io.File;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -18,7 +21,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -35,11 +40,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.File;
-import java.util.List;
-import android.os.SystemClock;
-import android.os.Build;
 
 public class Preferences extends PreferenceActivity
 {
@@ -125,7 +125,9 @@ public class Preferences extends PreferenceActivity
 			tv2.setText(R.string.module_disabled_in_settings_subtext);
 			view.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
+                    @SuppressWarnings("deprecation")
+					@SuppressLint("WorldReadableFiles")
+					@Override
                     public void onClick(View v) {
                         context
                             .getSharedPreferences(Common.PACKAGE_PREFERENCES, Context.MODE_WORLD_READABLE)

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pyler.xinstaller"
-    android:versionCode="490"
-    android:versionName="4.9-beta1" >
+    android:versionCode="500"
+    android:versionName="5.0" >
 
     <uses-sdk
         android:minSdkVersion="15"
