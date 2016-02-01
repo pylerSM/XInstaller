@@ -107,34 +107,34 @@ public class Common {
 			{ Common.PREF_DEVICE_TAGS, Build.TAGS } };
 	public static final String PREF_RESET_DEVICE_PROPERTIES = "reset_device_properties";
 
-	// constants
-	public static final String PACKAGE_NAME = Common.class.getPackage()
-			.getName();
-	public static final String PACKAGE_PREFERENCES = PACKAGE_NAME
-			+ "_preferences";
-	public static final String PACKAGE_TAG = "XInstaller";
-	public static final String URL_HELP = "http://pyler.wen.ru/XInstaller/Help.html";
-	public static final int SDK = Build.VERSION.SDK_INT;
-	public static final int LATEST_ANDROID_RELEASE = 24; // Android N
-	public static final String EMPTY_STRING = "";
-	public static final String XINSTALLER_PKG = PACKAGE_NAME;
-	public static final String ANDROID_PKG = "android";
-	public static final String PACKAGEINSTALLER_PKG = (MARSHMALLOW_NEWER) ? "com.google.android.packageinstaller" : "com.android.packageinstaller";
-	public static final String SETTINGS_PKG = "com.android.settings";
-	public static final String FDROID_PKG = "org.fdroid.fdroid";
-	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
-	public static final String GOOGLEPLAY_PKG = "com.android.vending";
-	public static final String LUCKYPATCHER_PKG = "com.android.vending.billing.InAppBillingService.LUCK";
-	public static final String APPOPSXPOSED_PKG = "at.jclehner.appopsxposed";
-
 	// checks
+	public static final int SDK = Build.VERSION.SDK_INT;
 	public static final boolean JB_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN;
 	public static final boolean JB_MR1_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN_MR1;
 	public static final boolean JB_MR2_NEWER = SDK >= Build.VERSION_CODES.JELLY_BEAN_MR2;
 	public static final boolean KITKAT_NEWER = SDK >= Build.VERSION_CODES.KITKAT;
 	public static final boolean LOLLIPOP_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP;
 	public static final boolean LOLLIPOP_MR1_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP_MR1;
-	public static final boolean MARSHMALLOW_NEWER = SDK >= 23; // TODO
+	public static final boolean MARSHMALLOW_NEWER = SDK >= 23; // MARSHMALLOW
+
+	// constants
+	public static final String PACKAGE_NAME = Common.class.getPackage()
+			.getName();
+	public static final String PACKAGE_PREFERENCES = PACKAGE_NAME
+			+ "_preferences";
+	public static final String PACKAGE_TAG = "XInstaller";
+	public static final int LATEST_ANDROID_RELEASE = 24; // Android N
+	public static final String EMPTY_STRING = "";
+	public static final String XINSTALLER_PKG = PACKAGE_NAME;
+	public static final String ANDROID_PKG = "android";
+	public static final String PACKAGEINSTALLER_PKG = (MARSHMALLOW_NEWER) ? "com.google.android.packageinstaller"
+			: "com.android.packageinstaller";
+	public static final String SETTINGS_PKG = "com.android.settings";
+	public static final String FDROID_PKG = "org.fdroid.fdroid";
+	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
+	public static final String GOOGLEPLAY_PKG = "com.android.vending";
+	public static final String LUCKYPATCHER_PKG = "com.android.vending.billing.InAppBillingService.LUCK";
+	public static final String APPOPSXPOSED_PKG = "at.jclehner.appopsxposed";
 
 	// classes
 	public static final String PACKAGEMANAGERSERVICE = "com.android.server.pm.PackageManagerService";
