@@ -127,8 +127,8 @@ public class Common {
 	public static final String EMPTY_STRING = "";
 	public static final String XINSTALLER_PKG = PACKAGE_NAME;
 	public static final String ANDROID_PKG = "android";
-	public static final String PACKAGEINSTALLER_PKG = (MARSHMALLOW_NEWER) ? "com.google.android.packageinstaller"
-			: "com.android.packageinstaller";
+	public static final String PACKAGEINSTALLER_PKG = "com.android.packageinstaller";
+	public static final String GOOGLE_PACKAGEINSTALLER_PKG = "com.google.android.packageinstaller";
 	public static final String SETTINGS_PKG = "com.android.settings";
 	public static final String FDROID_PKG = "org.fdroid.fdroid";
 	public static final String BACKUPCONFIRM_PKG = "com.android.backupconfirm";
