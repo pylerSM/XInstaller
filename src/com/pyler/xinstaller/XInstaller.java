@@ -1331,9 +1331,18 @@ public class XInstaller implements IXposedHookZygoteInit,
 		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			if (Common.LOLLIPOP_MR1_NEWER) {
 				// 5.1 and newer
-				XposedHelpers.findAndHookMethod(
+				try {
+					XposedHelpers.findAndHookMethod(
 						Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
 						"isUnknownSourcesEnabled", unknownAppsHook);
+				} catch (NoSuchMethodError nsme) {
+					// Samsung 5.1
+				        try {
+						XposedHelpers.findAndHookMethod(
+						Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
+						"isUnknownSourcesEnabled", unknownAppsHook);
+					} catch (NoSuchMethodError nsme2) {}
+				}
 			} else {
 				// 4.0 - 5.0
 				XposedHelpers.findAndHookMethod(
