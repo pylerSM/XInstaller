@@ -1328,7 +1328,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					hideAppCrashesHook);
 
 		}
-		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
+		if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName) || Common.GOOGLE_PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
 			if (Common.LOLLIPOP_MR1_NEWER) {
 				// 5.1 and newer
 				try {
