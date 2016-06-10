@@ -1485,10 +1485,12 @@ public class XInstaller implements IXposedHookZygoteInit,
 						computeCertificateHashesHook);
 			}
 
-			// 4.0 and newer
-			XposedHelpers.findAndHookMethod(Common.SELFUPDATESCHEDULER,
-					lpparam.classLoader, "checkForSelfUpdate", int.class,
-					String.class, autoUpdateGooglePlayHook);
+			if (!Common.LOLLIPOP_MR1_NEWER) {
+				// 4.0 and newer
+				XposedHelpers.findAndHookMethod(Common.SELFUPDATESCHEDULER,
+						lpparam.classLoader, "checkForSelfUpdate", int.class,
+						String.class, autoUpdateGooglePlayHook);
+			}
 		}
 
 		if (Common.XINSTALLER_PKG.equals(lpparam.packageName)) {
