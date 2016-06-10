@@ -163,6 +163,7 @@ public class Common {
 	public static final int INSTALL_ALLOW_DOWNGRADE = 0x00000080;
 	public static final int INSTALL_FORWARD_LOCK = 0x00000001;
 	public static final int INSTALL_EXTERNAL = 0x00000008;
+	public static final int INSTALL_GRANT_RUNTIME_PERMISSIONS = 0x00000100;
 	public static final int DEBUG_ENABLE_DEBUGGER = 0x1;
 	public static final int ROOT_UID = 0;
 	public static final int SYSTEM_UID = 1000;
