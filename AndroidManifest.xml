@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.pyler.xinstaller"
     android:versionCode="500"
-    android:versionName="5.0" >
+    android:versionName="5.0">
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -20,7 +21,8 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="@string/app_name" />
+            android:value="@string/app_description"
+            tools:ignore="ManifestResource"/>
         <meta-data
             android:name="xposedminversion"
             android:value="30" />
