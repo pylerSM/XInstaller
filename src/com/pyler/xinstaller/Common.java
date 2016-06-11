@@ -115,7 +115,7 @@ public class Common {
 	public static final boolean KITKAT_NEWER = SDK >= Build.VERSION_CODES.KITKAT;
 	public static final boolean LOLLIPOP_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP;
 	public static final boolean LOLLIPOP_MR1_NEWER = SDK >= Build.VERSION_CODES.LOLLIPOP_MR1;
-	public static final boolean MARSHMALLOW_NEWER = SDK >= 23; // MARSHMALLOW
+	public static final boolean MARSHMALLOW_NEWER = SDK >= Build.VERSION_CODES.M; // MARSHMALLOW
 
 	// constants
 	public static final String PACKAGE_NAME = Common.class.getPackage()

@@ -20,13 +20,13 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="@string/app_description" />
+            android:value="@string/app_name" />
         <meta-data
             android:name="xposedminversion"
             android:value="30" />
 
-        <activity 
-            android:name=".Preferences" 
+        <activity
+            android:name=".Preferences"
             android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
