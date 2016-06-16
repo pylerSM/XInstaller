@@ -263,11 +263,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 				reloadPreferences();
 				disableUserApps = prefs.getBoolean(
 						Common.PREF_ENABLE_DISABLE_USER_APPS, false);
-				if (isModuleEnabled() && disableUserApps) {
-					if ((Integer) param.args[0] == 9)
-						param.args[0] = 7;
-				}
-			}
+                if (isModuleEnabled() && disableUserApps && (Integer) param.args[0] == 9) {
+                    param.args[0] = 7;
+                }
+            }
 		};
 
 		autoUpdateGooglePlayHook = new XC_MethodHook() {
@@ -310,13 +309,11 @@ public class XInstaller implements IXposedHookZygoteInit,
 					int uid = Binder.getCallingUid();
 					String caller = (String) XposedHelpers.callMethod(
 							param.thisObject, "getNameForUid", uid);
-					if (uid != Common.SYSTEM_UID) {
-						if (Common.LUCKYPATCHER_PKG.equals(packageName)
-								&& !Common.LUCKYPATCHER_PKG.equals(caller)) {
-							param.args[0] = Common.EMPTY_STRING;
-						}
-					}
-				}
+                    if (uid != Common.SYSTEM_UID && Common.LUCKYPATCHER_PKG.equals(packageName)
+                            && !Common.LUCKYPATCHER_PKG.equals(caller)) {
+                        param.args[0] = Common.EMPTY_STRING;
+                    }
+                }
 			}
 
 			@Override
@@ -620,12 +617,10 @@ public class XInstaller implements IXposedHookZygoteInit,
 						false);
 				int id = 5;
 				int flags = (Integer) param.args[id];
-				if (isModuleEnabled() && debugApps) {
-					if ((flags & Common.DEBUG_ENABLE_DEBUGGER) == 0) {
-						flags |= Common.DEBUG_ENABLE_DEBUGGER;
-					}
-				}
-				if (isModuleEnabled()) {
+                if (isModuleEnabled() && debugApps && (flags & Common.DEBUG_ENABLE_DEBUGGER) == 0) {
+                    flags |= Common.DEBUG_ENABLE_DEBUGGER;
+                }
+                if (isModuleEnabled()) {
 					param.args[id] = flags;
 				}
 			}
@@ -805,22 +800,16 @@ public class XInstaller implements IXposedHookZygoteInit,
 					id = Common.JB_MR1_NEWER ? 2 : 1;
 					flags = (Integer) param.args[id];
 				}
-				if (isModuleEnabled() && downgradeApps) {
-					if ((flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
-						flags |= Common.INSTALL_ALLOW_DOWNGRADE;
-					}
-				}
-				if (isModuleEnabled() && forwardLock) {
-					if ((flags & Common.INSTALL_FORWARD_LOCK) != 0) {
-						flags &= ~Common.INSTALL_FORWARD_LOCK;
-					}
-				}
-				if (isModuleEnabled() && isExpertModeEnabled()
+                if (isModuleEnabled() && downgradeApps && (flags & Common.INSTALL_ALLOW_DOWNGRADE) == 0) {
+                    flags |= Common.INSTALL_ALLOW_DOWNGRADE;
+                }
+                if (isModuleEnabled() && forwardLock && (flags & Common.INSTALL_FORWARD_LOCK) != 0) {
+                    flags &= ~Common.INSTALL_FORWARD_LOCK;
+                }
+                if (isModuleEnabled() && isExpertModeEnabled()
 
-				&& installAppsOnExternal) {
-					if ((flags & Common.INSTALL_EXTERNAL) == 0) {
+				&& installAppsOnExternal && (flags & Common.INSTALL_EXTERNAL) == 0) {
 						flags |= Common.INSTALL_EXTERNAL;
-					}
 				}
 
 				if (isModuleEnabled()) {
@@ -835,27 +824,23 @@ public class XInstaller implements IXposedHookZygoteInit,
 					}
 				}
 
-				if (isModuleEnabled() && backupApkFiles) {
-					if (!isInstallStage) {
-						String apkFile = null;
-						if (Common.LOLLIPOP_NEWER) {
-							apkFile = (String) param.args[0];
-						} else {
-							Uri packageUri = (Uri) param.args[0];
-							apkFile = packageUri.getPath();
-						}
-						if (apkFile != null) {
-							backupApkFile(apkFile);
-						}
-					}
-				}
+                if (isModuleEnabled() && backupApkFiles && !isInstallStage) {
+                    String apkFile = null;
+                    if (Common.LOLLIPOP_NEWER) {
+                        apkFile = (String) param.args[0];
+                    } else {
+                        Uri packageUri = (Uri) param.args[0];
+                        apkFile = packageUri.getPath();
+                    }
+                    if (apkFile != null) {
+                        backupApkFile(apkFile);
+                    }
+                }
 
-				if (isModuleEnabled() && installBackground) {
-					if (Binder.getCallingUid() == Common.ROOT_UID) {
-						param.setResult(null);
-					}
-				}
-			}
+                if (isModuleEnabled() && installBackground && Binder.getCallingUid() == Common.ROOT_UID) {
+                    param.setResult(null);
+                }
+            }
 		};
 
 		deletePackageHook = new XC_MethodHook() {
@@ -870,17 +855,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 				int id = Common.JB_MR2_NEWER ? 3 : 2;
 				int flags = (Integer) param.args[id];
 
-				if (isModuleEnabled() && keepAppsData) {
-					if ((flags & Common.DELETE_KEEP_DATA) == 0) {
-						flags |= Common.DELETE_KEEP_DATA;
-					}
-				}
+                if (isModuleEnabled() && keepAppsData && (flags & Common.DELETE_KEEP_DATA) == 0) {
+                    flags |= Common.DELETE_KEEP_DATA;
+                }
 
-				if (isModuleEnabled() && uninstallBackground) {
-					if (Binder.getCallingUid() == Common.ROOT_UID) {
-						param.setResult(null);
-					}
-				}
+                if (isModuleEnabled() && uninstallBackground && Binder.getCallingUid() == Common.ROOT_UID) {
+                    param.setResult(null);
+                }
 
 				if (isModuleEnabled()) {
 					param.args[id] = flags;
@@ -1040,15 +1021,13 @@ public class XInstaller implements IXposedHookZygoteInit,
 				prefs.reload();
 				autoUninstall = prefs.getBoolean(
 						Common.PREF_ENABLE_AUTO_UNINSTALL, false);
-				if (isModuleEnabled() && autoUninstall) {
-					if (Common.LOLLIPOP_NEWER) {
-						Activity packageInstaller = (Activity) param.thisObject;
-						packageInstaller.onBackPressed();
-						XposedHelpers.callMethod(param.thisObject,
-								"startUninstallProgress");
-					}
-				}
-			}
+                if (isModuleEnabled() && autoUninstall && Common.LOLLIPOP_NEWER) {
+                    Activity packageInstaller = (Activity) param.thisObject;
+                    packageInstaller.onBackPressed();
+                    XposedHelpers.callMethod(param.thisObject,
+                            "startUninstallProgress");
+                }
+            }
 
 			@Override
 			protected void afterHookedMethod(MethodHookParam param)
@@ -1113,26 +1092,22 @@ public class XInstaller implements IXposedHookZygoteInit,
 					installedApp = (msg.arg1 == Common.INSTALL_SUCCEEDED);
 				}
 
-				if (isModuleEnabled() && autoLaunchInstall) {
-					if (installedApp && mLaunch != null) {
-						mLaunch.performClick();
-					}
-				}
+                if (isModuleEnabled() && autoLaunchInstall && installedApp && mLaunch != null) {
+                    mLaunch.performClick();
+                }
 
-				if (isModuleEnabled() && autoCloseInstall) {
-					if (installedApp && mDone != null) {
-						mDone.performClick();
-						String appInstalledText = "";
-						Resources resources = mContext.getResources();
-						appInstalledText = (String) resources.getText(resources
-								.getIdentifier("install_done", "string",
-										Common.PACKAGEINSTALLER_PKG));
-						if (!appInstalledText.isEmpty()) {
-							Toast.makeText(mContext, appInstalledText,
-									Toast.LENGTH_LONG).show();
-						}
-					}
-				}
+                if (isModuleEnabled() && autoCloseInstall && installedApp && mDone != null) {
+                    mDone.performClick();
+                    String appInstalledText = "";
+                    Resources resources = mContext.getResources();
+                    appInstalledText = (String) resources.getText(resources
+                            .getIdentifier("install_done", "string",
+                                    Common.PACKAGEINSTALLER_PKG));
+                    if (!appInstalledText.isEmpty()) {
+                        Toast.makeText(mContext, appInstalledText,
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
 
 				if (isModuleEnabled() && deleteApkFiles) {
 					Uri packageUri = (Uri) XposedHelpers.getObjectField(
@@ -1142,8 +1117,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 					deleteApkFile(apkFile);
 				}
 
-				if (isModuleEnabled() && openAppOps) {
-					if (Common.JB_MR2_NEWER) {
+				if (isModuleEnabled() && openAppOps && Common.JB_MR2_NEWER) {
 						ApplicationInfo appInfo = (ApplicationInfo) XposedHelpers
 								.getObjectField(XposedHelpers
 										.getSurroundingThis(param.thisObject),
@@ -1188,7 +1162,6 @@ public class XInstaller implements IXposedHookZygoteInit,
 						} catch (ActivityNotFoundException e) {
 						}
 
-					}
 				}
 			}
 
