@@ -1494,22 +1494,19 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 	public boolean isModuleEnabled() {
 		prefs.reload();
-		boolean enabled = prefs.getBoolean(Common.PREF_ENABLE_MODULE, true);
-		return enabled;
+		return prefs.getBoolean(Common.PREF_ENABLE_MODULE, true);
 	}
 
 	public boolean isExpertModeEnabled() {
 		prefs.reload();
-		boolean enabled = prefs.getBoolean(Common.PREF_ENABLE_EXPERT_MODE,
+		return prefs.getBoolean(Common.PREF_ENABLE_EXPERT_MODE,
 				false);
-		return enabled;
 	}
 
 	public boolean changeDevicePropertiesEnabled() {
 		prefs.reload();
-		boolean enabled = prefs.getBoolean(
+		return prefs.getBoolean(
 				Common.PREF_ENABLE_CHANGE_DEVICE_PROPERTIES, false);
-		return enabled;
 	}
 
 	public void changeDeviceProperties() {
