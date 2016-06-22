@@ -503,7 +503,7 @@ public class XInstaller implements IXposedHookZygoteInit,
                         param.thisObject, "mContext");
                 boolean isInstallStage = "installStage".equals(param.method
                         .getName());
-                int flags, id = 0;
+                int flags, id;
 
                 if (isInstallStage) {
                     id = 4;
@@ -772,7 +772,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
                 if (isModuleEnabled() && autoCloseInstall && installedApp && mDone != null) {
                     mDone.performClick();
-                    String appInstalledText = "";
+                    String appInstalledText;
                     Resources resources = mContext.getResources();
                     appInstalledText = (String) resources.getText(resources
                             .getIdentifier("install_done", "string",
@@ -787,8 +787,6 @@ public class XInstaller implements IXposedHookZygoteInit,
                     Uri packageUri = (Uri) XposedHelpers.getObjectField(
                             XposedHelpers.getSurroundingThis(param.thisObject),
                             "mPackageURI");
-                    String apkFile = packageUri.getPath();
-                    //deleteApkFile(apkFile);
                 }
             }
 

@@ -473,8 +473,8 @@ public class XInstaller implements IXposedHookZygoteInit,
 
 				View appSnippet;
 				TextView appVersion;
-				int iconId = 0;
-				int labelId = 0;
+				int iconId;
+				int labelId;
 				int appSnippetId = mResources.getIdentifier("app_snippet", "id", Common.SETTINGS_PKG);
 
 				if (Build.VERSION.SDK_INT >= 23) {
@@ -790,7 +790,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 						param.thisObject, "mContext");
 				boolean isInstallStage = "installStage".equals(param.method
 						.getName());
-				int flags, id = 0;
+				int flags, id;
 
 				if (isInstallStage) {
 					id = 4;
@@ -825,7 +825,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 				}
 
                 if (isModuleEnabled() && backupApkFiles && !isInstallStage) {
-                    String apkFile = null;
+                    String apkFile;
                     if (Common.LOLLIPOP_NEWER) {
                         apkFile = (String) param.args[0];
                     } else {
@@ -1098,7 +1098,7 @@ public class XInstaller implements IXposedHookZygoteInit,
 
                 if (isModuleEnabled() && autoCloseInstall && installedApp && mDone != null) {
                     mDone.performClick();
-                    String appInstalledText = "";
+                    String appInstalledText;
                     Resources resources = mContext.getResources();
                     appInstalledText = (String) resources.getText(resources
                             .getIdentifier("install_done", "string",
