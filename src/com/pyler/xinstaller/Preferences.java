@@ -155,11 +155,9 @@ public class Preferences extends PreferenceActivity
     }
 
     public boolean isEnabledInSettings() {
-        boolean isEnabledInSettings = PreferenceManager
+        return PreferenceManager
                 .getDefaultSharedPreferences(this).getBoolean(
                         Common.PREF_ENABLE_MODULE, true);
-
-        return isEnabledInSettings;
     }
 
     @Override
