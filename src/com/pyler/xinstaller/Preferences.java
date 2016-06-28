@@ -155,11 +155,9 @@ public class Preferences extends PreferenceActivity
     }
 
     public boolean isEnabledInSettings() {
-        boolean isEnabledInSettings = PreferenceManager
+        return PreferenceManager
                 .getDefaultSharedPreferences(this).getBoolean(
                         Common.PREF_ENABLE_MODULE, true);
-
-        return isEnabledInSettings;
     }
 
     @Override
@@ -186,6 +184,8 @@ public class Preferences extends PreferenceActivity
                 break;
             case android.R.id.home:
                 onBackPressed();
+                break;
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -423,6 +423,8 @@ public class Preferences extends PreferenceActivity
                         }
                     }
                 }
+                default:
+                    break;
             }
         }
 
