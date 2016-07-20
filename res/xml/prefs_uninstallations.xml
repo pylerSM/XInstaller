@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="uninstallations">
     <PreferenceCategory
         android:key="enable"
-        android:title="@string/enable" >
+        android:title="@string/enable">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enable_keep_apps_data"
@@ -23,7 +23,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:key="disable"
-        android:title="@string/disable" >
+        android:title="@string/disable">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="disable_uninstall_background"

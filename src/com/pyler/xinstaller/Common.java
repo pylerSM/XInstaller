@@ -61,7 +61,6 @@ public class Common {
 	public static final String PREF_ENABLE_AUTO_CLOSE_INSTALL = "enable_auto_close_install";
 	public static final String PREF_ENABLE_LAUNCH_INSTALL = "enable_auto_launch_install";
 	public static final String PREF_ENABLE_INSTALL_EXTERNAL_STORAGE = "enable_install_external_storage";
-	public static final String PREF_ENABLE_BACKUP_APP_PACKAGE = "enable_backup_app_packages";
 	public static final String PREF_ENABLE_BACKUP_APK_FILE = "enable_backup_apk_files";
 	public static final String PREF_ENABLE_INSTALL_UNSIGNED_APP = "enable_install_unsigned_apps";
 	public static final String PREF_DISABLE_VERIFY_JAR = "disable_verify_jar";

@@ -1,8 +1,5 @@
 package com.pyler.xinstaller;
 
-import java.io.File;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -12,6 +9,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +39,9 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.util.List;
+
 public class Preferences extends PreferenceActivity
 {
     public static Context context;
@@ -63,7 +64,11 @@ public class Preferences extends PreferenceActivity
 
     @Override
     public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.preferences, target);
+        if (Common.MARSHMALLOW_NEWER) {
+            loadHeadersFromResource(R.xml.preferences, target);
+        } else {
+            loadHeadersFromResource(R.xml.legacy_preferences, target);
+        }
         context = getApplicationContext();
         isLarge = onIsMultiPane();
     }
@@ -99,7 +104,11 @@ public class Preferences extends PreferenceActivity
                         Intent i = new Intent();
                         i.setAction("de.robv.android.xposed.installer.OPEN_SECTION");
                         i.putExtra("opentab", 1);
-                        startActivity(i);
+                        try {
+                            startActivity(i);
+                        } catch (ActivityNotFoundException e){
+                            // xposed installer not found
+                        }
                         // ART and TW make things so complicated.
                     } else {
                         String url = "http://repo.xposed.info/module/de.robv.xposed.android.installer";
@@ -255,8 +264,6 @@ public class Preferences extends PreferenceActivity
             activity = getActivity();
             context = activity.getApplicationContext();
 
-            Toast.makeText(context, "is M " + Common.MARSHMALLOW_NEWER, Toast.LENGTH_SHORT).show();
-
             resources = context.getResources();
             getPreferenceManager().setSharedPreferencesMode(
                     Context.MODE_WORLD_READABLE);
@@ -288,7 +295,7 @@ public class Preferences extends PreferenceActivity
         public void onPause() {
             super.onPause();
 
-            // Set preferences file permissions to be world readable
+            // Set legacy_preferences file permissions to be world readable
             File prefsDir = new File(getActivity().getApplicationInfo().dataDir, "shared_prefs");
             File prefsFile = new File(prefsDir, getPreferenceManager().getSharedPreferencesName() + ".xml");
             if (prefsFile.exists()) {

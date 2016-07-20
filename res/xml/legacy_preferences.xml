@@ -24,6 +24,14 @@
             android:name="settings"
             android:value="uninstallations"/>
     </header>
+    
+    <header
+        android:fragment="com.pyler.xinstaller.Preferences$Settings"
+        android:title="@string/apps_info">
+        <extra
+            android:name="settings"
+            android:value="apps_info"/>
+    </header>
 
     <header
         android:fragment="com.pyler.xinstaller.Preferences$Settings"

@@ -1,6 +1,5 @@
 package com.pyler.xinstaller;
 
-import android.app.Activity;
 import android.app.AndroidAppHelper;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -50,11 +49,6 @@ public class XInstaller implements IXposedHookZygoteInit,
     public boolean verifyApps;
     public boolean installAppsOnExternal;
     public boolean deviceAdmins;
-    public boolean autoInstall;
-    public boolean autoUninstall;
-    public boolean autoCloseUninstall;
-    public boolean autoCloseInstall;
-    public boolean autoLaunchInstall;
     public boolean checkPermissions;
     public boolean backupApkFiles;
     public boolean verifyJar;
@@ -63,20 +57,14 @@ public class XInstaller implements IXposedHookZygoteInit,
     public boolean debugApps;
     public boolean autoBackup;
     public boolean showPackageName;
-    public boolean showVersions;
-    public boolean deleteApkFiles;
     public boolean checkSdkVersion;
     public boolean installBackground;
     public boolean uninstallBackground;
     public boolean launchApps;
     public boolean openAppsGooglePlay;
-    public boolean autoEnableClearButtons;
-    public boolean autoHideInstall;
     public boolean checkLuckyPatcher;
     public boolean backupAllApps;
-    public boolean openAppOps;
     public boolean hideAppCrashes;
-    public boolean confirmCheckSignatures;
     public XC_MethodHook checkSignaturesHook;
     public XC_MethodHook deletePackageHook;
     public XC_MethodHook installPackageHook;
@@ -86,12 +74,10 @@ public class XInstaller implements IXposedHookZygoteInit,
     public XC_MethodHook checkSignaturesFDroidHook;
     public XC_MethodHook autoInstallHook;
     public XC_MethodHook autoUninstallHook;
-    public XC_MethodHook autoCloseUninstallHook;
     public XC_MethodHook autoCloseInstallHook;
     public XC_MethodHook checkPermissionsHook;
     public XC_MethodHook verifyJarHook;
     public XC_MethodHook verifySignatureHook;
-    public XC_MethodHook autoEnableClearButtonsHook;
     public XC_MethodHook showButtonsHook;
     public XC_MethodHook debugAppsHook;
     public XC_MethodHook autoBackupHook;
@@ -110,8 +96,6 @@ public class XInstaller implements IXposedHookZygoteInit,
         if (!Common.MARSHMALLOW_NEWER) {
             return;
         }
-
-        XposedBridge.log("Running M");
 
         prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
         prefs.makeWorldReadable();
@@ -168,44 +152,6 @@ public class XInstaller implements IXposedHookZygoteInit,
                         packageInfo.applicationInfo.flags = flags;
                         param.setResult(packageInfo);
                     }
-                }
-            }
-        };
-
-        autoHideInstallHook = new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                reloadPreferences();
-                autoHideInstall = prefs.getBoolean(
-                        Common.PREF_ENABLE_AUTO_HIDE_INSTALL, false);
-                Activity packageInstaller = (Activity) param.thisObject;
-                if (isModuleEnabled() && autoHideInstall) {
-                    packageInstaller.onBackPressed();
-                }
-            }
-        };
-
-        autoEnableClearButtonsHook = new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                reloadPreferences();
-                autoEnableClearButtons = prefs.getBoolean(
-                        Common.PREF_ENABLE_AUTO_ENABLE_CLEAR_BUTTON, false);
-                if (isModuleEnabled() && autoEnableClearButtons) {
-                    Button mClearDataButton = (Button) XposedHelpers
-                            .getObjectField(param.thisObject,
-                                    "mClearDataButton");
-                    Button mClearCacheButton = (Button) XposedHelpers
-                            .getObjectField(param.thisObject,
-                                    "mClearCacheButton");
-                    mClearDataButton.setEnabled(true);
-                    mClearCacheButton.setEnabled(true);
-                    mClearDataButton
-                            .setOnClickListener((OnClickListener) param.thisObject);
-                    mClearCacheButton
-                            .setOnClickListener((OnClickListener) param.thisObject);
                 }
             }
         };
@@ -525,7 +471,7 @@ public class XInstaller implements IXposedHookZygoteInit,
                 }
 
                 if (isModuleEnabled() && isExpertModeEnabled() && showPackageName
-                        && (flags & Common.INSTALL_GRANT_RUNTIME_PERMISSIONS) == 0) { // TODO runtime permissions
+                        && (flags & Common.INSTALL_GRANT_RUNTIME_PERMISSIONS) == 0) {
                     flags |= Common.INSTALL_GRANT_RUNTIME_PERMISSIONS;
                 }
 
@@ -643,153 +589,6 @@ public class XInstaller implements IXposedHookZygoteInit,
                             "mInstalledSigID", mInstalledSigID);
                 }
             }
-        };
-
-        autoInstallHook = new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                prefs.reload();
-                autoInstall = prefs.getBoolean(Common.PREF_ENABLE_AUTO_INSTALL,
-                        false);
-                showVersions = prefs.getBoolean(
-                        Common.PREF_ENABLE_SHOW_VERSION, false);
-                checkSignatures = prefs.getBoolean(
-                        Common.PREF_DISABLE_CHECK_SIGNATURE, false);
-                confirmCheckSignatures = prefs.getBoolean(
-                        Common.PREF_ENABLE_CONFIRM_CHECK_SIGNATURE, false);
-                mContext = AndroidAppHelper.currentApplication();
-                Button mOk = (Button) XposedHelpers.getObjectField(
-                        param.thisObject, "mOk");
-                PackageManager mPm = mContext.getPackageManager();
-                PackageInfo mPkgInfo = (PackageInfo) XposedHelpers
-                        .getObjectField(param.thisObject, "mPkgInfo");
-                Resources res = getXInstallerContext().getResources();
-
-                if (isModuleEnabled() && confirmCheckSignatures
-                        && !checkSignatures) {
-                    Intent confirmSignatureCheck = new Intent(
-                            Common.ACTION_CONFIRM_CHECK_SIGNATURE);
-                    confirmSignatureCheck.setPackage(Common.PACKAGE_NAME);
-                    getXInstallerContext().sendBroadcast(confirmSignatureCheck);
-
-                }
-
-                // TODO
-                if (isModuleEnabled() && autoInstall) {
-                    XposedHelpers.setObjectField(param.thisObject,
-                            "mScrollView", null);
-                    XposedHelpers.setBooleanField(param.thisObject,
-                            "mOkCanInstall", true);
-                    mOk.performClick();
-                }
-
-                if (isModuleEnabled() && showVersions) {
-                    String packageName = mPkgInfo.packageName;
-                    String versionInfo = res.getString(R.string.new_version)
-                            + ": " + mPkgInfo.versionName;
-                    try {
-                        PackageInfo pi = mPm.getPackageInfo(packageName, 0);
-                        String currentVersion = pi.versionName;
-                        versionInfo += "\n"
-                                + res.getString(R.string.current_version)
-                                + ": " + currentVersion;
-
-                    } catch (NameNotFoundException e) {
-                    }
-                    Toast.makeText(mContext, versionInfo, Toast.LENGTH_LONG)
-                            .show();
-                }
-            }
-        };
-
-        autoUninstallHook = new XC_MethodHook() {
-
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                prefs.reload();
-                autoUninstall = prefs.getBoolean(
-                        Common.PREF_ENABLE_AUTO_UNINSTALL, false);
-                if (isModuleEnabled() && autoUninstall && Common.LOLLIPOP_NEWER) {
-                    Activity packageInstaller = (Activity) param.thisObject;
-                    packageInstaller.onBackPressed();
-                    XposedHelpers.callMethod(param.thisObject,
-                            "startUninstallProgress"); // TODO
-                }
-            }
-        };
-
-        autoCloseUninstallHook = new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                prefs.reload();
-                autoCloseUninstall = prefs.getBoolean(
-                        Common.PREF_ENABLE_AUTO_CLOSE_UNINSTALL, false);
-                if (isModuleEnabled() && autoCloseUninstall) {
-                    Button mOk = (Button) XposedHelpers.getObjectField(
-                            param.thisObject, "mOkButton"); // TODO
-                    if (mOk != null) {
-                        mOk.performClick();
-                    }
-                }
-            }
-
-        };
-
-        autoCloseInstallHook = new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                prefs.reload();
-                autoCloseInstall = prefs.getBoolean(
-                        Common.PREF_ENABLE_AUTO_CLOSE_INSTALL, false);
-                autoLaunchInstall = prefs.getBoolean(
-                        Common.PREF_ENABLE_LAUNCH_INSTALL, false);
-                deleteApkFiles = prefs.getBoolean(
-                        Common.PREF_ENABLE_DELETE_APK_FILE_INSTALL, false);
-                openAppOps = prefs.getBoolean(Common.PREF_ENABLE_OPEN_APP_OPS,
-                        false);
-                mContext = AndroidAppHelper.currentApplication();
-                Button mDone = (Button) XposedHelpers.getObjectField(
-                        XposedHelpers.getSurroundingThis(param.thisObject),
-                        "mDoneButton");
-
-                Button mLaunch = (Button) XposedHelpers.getObjectField(
-                        XposedHelpers.getSurroundingThis(param.thisObject),
-                        "mLaunchButton");
-
-                Message msg = (Message) param.args[0];
-                boolean installedApp = false;
-                if (msg != null) {
-                    installedApp = (msg.arg1 == Common.INSTALL_SUCCEEDED);
-                }
-
-                if (isModuleEnabled() && autoLaunchInstall && installedApp && mLaunch != null) {
-                    mLaunch.performClick();
-                }
-
-                if (isModuleEnabled() && autoCloseInstall && installedApp && mDone != null) {
-                    mDone.performClick();
-                    String appInstalledText;
-                    Resources resources = mContext.getResources();
-                    appInstalledText = (String) resources.getText(resources
-                            .getIdentifier("install_done", "string",
-                                    Common.PACKAGEINSTALLER_PKG));
-                    if (!appInstalledText.isEmpty()) {
-                        Toast.makeText(mContext, appInstalledText,
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                if (isModuleEnabled() && deleteApkFiles) {
-                    Uri packageUri = (Uri) XposedHelpers.getObjectField(
-                            XposedHelpers.getSurroundingThis(param.thisObject),
-                            "mPackageURI");
-                }
-            }
-
         };
 
     }

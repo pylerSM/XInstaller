@@ -26,7 +26,7 @@
     <PreferenceScreen
         android:key="about"
         android:title="@string/about" />
-	<PreferenceScreen
-		android:key="backup_restore_preferences"
-		android:title="@string/backup_and_restore"/>
+    <PreferenceScreen
+        android:key="backup_restore_preferences"
+        android:title="@string/backup_and_restore" />
 </PreferenceScreen>
