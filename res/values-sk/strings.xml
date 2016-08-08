@@ -117,4 +117,7 @@
   <string name="export_apps_summary">Kliknutie na názov aplikácie.</string>
   <string name="en">Angličtina</string>
   <string name="bug_report">Nahlásiť chybu</string>
+  <string name="xposed_module_not_active">Xposed modul nie je aktivovaný.</string>
+  <string name="xposed_module_not_active_subtext">Povolili ste modul a reštartovali zariadenie?</string>
+  <string name="uninstall_system_apps_summary">Dlhé stlačenie na tlačidlo Zakázať</string>
 </resources>
