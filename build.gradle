@@ -21,8 +21,7 @@ allprojects {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs')
-    provided files('XposedBridgeApi.jar')
+    provided 'de.robv.android.xposed:api:82'
 }
 
 
