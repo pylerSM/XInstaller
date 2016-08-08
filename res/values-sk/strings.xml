@@ -110,4 +110,11 @@
   <string name="hide_app_crashes">Skryť pády aplikácií</string>
   <string name="confirm_check_signatures">Potvrdzovanie kontroly podpisov</string>
   <string name="confirm_check_signatures_message">Zakázať kontrolu podpisov pre túto inštaláciu?</string>
+  <string name="launch_apps_summary">Kliknutie na ikonu aplikácie.</string>
+  <string name="module_disabled_in_settings">XInstaller je zakázaný v nastaveniach.</string>
+  <string name="module_disabled_in_settings_subtext">Kliknutím povoľte.</string>
+  <string name="open_apps_google_play_summary">Dlhé stlačenie na ikonu aplikácie.</string>
+  <string name="export_apps_summary">Kliknutie na názov aplikácie.</string>
+  <string name="en">Angličtina</string>
+  <string name="bug_report">Nahlásiť chybu</string>
 </resources>

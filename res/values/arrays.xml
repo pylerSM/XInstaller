@@ -8,6 +8,7 @@
         <item>@string/cs</item>
         <item>@string/de</item>
         <item>@string/el</item>
+        <item>@string/en</item>
         <item>@string/es_ES</item>
         <item>@string/fr</item>
         <item>@string/hu</item>
@@ -33,6 +34,7 @@
         <item>cs</item>
         <item>de</item>
         <item>el</item>
+        <item>en</item>
         <item>es_ES</item>
         <item>fr</item>
         <item>hu</item>

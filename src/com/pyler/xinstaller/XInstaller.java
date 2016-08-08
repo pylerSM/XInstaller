@@ -272,10 +272,12 @@ public class XInstaller implements IXposedHookZygoteInit,
                             Intent openGooglePlay = new Intent(
                                     Intent.ACTION_VIEW, Uri.parse(uri));
 
-                            // TODO TRYCATCH
                             openGooglePlay
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            mContext.startActivity(openGooglePlay);
+                            try {
+                                mContext.startActivity(openGooglePlay);
+                            } catch (Exception ignored) {
+                            }
                             return true;
                         }
                     });

@@ -110,4 +110,8 @@
   <string name="hide_app_crashes">Скрытие сбоев приложений</string>
   <string name="confirm_check_signatures">Подтверждение проверки подписи</string>
   <string name="confirm_check_signatures_message">Отключить проверку подписи для этой установки?</string>
+  <string name="xposed" translatable="false"></string>
+  <string name="xposed_module_not_active">Xposed modul nie je aktivovaný.</string>
+  <string name="xposed_module_not_active_subtext">Povolili ste modul a reštartovali zariadenie?</string>
+  <string name="uninstall_system_apps_summary">Dlhé stlačenie na tlačidlo Zakázať</string>
 </resources>

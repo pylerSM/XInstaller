@@ -124,5 +124,6 @@
     <string name="hide_app_crashes">Hiding app crashes</string>
     <string name="confirm_check_signatures">Confirming signatures check</string>
     <string name="confirm_check_signatures_message">Disable signatures check for this installation?</string>
+    <string name="en">English</string>
 
 </resources>
