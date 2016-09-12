@@ -1,27 +1,16 @@
 package com.pyler.xinstaller;
 
-import android.app.AndroidAppHelper;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.os.Process;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
@@ -31,7 +20,6 @@ import java.util.Locale;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -56,15 +44,12 @@ public class XInstaller implements IXposedHookZygoteInit,
     public boolean showButtons;
     public boolean debugApps;
     public boolean autoBackup;
-    public boolean showPackageName;
     public boolean checkSdkVersion;
     public boolean installBackground;
     public boolean uninstallBackground;
-    public boolean launchApps;
-    public boolean openAppsGooglePlay;
     public boolean checkLuckyPatcher;
     public boolean backupAllApps;
-    public boolean hideAppCrashes;
+    public boolean grantRuntimePermissions;
     public XC_MethodHook checkSignaturesHook;
     public XC_MethodHook deletePackageHook;
     public XC_MethodHook installPackageHook;
@@ -72,22 +57,16 @@ public class XInstaller implements IXposedHookZygoteInit,
     public XC_MethodHook verifyAppsHook;
     public XC_MethodHook deviceAdminsHook;
     public XC_MethodHook checkSignaturesFDroidHook;
-    public XC_MethodHook autoInstallHook;
-    public XC_MethodHook autoUninstallHook;
-    public XC_MethodHook autoCloseInstallHook;
     public XC_MethodHook checkPermissionsHook;
     public XC_MethodHook verifyJarHook;
     public XC_MethodHook verifySignatureHook;
     public XC_MethodHook showButtonsHook;
     public XC_MethodHook debugAppsHook;
     public XC_MethodHook autoBackupHook;
-    public XC_MethodHook showPackageNameHook;
     public XC_MethodHook scanPackageHook;
     public XC_MethodHook verifySignaturesHook;
     public XC_MethodHook checkSdkVersionHook;
-    public XC_MethodHook autoHideInstallHook;
     public XC_MethodHook getPackageInfoHook;
-    public XC_MethodHook hideAppCrashesHook;
     public boolean disableCheckSignatures;
     public Context mContext;
 
@@ -100,21 +79,6 @@ public class XInstaller implements IXposedHookZygoteInit,
         prefs = new XSharedPreferences(XInstaller.class.getPackage().getName());
         prefs.makeWorldReadable();
         disableCheckSignatures = true;
-
-        hideAppCrashesHook = new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                reloadPreferences();
-                hideAppCrashes = prefs.getBoolean(
-                        Common.PREF_ENABLE_HIDE_APP_CRASHES, false);
-                if (isModuleEnabled() && hideAppCrashes) {
-                    XposedHelpers.setObjectField(param.thisObject,
-                            "DISMISS_TIMEOUT", 0);
-                }
-            }
-        };
-
 
         getPackageInfoHook = new XC_MethodHook() {
             @Override
@@ -198,94 +162,6 @@ public class XInstaller implements IXposedHookZygoteInit,
             }
         };
 
-        showPackageNameHook = new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param)
-                    throws Throwable {
-                reloadPreferences();
-                showPackageName = prefs.getBoolean(
-                        Common.PREF_ENABLE_SHOW_PACKAGE_NAME, false);
-                launchApps = prefs.getBoolean(Common.PREF_ENABLE_LAUNCH_APP,
-                        false);
-                openAppsGooglePlay = prefs.getBoolean(
-                        Common.PREF_ENABLE_OPEN_APP_GOOGLE_PLAY, false);
-                mContext = AndroidAppHelper.currentApplication();
-                PackageInfo pkgInfo = (PackageInfo) param.args[0];
-                Object view;
-                Resources mResources;
-
-                view = XposedHelpers.getObjectField(param.thisObject, "mHeader");
-                mResources = (Resources) XposedHelpers.callMethod(param.thisObject, "getResources");
-
-                int appSnippetId = mResources.getIdentifier("app_snippet", "id", Common.SETTINGS_PKG);
-
-                int appVersionId = mResources.getIdentifier("summary", "id", "android");
-                TextView appVersion = (TextView) XposedHelpers.callMethod(view, "findViewById", appVersionId);
-                View appSnippet = (View) XposedHelpers.callMethod(view, "findViewById", appSnippetId);
-                int iconId = mResources.getIdentifier("icon", "id", "android");
-
-                ImageView appIcon = (ImageView) appSnippet.findViewById(iconId);
-                String version = appVersion.getText().toString();
-                final Resources res = getXInstallerContext().getResources();
-                final String packageName = pkgInfo.packageName;
-                if (isModuleEnabled() && showPackageName) {
-                    if (version.contains(packageName)) {
-                        return;
-                    }
-                    appVersion.setText(packageName + "\n" + version);
-                    appVersion.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ClipboardManager clipboard = (ClipboardManager) mContext
-                                    .getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText("text",
-                                    packageName);
-                            clipboard.setPrimaryClip(clip);
-                            Toast.makeText(
-                                    mContext,
-                                    res.getString(R.string.package_name_copied),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                if (isModuleEnabled() && launchApps) {
-                    appIcon.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent launchIntent = mContext.getPackageManager()
-                                    .getLaunchIntentForPackage(packageName);
-                            if (launchIntent != null) {
-                                launchIntent
-                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                mContext.startActivity(launchIntent);
-                            }
-                        }
-                    });
-                }
-
-                if (isModuleEnabled() && openAppsGooglePlay) {
-                    appIcon.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            String uri = "market://details?id=" + packageName;
-                            Intent openGooglePlay = new Intent(
-                                    Intent.ACTION_VIEW, Uri.parse(uri));
-
-                            openGooglePlay
-                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            try {
-                                mContext.startActivity(openGooglePlay);
-                            } catch (Exception ignored) {
-                            }
-                            return true;
-                        }
-                    });
-                }
-
-
-            }
-        };
 
         autoBackupHook = new XC_MethodHook() {
             @Override
@@ -342,7 +218,7 @@ public class XInstaller implements IXposedHookZygoteInit,
                 reloadPreferences();
                 verifyJar = prefs.getBoolean(Common.PREF_DISABLE_VERIFY_JAR,
                         false);
-                if (isModuleEnabled() && isExpertModeEnabled() && verifyJar) {
+                if (isModuleEnabled() && verifyJar) {
                     String name = (String) XposedHelpers.getObjectField(
                             param.thisObject, "name");
                     if (Common.LOLLIPOP_NEWER) {
@@ -394,7 +270,7 @@ public class XInstaller implements IXposedHookZygoteInit,
                 reloadPreferences();
                 verifySignature = prefs.getBoolean(
                         Common.PREF_DISABLE_VERIFY_SIGNATURE, false);
-                if (isModuleEnabled() && isExpertModeEnabled()
+                if (isModuleEnabled()
                         && verifySignature) {
                     param.setResult(true);
                     return;
@@ -409,7 +285,7 @@ public class XInstaller implements IXposedHookZygoteInit,
                 prefs.reload();
                 checkPermissions = prefs.getBoolean(
                         Common.PREF_DISABLE_CHECK_PERMISSION, false);
-                if (isModuleEnabled() && isExpertModeEnabled()
+                if (isModuleEnabled()
                         && checkPermissions) {
                     param.setResult(PackageManager.PERMISSION_GRANTED);
                     return;
@@ -447,6 +323,9 @@ public class XInstaller implements IXposedHookZygoteInit,
                         Common.PREF_ENABLE_BACKUP_APK_FILE, false);
                 installBackground = prefs.getBoolean(
                         Common.PREF_DISABLE_INSTALL_BACKGROUND, false);
+                grantRuntimePermissions = prefs.getBoolean(
+                        Common.PREF_ENABLE_GRANT_RUNTIME_PERMISSIONS, false);
+
                 mContext = (Context) XposedHelpers.getObjectField(
                         param.thisObject, "mContext");
                 boolean isInstallStage = "installStage".equals(param.method
@@ -467,12 +346,12 @@ public class XInstaller implements IXposedHookZygoteInit,
                 if (isModuleEnabled() && forwardLock && (flags & Common.INSTALL_FORWARD_LOCK) != 0) {
                     flags &= ~Common.INSTALL_FORWARD_LOCK;
                 }
-                if (isModuleEnabled() && isExpertModeEnabled()
+                if (isModuleEnabled()
                         && installAppsOnExternal && (flags & Common.INSTALL_EXTERNAL) == 0) {
                     flags |= Common.INSTALL_EXTERNAL;
                 }
 
-                if (isModuleEnabled() && isExpertModeEnabled() && showPackageName
+                if (isModuleEnabled() && grantRuntimePermissions
                         && (flags & Common.INSTALL_GRANT_RUNTIME_PERMISSIONS) == 0) {
                     flags |= Common.INSTALL_GRANT_RUNTIME_PERMISSIONS;
                 }
@@ -614,8 +493,6 @@ public class XInstaller implements IXposedHookZygoteInit,
                     Common.JARVERIFIER, lpparam.classLoader);
             Class<?> signatureClass = XposedHelpers.findClass(Common.SIGNATURE,
                     lpparam.classLoader);
-            Class<?> appErrorDialogClass = XposedHelpers.findClass(
-                    Common.APPERRORDIALOG, lpparam.classLoader);
 
             // 5.0 and newer
             XposedBridge.hookAllMethods(packageParserClass, "parseBaseApk",
@@ -688,10 +565,6 @@ public class XInstaller implements IXposedHookZygoteInit,
             XposedBridge.hookAllMethods(devicePolicyManagerClass,
                     "packageHasActiveAdmins", deviceAdminsHook);
 
-            // 4.0 and newer
-            XposedBridge.hookAllConstructors(appErrorDialogClass,
-                    hideAppCrashesHook);
-
         }
         if (Common.PACKAGEINSTALLER_PKG.equals(lpparam.packageName) || Common.GOOGLE_PACKAGEINSTALLER_PKG.equals(lpparam.packageName)) {
             // 5.0 and newer
@@ -704,32 +577,6 @@ public class XInstaller implements IXposedHookZygoteInit,
                     Common.PACKAGEINSTALLERACTIVITY, lpparam.classLoader,
                     "isVerifyAppsEnabled", verifyAppsHook);
 
-            // 4.0 and newer
-            XposedHelpers
-                    .findAndHookMethod(Common.PACKAGEINSTALLERACTIVITY,
-                            lpparam.classLoader, "startInstallConfirm",
-                            autoInstallHook);
-
-            // 5.0 and newer
-            XposedHelpers.findAndHookMethod(Common.UNINSTALLERACTIVITY,
-                    lpparam.classLoader, "showConfirmationDialog",
-                    autoUninstallHook);
-
-            // 4.0 and newer
-            XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS + "$1",
-                    lpparam.classLoader, "handleMessage", Message.class,
-                    autoCloseInstallHook);
-
-            // 4.0 and newer
-            XposedHelpers.findAndHookMethod(Common.INSTALLAPPPROGRESS,
-                    lpparam.classLoader, "initView", autoHideInstallHook);
-        }
-
-        if (Common.SETTINGS_PKG.equals(lpparam.packageName)) {
-            // 4.0 and newer
-            XposedHelpers.findAndHookMethod(Common.INSTALLEDAPPDETAILS,
-                    lpparam.classLoader, "setAppLabelAndIcon",
-                    PackageInfo.class, showPackageNameHook);
         }
 
         if (Common.FDROID_PKG.equals(lpparam.packageName)) {
@@ -746,12 +593,6 @@ public class XInstaller implements IXposedHookZygoteInit,
                     autoBackupHook);
         }
 
-        if (Common.XINSTALLER_PKG.equals(lpparam.packageName)) {
-            XposedHelpers.findAndHookMethod(Common.XINSTALLER_PKG
-                            + ".Preferences", lpparam.classLoader, "isModuleEnabled",
-                    XC_MethodReplacement.returnConstant(true));
-        }
-
         if (isModuleEnabled() && changeDevicePropertiesEnabled()) {
             changeDeviceProperties();
         }
@@ -766,12 +607,6 @@ public class XInstaller implements IXposedHookZygoteInit,
     public boolean isModuleEnabled() {
         prefs.reload();
         return prefs.getBoolean(Common.PREF_ENABLE_MODULE, true);
-    }
-
-    public boolean isExpertModeEnabled() {
-        prefs.reload();
-        return prefs.getBoolean(Common.PREF_ENABLE_EXPERT_MODE,
-                false);
     }
 
     public boolean changeDevicePropertiesEnabled() {

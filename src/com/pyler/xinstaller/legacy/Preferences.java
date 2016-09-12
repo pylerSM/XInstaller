@@ -477,7 +477,7 @@ public class Preferences extends PreferenceActivity
             if (((Preferences) getActivity()).onIsMultiPane())
                 getActivity().recreate();
             else {
-                Intent b = new Intent(getActivity(), Preferences.class);
+                Intent b = new Intent(getActivity(), com.pyler.xinstaller.legacy.Preferences.class);
                 b.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -490,7 +490,7 @@ public class Preferences extends PreferenceActivity
             Preferences prefsActivity = (Preferences) getActivity();
 
             prefsActivity.startPreferencePanel(
-                    "com.pyler.xinstaller.Preferences$Settings",
+                    "com.pyler.xinstaller.legacy.Preferences$Settings",
                     settings.getArguments(), preference.getTitleRes(),
                     // don't care here.
                     null, null, 0);

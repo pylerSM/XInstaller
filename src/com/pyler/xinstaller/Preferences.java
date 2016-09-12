@@ -89,16 +89,6 @@ public class Preferences extends Activity {
                             return true;
                         }
                     });
-            Preference enableExpertMode = findPreference(Common.PREF_ENABLE_EXPERT_MODE);
-            enableExpertMode
-                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                        @Override
-                        public boolean onPreferenceChange(
-                                Preference preference, Object newValue) {
-                            activity.recreate();
-                            return true;
-                        }
-                    });
 
             Preference appLocale = findPreference(Common.PREF_APP_LOCALE);
             appLocale

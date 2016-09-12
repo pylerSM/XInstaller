@@ -90,6 +90,7 @@ public class Common {
 	public static final String PREF_ENABLE_DISABLE_USER_APPS = "enable_disable_user_apps";
 	public static final String PREF_ENABLE_HIDE_APP_CRASHES = "enable_hide_app_crashes";
 	public static final String PREF_ENABLE_CONFIRM_CHECK_SIGNATURE = "enable_confirm_check_signatures";
+	public static final String PREF_ENABLE_GRANT_RUNTIME_PERMISSIONS = "enable_grant_runtime_permissions";
 
 	public static final String PREF_DEVICE_MODEL = "device_model";
 	public static final String PREF_DEVICE_MANUFACTURER = "device_manufacturer";
