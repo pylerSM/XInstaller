@@ -14,7 +14,7 @@
     <string name="xposed_module_not_active_subtext">“你是否启用模块并重启了？”</string>
     <string name="module_disabled_in_settings">XInstaller已在设置中禁用。</string>
     <string name="module_disabled_in_settings_subtext">点击以启用。</string>
-    <string name="app_icon"启动器图标</string>
+    <string name="app_icon">"启动器图标</string>
     <string name="expert_mode">专家模式</string>
     <string name="app_settings">设置</string>
     <string name="installations">安装</string>
@@ -27,7 +27,7 @@
     <string name="restore">恢复</string>
     <string name="reset">重置</string>
     <string name="enable">启用</string>
-    <string name="disable">禁用</string></string>
+    <string name="disable">禁用</string>
     <string name="check_signatures">检查签名</string>
     <string name="keep_apps_data">保留应用数据</string>
     <string name="downgrade_apps">降级应用</string>
