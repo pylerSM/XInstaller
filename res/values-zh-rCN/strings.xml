@@ -1,13 +1,6 @@
 <resources>
 
     <string name="app_description">软件包安装程序的多种调整</string>
-    <string name="app_name" translatable="false">XInstaller</string>
-    <string name="app_developer" translatable="false">pyler</string>
-    <string name="github" translatable="false">Github</string>
-    <string name="xposed" translatable="false">Xposed</string>
-    <string name="bug_report">报告问题</string>
-    <string name="app_translator"></string>
-    <string name="app_translator_url"></string>
     <string name="app">应用</string>
     <string name="module">模块</string>
     <string name="xposed_module_not_active">Xposed模块没有激活。</string>
