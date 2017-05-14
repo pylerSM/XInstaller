@@ -106,12 +106,21 @@ public class XInstaller implements IXposedHookZygoteInit,
                 reloadPreferences();
                 backupAllApps = prefs.getBoolean(
                         Common.PREF_ENABLE_BACKUP_ALL_APPS, false);
-                if (isModuleEnabled() && backupAllApps) {
+                debugApps = prefs.getBoolean(Common.PREF_ENABLE_DEBUG_APP,
+                        false);
+                if (isModuleEnabled()) {
                     PackageInfo packageInfo = (PackageInfo) param.getResult();
                     if (packageInfo != null) {
                         int flags = packageInfo.applicationInfo.flags;
-                        if ((flags & ApplicationInfo.FLAG_ALLOW_BACKUP) == 0) {
-                            flags |= ApplicationInfo.FLAG_ALLOW_BACKUP;
+                        if(backupAllApps) {
+                            if ((flags & ApplicationInfo.FLAG_ALLOW_BACKUP) == 0) {
+                                flags |= ApplicationInfo.FLAG_ALLOW_BACKUP;
+                            }
+                        }
+                        if(debugApps) {
+                            if ((flags & ApplicationInfo.FLAG_DEBUGGABLE) == 0) {
+                                flags |= ApplicationInfo.FLAG_DEBUGGABLE;
+                            }
                         }
                         packageInfo.applicationInfo.flags = flags;
                         param.setResult(packageInfo);
