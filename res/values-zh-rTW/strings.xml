@@ -110,4 +110,15 @@
   <string name="hide_app_crashes">隱藏應用程式崩潰</string>
   <string name="confirm_check_signatures">安裝時詢問是否暫時停用簽名檢查，提醒: 如果已勾選停用簽名檢查者，此選項將無效</string>
   <string name="confirm_check_signatures_message">請問此次安裝是否暫時停用簽名檢查？</string>
+  
+  
+  <string name="bug_report">問題回報</string>
+  <string name="xposed_module_not_active">Xposed 模組未啟用。</string>
+  <string name="xposed_module_not_active_subtext">"您確定已經啟用模組並且重啟嗎?"</string>
+  <string name="module_disabled_in_settings">XInstaller 已在設定中停用。</string>
+  <string name="module_disabled_in_settings_subtext">按此啟用。</string>
+  <string name="launch_apps_summary">點選程式圖示</string>
+  <string name="export_apps_summary">點選程式名稱</string>
+  <string name="open_apps_google_play_summary">長按程式圖示</string>
+  <string name="uninstall_system_apps_summary">長按停用按鈕</string>
 </resources>
